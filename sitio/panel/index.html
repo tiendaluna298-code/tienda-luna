@@ -1,0 +1,1558 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#24123b">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-title" content="Panel Luna">
+<link rel="icon" href="../icon-panel-192.png">
+<link rel="apple-touch-icon" href="../icon-panel-192.png">
+<link rel="manifest" href="manifest.json">
+<script src="../config.js"></script>
+<title>Panel Tienda Luna</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: panel de trabajo — barra lateral nocturna con la luna (en celu: barra inferior), área clara con vistas Prendas / Costos y precios / Categorías / Ajustes; el editor ocupa la pantalla con la calculadora de precio fija a la derecha. */
+:root{
+  --night:#24123b; --night-2:#341c54; --on-night:#f4ecfb; --on-night-dim:#bba7d3;
+  --bg:#f5f1f8; --surface:#ffffff; --surface-2:#f1ebf6; --line:#e4dbeb; --line-2:#d5c8e0;
+  --fg:#231632; --muted:#6c5d7e;
+  --violet:#5a2d8a; --violet-soft:#ede3f7; --on-violet:#ffffff;
+  --gold:#c9a04a; --gold-ink:#8a671c; --gold-soft:#f7edd6;
+  --ok:#2a7853; --ok-soft:#e0f2e8; --warn:#a4561b; --warn-soft:#fbebdd; --bad:#b0384a; --bad-soft:#fbe4e8;
+  --shadow:0 12px 32px -14px rgba(36,18,59,.35);
+  --f-display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --night:#0e0717; --night-2:#1b1030; --on-night:#f4ecfb; --on-night-dim:#ad9bc4;
+  --bg:#140d1e; --surface:#1d1529; --surface-2:#261c36; --line:#33274a; --line-2:#45365f;
+  --fg:#f0e8f7; --muted:#a898bd;
+  --violet:#bc97ea; --violet-soft:#2d2044; --on-violet:#1a0f2a;
+  --gold:#e2bf74; --gold-ink:#e2bf74; --gold-soft:#372a16;
+  --ok:#72cf9f; --ok-soft:#18301f; --warn:#f0a868; --warn-soft:#3a2615; --bad:#f2899a; --bad-soft:#3a1820;
+  --shadow:0 14px 34px -12px rgba(0,0,0,.65);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --night:#0e0717; --night-2:#1b1030; --on-night:#f4ecfb; --on-night-dim:#ad9bc4;
+  --bg:#140d1e; --surface:#1d1529; --surface-2:#261c36; --line:#33274a; --line-2:#45365f;
+  --fg:#f0e8f7; --muted:#a898bd;
+  --violet:#bc97ea; --violet-soft:#2d2044; --on-violet:#1a0f2a;
+  --gold:#e2bf74; --gold-ink:#e2bf74; --gold-soft:#372a16;
+  --ok:#72cf9f; --ok-soft:#18301f; --warn:#f0a868; --warn-soft:#3a2615; --bad:#f2899a; --bad-soft:#3a1820;
+  --shadow:0 14px 34px -12px rgba(0,0,0,.65);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+svg.i{width:20px;height:20px;flex:none}
+
+/* ---------- login ---------- */
+.login{min-height:100%;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(1200px 600px at 20% -10%,var(--night-2),var(--night) 60%);position:relative;overflow:hidden}
+.login::before{content:"";position:absolute;inset:0;background-image:radial-gradient(1.3px 1.3px at 14% 24%,rgba(255,255,255,.55),transparent),radial-gradient(1px 1px at 72% 18%,rgba(255,255,255,.45),transparent),radial-gradient(1.5px 1.5px at 86% 66%,rgba(226,191,116,.8),transparent),radial-gradient(1px 1px at 40% 82%,rgba(255,255,255,.35),transparent),radial-gradient(1px 1px at 58% 40%,rgba(255,255,255,.3),transparent);pointer-events:none}
+.lcard{position:relative;width:100%;max-width:380px;background:var(--surface);border-radius:22px;padding:30px 26px;box-shadow:0 30px 80px -30px rgba(0,0,0,.6);display:grid;gap:16px}
+.lcard .moon{width:58px;height:58px;margin:0 auto}
+.lcard h1{font-family:var(--f-display);font-weight:500;font-size:28px;text-align:center}
+.lcard h1 i{font-style:italic}
+.lcard p{margin:0;color:var(--muted);text-align:center;font-size:14px}
+.chk{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted)}
+.chk input{accent-color:var(--violet);width:18px;height:18px;margin:0}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:100%}
+.side{background:var(--night);color:var(--on-night);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:26px;padding:22px 14px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{display:block;font-family:var(--f-display);font-style:italic;font-weight:600;font-size:21px;line-height:1.05}
+.brand small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-night-dim)}
+.nav{display:grid;gap:4px}
+.nav button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--on-night-dim);padding:11px 12px;border-radius:12px;font-weight:600;font-size:14.5px;text-align:left;position:relative}
+.nav button:hover{background:rgba(255,255,255,.05);color:var(--on-night)}
+.nav button[aria-current="page"]{background:rgba(226,191,116,.13);color:var(--on-night)}
+.nav button[aria-current="page"] svg{color:#e2bf74}
+.nav .badge{margin-left:auto;background:#e2bf74;color:#24123b;font-size:11px;font-weight:700;border-radius:9px;padding:1px 7px}
+.sfoot{margin-top:auto;display:grid;gap:4px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}
+.sfoot a,.sfoot button{display:flex;align-items:center;gap:10px;border:0;background:none;color:var(--on-night-dim);text-decoration:none;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:500;text-align:left}
+.sfoot a:hover,.sfoot button:hover{color:var(--on-night);background:rgba(255,255,255,.05)}
+.sfoot svg{width:18px;height:18px}
+.demo-pill{margin:4px 12px 0;font-size:11.5px;color:#e2bf74;border:1px dashed rgba(226,191,116,.5);border-radius:8px;padding:5px 8px}
+.mtop,.tabbar{display:none}
+.main{min-width:0;padding:30px clamp(16px,3.2vw,44px) 70px}
+.wrap{max-width:1180px;margin:0 auto}
+
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .mtop{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--night);color:var(--on-night);padding:10px 16px}
+  .mtop .brand{padding:0}
+  .mtop .brand svg{width:32px;height:32px}
+  .mtop .brand b{font-size:19px}
+  .mtop a{color:var(--on-night-dim);display:flex;align-items:center;gap:6px;font-size:13.5px;text-decoration:none;font-weight:600}
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar button{border:0;background:none;display:grid;justify-items:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--muted);padding:6px 2px;border-radius:10px}
+  .tabbar button[aria-current="page"]{color:var(--violet)}
+  .tabbar svg{width:22px;height:22px}
+  .main{padding:18px 16px 110px}
+  body.editing .tabbar{display:none}
+}
+
+/* ---------- encabezado de vista ---------- */
+.vh{display:flex;justify-content:space-between;align-items:flex-end;gap:14px 20px;flex-wrap:wrap;margin-bottom:22px}
+.vh h1{font-family:var(--f-display);font-weight:500;font-size:clamp(27px,3.2vw,36px);line-height:1.05}
+.vh p{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.vh .acts{display:flex;gap:8px;flex-wrap:wrap}
+.back{border:0;background:none;color:var(--violet);font-weight:600;padding:0;margin-bottom:8px;display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- botones / campos ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;border:1px solid transparent;font-weight:700;font-size:14.5px;white-space:nowrap;text-decoration:none}
+.btn svg{width:18px;height:18px}
+.btn.pri{background:var(--violet);color:var(--on-violet)}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.ghost{background:var(--surface);border-color:var(--line-2);color:var(--fg)}
+.btn.ghost:hover{border-color:var(--violet)}
+.btn.danger{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn.sm{height:36px;padding:0 12px;font-size:13.5px;border-radius:10px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.link{border:0;background:none;color:var(--violet);font-weight:600;padding:0;text-decoration:underline;text-underline-offset:3px}
+.field{display:grid;gap:6px;min-width:0}
+.field>*{min-width:0}
+.field>label,.lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.field :where(input:not([type=radio]):not([type=checkbox])),.field select,.field textarea,.inp{width:100%;min-height:44px;border-radius:11px;border:1.5px solid var(--line);background:var(--surface);padding:9px 12px;font-size:15px}
+.field :where(input:not([type=radio]):not([type=checkbox])):focus,.field select:focus,.field textarea:focus,.inp:focus{border-color:var(--violet);outline:none}
+.field textarea{min-height:92px;resize:vertical}
+.field small,.hint{color:var(--muted);font-size:12.5px}
+.money{position:relative}
+.money::before{content:"$";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600;pointer-events:none}
+.money input{padding-left:26px}
+.pct{position:relative}
+.pct::after{content:"%";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600;pointer-events:none}
+.pct input{padding-right:28px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:560px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.stack{display:grid;gap:14px}
+.err{color:var(--bad);font-weight:600;font-size:13.5px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px;max-width:100%;overflow-x:auto}
+.seg button{border:0;background:transparent;padding:7px 12px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:8px}
+.choice label{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 12px;cursor:pointer;font-weight:600;font-size:14px}
+.choice label:has(input:checked){border-color:var(--violet);background:var(--violet-soft);color:var(--violet)}
+.choice input{accent-color:var(--violet);margin:3px 0 0;flex:none}
+.choice small{display:block;color:var(--muted);font-weight:500;font-size:12.5px}
+.choice label,.choice label>span,.togrow>div{min-width:0}
+.switch{position:relative;width:44px;height:26px;flex:none;display:inline-block}
+.switch input{opacity:0;position:absolute;inset:0;margin:0;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:13px;background:var(--line-2);transition:background .15s}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch input:checked+span{background:var(--violet)}
+.switch input:checked+span::after{transform:translateX(18px)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:7px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.pill.stock{background:var(--ok-soft);color:var(--ok)}
+.pill.enc{background:var(--gold-soft);color:var(--gold-ink)}
+.pill.hid{background:var(--surface-2);color:var(--muted)}
+.pill.auto{background:var(--violet-soft);color:var(--violet)}
+.ib{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;color:var(--fg)}
+.ib svg{width:16px;height:16px}
+.ib:hover:not(:disabled){border-color:var(--violet);color:var(--violet)}
+.ib:disabled{opacity:.3;cursor:default}
+
+/* ---------- tarjetas ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card>h3,.ctitle{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+@media (max-width:860px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px 15px;display:grid;gap:2px;text-align:left;min-width:0}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600}
+.stat b{font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.stat small{font-size:12.5px;color:var(--muted)}
+button.stat{cursor:pointer}
+.stat.warn{border-color:color-mix(in srgb,var(--warn) 45%,var(--line));background:var(--warn-soft)}
+.stat.warn b,.stat.warn span{color:var(--warn)}
+
+/* ---------- lista de prendas ---------- */
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.search{position:relative;flex:1 1 240px;min-width:0}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+.search input{padding-left:40px}
+.tools select{width:auto;min-width:160px}
+.plist{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.pr{display:grid;grid-template-columns:52px minmax(0,2.2fr) 128px minmax(0,1.3fr) 112px 132px 50px 124px;gap:14px;align-items:center;padding:10px 16px;border-top:1px solid var(--line)}
+.pr.head{border-top:0;background:var(--surface-2);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-block:10px}
+.pr:not(.head){cursor:pointer}
+.pr:not(.head):hover{background:var(--surface-2)}
+.pr img{width:52px;height:64px;object-fit:cover;border-radius:9px;background:var(--surface-2)}
+.pr h4{font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pr .sub{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.c-talles{font-size:13px;color:var(--muted);letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-talles s{opacity:.5}
+.c-precio{font-weight:700;font-variant-numeric:tabular-nums}
+.c-precio s{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.gain{font-variant-numeric:tabular-nums;font-weight:600;font-size:14px}
+.gain small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.gain.pos{color:var(--ok)} .gain.neg{color:var(--bad)}
+.nocost{font-size:12.5px;color:var(--warn);font-weight:600}
+.c-acts{display:flex;gap:6px;justify-content:flex-end}
+.m-only{display:none}
+.emptybox{padding:44px 20px;text-align:center;color:var(--muted);display:grid;gap:12px;justify-items:center}
+.emptybox h3{font-family:var(--f-display);font-weight:500;font-size:22px;color:var(--fg)}
+@media (max-width:860px){
+  .pr{grid-template-columns:52px minmax(0,1fr) auto;grid-template-areas:"img name vis" "img precio acts";gap:4px 12px;padding:10px 12px}
+  .pr.head{display:none}
+  .c-img{grid-area:img} .c-name{grid-area:name} .c-vis{grid-area:vis;justify-self:end} .c-precio{grid-area:precio;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap} .c-acts{grid-area:acts}
+  .c-tipo,.c-talles,.c-gain{display:none}
+  .c-precio s{display:inline}
+  .m-only{display:inline}
+  .c-acts .ib.mv{display:none}
+}
+
+/* ---------- editor ---------- */
+.ed{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:18px;align-items:start}
+.ed-side{position:sticky;top:20px;display:grid;gap:18px}
+@media (max-width:1020px){.ed{grid-template-columns:minmax(0,1fr)}.ed-side{position:static}}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.pt{position:relative;aspect-ratio:4/5;border-radius:12px;overflow:hidden;background:var(--surface-2);max-width:100%}
+.pt img{width:100%;height:100%;object-fit:cover}
+.pt .rmx{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(15,8,25,.75);color:#fff;font-size:15px;line-height:1}
+.pt .tagp{position:absolute;left:6px;bottom:6px;font-size:10.5px;font-weight:700;border:0;border-radius:6px;padding:3px 7px}
+.pt .tagp.main{background:#e2bf74;color:#24123b}
+.pt .tagp.mk{background:rgba(255,255,255,.9);color:#24123b}
+.drop{border:1.5px dashed var(--line-2);border-radius:12px;aspect-ratio:4/5;display:grid;place-items:center;align-content:center;gap:6px;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;background:var(--surface-2);text-align:center;padding:8px;max-width:100%}
+.drop svg{width:26px;height:26px}
+.drop.over{border-color:var(--violet);color:var(--violet);background:var(--violet-soft)}
+.tchips{display:flex;flex-wrap:wrap;gap:6px}
+.tch{display:inline-flex;align-items:center;border-radius:10px;border:1.5px solid var(--violet);background:var(--violet-soft);color:var(--violet);font-weight:700;font-size:14px;overflow:hidden}
+.tch.no{border-color:var(--line-2);background:var(--surface);color:var(--muted);text-decoration:line-through}
+.tch button{border:0;background:none;color:inherit;padding:8px 10px;font-weight:700}
+.tch button+button{padding:8px 9px 8px 2px;opacity:.6;text-decoration:none}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{border:1px dashed var(--line-2);background:none;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.presets button:hover{color:var(--violet);border-color:var(--violet)}
+.togrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.togrow:first-of-type{border-top:0;padding-top:0}
+.togrow b{display:block;font-size:14.5px}
+.togrow small{color:var(--muted);font-size:12.5px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.quick button{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.quick button[aria-pressed="true"]{border-color:var(--violet);color:var(--violet);background:var(--violet-soft)}
+.pout{background:linear-gradient(150deg,var(--night),var(--night-2));color:var(--on-night);border-radius:14px;padding:16px 18px;display:grid;gap:10px}
+.pout .big{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pout .big span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-night-dim);font-weight:700}
+.pout .big b{font-size:32px;font-weight:700;color:#e2bf74;font-variant-numeric:tabular-nums;line-height:1}
+.pout .lines{display:grid;gap:4px;font-size:13.5px;color:var(--on-night-dim);font-variant-numeric:tabular-nums}
+.pout .lines div{display:flex;justify-content:space-between;gap:10px}
+.pout .lines .tot{color:var(--on-night);font-weight:700;border-top:1px dashed rgba(255,255,255,.18);padding-top:6px;margin-top:2px;font-size:14.5px}
+.pout .lines .pos{color:#8fe0b4} .pout .lines .neg{color:#ff9fae}
+.pout .alert{background:rgba(255,120,140,.14);color:#ffb3bf;border-radius:9px;padding:8px 10px;font-size:13px;font-weight:600}
+.pout .sugg{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(226,191,116,.12);border-radius:9px;padding:8px 10px;font-size:13px}
+.pout .sugg button{border:0;background:#e2bf74;color:#24123b;font-weight:700;border-radius:7px;padding:4px 10px;font-size:12.5px}
+.savebar{display:none}
+@media (max-width:860px){
+  .savebar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+  .savebar .btn{flex:1}
+  .vh .acts .btn.pri{display:none}
+}
+
+/* ---------- costos ---------- */
+.cl{display:grid;gap:18px}
+.qgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(270px,1.35fr);gap:12px;align-items:center}
+.qgrid .pout{padding:12px 14px;gap:6px}
+.qgrid .pout .big b{font-size:26px}
+@media (max-width:1180px){.qgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.qgrid .result{grid-column:1/-1}}
+.ctab{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cr{display:grid;grid-template-columns:minmax(0,1.9fr) 112px 100px 118px 96px 116px 112px 70px;gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line)}
+.cr.head{border-top:0;background:var(--surface-2);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.cr.dirty{background:color-mix(in srgb,var(--gold-soft) 55%,transparent)}
+.cr .who{display:flex;gap:10px;align-items:center;min-width:0}
+.cr .who img{width:38px;height:46px;object-fit:cover;border-radius:7px;background:var(--surface-2);flex:none}
+.cr .who b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.cr .who small{font-size:12px;color:var(--muted)}
+.cr .inp{min-height:38px;padding:6px 10px;font-size:14px;border-radius:9px}
+.cr .money::before{left:9px}.cr .money input{padding-left:21px}
+.cr .pct::after{right:9px}.cr .pct input{padding-right:24px}
+.modebtn{border:1.5px solid var(--line-2);background:var(--surface);border-radius:9px;height:38px;padding:0 8px;font-size:12.5px;font-weight:700;color:var(--muted);width:100%}
+.modebtn.on{border-color:var(--violet);background:var(--violet-soft);color:var(--violet)}
+.cr .out{font-variant-numeric:tabular-nums;font-weight:700;font-size:14.5px}
+.cr .out.pos{color:var(--ok)} .cr .out.neg{color:var(--bad)} .cr .out.mut{color:var(--muted);font-weight:500}
+.cr [data-l]::before{content:none}
+@media (max-width:860px){
+  .cr{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px;padding:12px}
+  .cr.head{display:none}
+  .cr .who{grid-column:1/-1}
+  .cr [data-l]{display:grid;gap:3px}
+  .cr [data-l]::before{content:attr(data-l);font-size:11.5px;color:var(--muted);font-weight:600}
+}
+.dirtybar{position:sticky;bottom:16px;z-index:15;margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--night);color:var(--on-night);border-radius:14px;padding:10px 12px 10px 18px;box-shadow:var(--shadow)}
+.dirtybar .btn.ghost{background:transparent;color:var(--on-night);border-color:rgba(255,255,255,.25)}
+@media (max-width:860px){.dirtybar{bottom:84px}}
+.calc .result{min-width:0}
+
+/* ---------- categorías / ajustes ---------- */
+.narrow{max-width:760px}
+.catrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-top:1px solid var(--line)}
+.catrow:first-child{border-top:0}
+.catrow.del{background:var(--warn-soft);color:var(--warn)}
+.catrow.del .field>label{color:var(--warn)}
+.catrow .acts{display:flex;gap:6px}
+.settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+@media (max-width:980px){.settings{grid-template-columns:minmax(0,1fr)}}
+.settings .card{display:grid;gap:14px}
+.ctrow{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:10px}
+.preview{background:var(--surface-2);border-radius:11px;padding:10px 12px;font-size:13.5px;color:var(--muted)}
+.preview b{color:var(--fg)}
+
+/* ---------- avisos ---------- */
+.guard{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:50;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 32px)}
+.guard b{font-size:14px}
+.toast{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--night);color:var(--on-night);padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:all .25s ease;pointer-events:none;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:860px){.toast{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px)}}
+.loading{padding:60px 0;text-align:center;color:var(--muted)}
+/* ---------- pedidos ---------- */
+.side .brand b{white-space:nowrap;font-size:20px}
+.bellbtn{position:relative;margin-left:auto;width:36px;height:36px;border-radius:50%;border:1px solid rgba(226,191,116,.4);background:transparent;color:var(--on-night);display:grid;place-items:center;flex:none}
+.bellbtn:hover{background:rgba(255,255,255,.06)}
+.bellbtn svg{width:19px;height:19px;transform-origin:50% 12%}
+.bellbtn .n{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#e2bf74;color:#24123b;font-size:11px;font-weight:700;display:grid;place-items:center}
+.bellbtn.ring svg{animation:ring 1.1s ease 3}
+@keyframes ring{8%,28%,48%{transform:rotate(16deg)}18%,38%{transform:rotate(-16deg)}60%{transform:none}}
+.mtop .right{display:flex;align-items:center;gap:14px}
+.alerts{display:flex;gap:12px 16px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:18px}
+.alerts.off{background:var(--gold-soft);border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.alerts .txt{display:flex;gap:12px;align-items:center;min-width:0;flex:1 1 300px}
+.alerts .txt b{display:block;font-size:14.5px}
+.alerts .txt small{color:var(--muted);font-size:13px;display:block}
+.alerts .ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--violet-soft);color:var(--violet);flex:none}
+.alerts.off .ico{background:var(--gold);color:#24123b}
+.alerts .acts{display:flex;gap:8px;flex-wrap:wrap}
+.day{margin:24px 2px 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.day:first-child{margin-top:4px}
+.day h2{font-family:var(--f-display);font-weight:500;font-size:22px}
+.day span{color:var(--muted);font-size:13.5px}
+.olist{display:grid;gap:10px}
+.ord{background:var(--surface);border:1px solid var(--line);border-radius:16px;display:grid;grid-template-columns:92px minmax(0,1fr) minmax(200px,auto);overflow:hidden}
+.ord.st-nuevo{border-color:color-mix(in srgb,var(--gold) 60%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 14%,transparent)}
+.ord.st-cancelado{opacity:.62}
+.ord .when{padding:14px 10px;border-right:1px solid var(--line);display:grid;align-content:start;justify-items:center;gap:1px;background:var(--surface-2)}
+.ord .when b{font-size:21px;font-variant-numeric:tabular-nums;line-height:1.15}
+.ord .when small{font-size:12px;color:var(--muted);text-align:center}
+.ord .obody{padding:14px 16px;min-width:0;display:grid;gap:8px;align-content:start}
+.ord .ohead{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ord .ohead h3{font-size:16.5px;font-weight:700}
+.ord .ohead .loc{color:var(--muted);font-size:13.5px}
+.code{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);background:var(--surface-2);border-radius:6px;padding:2px 7px}
+.oitems{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:14px}
+.oitems li{display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+.oitems li>span:first-child{min-width:0}
+.oitems li>span:last-child{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.oitems .pill{font-size:10px;padding:2px 6px;margin-left:4px;vertical-align:1px}
+.ometa{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--muted)}
+.ometa b{color:var(--fg);font-weight:600}
+.onote{font-size:13.5px;background:var(--surface-2);border-radius:9px;padding:7px 10px}
+.ord .oside{padding:14px 16px;border-left:1px solid var(--line);display:grid;align-content:space-between;gap:10px;justify-items:end}
+.ord .otot{text-align:right}
+.ord .otot b{display:block;font-size:20px;font-variant-numeric:tabular-nums;line-height:1.2}
+.ord .otot small{color:var(--muted);font-size:12.5px}
+.age{font-size:11px;font-weight:700;border-radius:7px;padding:3px 8px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.age.ok{background:var(--ok-soft);color:var(--ok)} .age.mid{background:var(--warn-soft);color:var(--warn)} .age.late{background:var(--bad-soft);color:var(--bad)} .age.done{background:var(--surface-2);color:var(--muted)}
+.states{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.states button{border:1.5px solid var(--line-2);background:var(--surface);border-radius:8px;padding:5px 9px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.states button:hover{color:var(--fg)}
+.states button[aria-pressed="true"].s-nuevo{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-ink)}
+.states button[aria-pressed="true"].s-confirmado{border-color:var(--violet);background:var(--violet-soft);color:var(--violet)}
+.states button[aria-pressed="true"].s-entregado{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.states button[aria-pressed="true"].s-cancelado{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+@media (max-width:860px){
+  .ord{grid-template-columns:minmax(0,1fr)}
+  .ord .when{border-right:0;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:baseline;justify-items:start;padding:9px 14px}
+  .ord .when b{font-size:17px}
+  .ord .oside{border-left:0;border-top:1px solid var(--line);justify-items:stretch}
+  .ord .otot{display:flex;justify-content:space-between;align-items:baseline;text-align:left;gap:10px}
+  .states{justify-content:flex-start}
+}
+.modal{position:fixed;inset:0;z-index:70;background:rgba(15,8,25,.6);display:grid;place-items:center;padding:16px}
+.modal .box{background:var(--surface);border-radius:18px;max-width:480px;width:100%;padding:22px;display:grid;gap:14px;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+.modal h3{font-family:var(--f-display);font-weight:500;font-size:25px}
+.modal ol{margin:0;padding-left:20px;display:grid;gap:8px}
+.modal p{margin:0;color:var(--muted)}
+.devcard{display:grid;gap:12px}
+.devrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.devrow:first-of-type{border-top:0;padding-top:0}
+.devrow b{display:block;font-size:14.5px}
+.devrow small{display:block;color:var(--muted);font-size:12.5px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="login" class="login" hidden>
+  <form class="lcard" id="loginF">
+    <svg class="moon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#c9a04a" stroke-width="1.2" opacity=".6"/><path d="M29.5 9.5a15 15 0 1 0 9 26.2A13 13 0 0 1 29.5 9.5z" fill="#c9a04a"/><path d="M35 12.5l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#c9a04a"/></svg>
+    <h1>Panel de <i>Tienda Luna</i></h1>
+    <p>Prendas, costos, precios y ajustes de la tienda.</p>
+    <div class="field"><label for="l-pass">Clave</label><input id="l-pass" type="password" autocomplete="current-password" required></div>
+    <label class="chk"><input type="checkbox" id="l-rem" checked> Recordar en este dispositivo</label>
+    <div class="err" id="l-err" hidden></div>
+    <button class="btn pri" id="l-btn" style="width:100%">Entrar</button>
+    <p id="l-demo" hidden></p>
+  </form>
+</div>
+
+<div id="app" class="app" hidden>
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#e2bf74" stroke-width="1.2" opacity=".55"/><path d="M29.5 9.5a15 15 0 1 0 9 26.2A13 13 0 0 1 29.5 9.5z" fill="#e2bf74"/><path d="M35 12.5l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z" fill="#f4ecfb"/></svg>
+      <span><b class="sname">Tienda Luna</b><small>Panel</small></span>
+      <button class="bellbtn" data-nav="pedidos" aria-label="Pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="n" hidden>0</span></button>
+    </div>
+    <nav class="nav" id="sideNav" aria-label="Secciones"></nav>
+    <div class="sfoot">
+      <button data-act="install" class="installBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 7v6M9.5 10.5 12 13l2.5-2.5"/></svg>Instalar en esta compu</button>
+      <a href="../" target="_blank" rel="noopener" id="storeLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>Ver la tienda</a>
+      <button data-act="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>Cerrar sesión</button>
+      <div class="demo-pill" id="demoPill" hidden>Modo demostración</div>
+    </div>
+  </aside>
+  <header class="mtop">
+    <div class="brand"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M29.5 9.5a15 15 0 1 0 9 26.2A13 13 0 0 1 29.5 9.5z" fill="#e2bf74"/></svg><span><b class="sname">Tienda Luna</b><small>Panel</small></span></div>
+    <div class="right"><a href="../" target="_blank" rel="noopener">Ver tienda <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9"/></svg></a><button class="bellbtn" data-nav="pedidos" aria-label="Pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="n" hidden>0</span></button></div>
+  </header>
+  <main class="main"><div class="wrap" id="view"></div></main>
+  <nav class="tabbar" id="tabNav" aria-label="Secciones"></nav>
+</div>
+<div class="guard" id="guard" hidden></div>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* La URL de la planilla está en config.js (junto a la tienda). Sin config.js = modo demostración. */
+const API_URL = (window.TL_CONFIG && window.TL_CONFIG.API_URL) || '';
+
+const DEMO = !API_URL;
+const DEMO_PASS = 'demo-' + Math.random().toString(36).slice(2);
+const DB_KEY = 'tl_demo_v2';
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ars = n => (n < 0 ? '−$' : '$') + Math.abs(Math.round(Number(n) || 0)).toLocaleString('es-AR');
+const pctf = n => (n == null || !isFinite(n)) ? '—' : (Math.round(n * 10) / 10).toLocaleString('es-AR') + '%';
+const money = v => Math.round(Number(String(v ?? '').replace(/[^\d]/g, '')) || 0);
+const pnum = v => { const n = parseFloat(String(v ?? '').replace(',', '.').replace(/[^\d.\-]/g, '')); return isFinite(n) ? n : null; };
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const sess = {
+  get(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } },
+  set(k, v){ try{ v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); }catch(e){} }
+};
+const parseList = v => { if (Array.isArray(v)) return v; try{ const a = JSON.parse(v); if (Array.isArray(a)) return a; }catch(e){} return String(v || '').split(',').map(s => s.trim()).filter(Boolean); };
+const photoUrl = (f, w) => !f ? '' : (/^https:\/\/lh3\.googleusercontent\.com/.test(f.url) && !/=w\d+$/.test(f.url) ? f.url + '=w' + w : f.url);
+const SVG = (d, extra = '') => '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"' + extra + '>' + d + '</svg>';
+const IC = {
+  prendas: SVG('<path d="M8 4l4 2 4-2 4 3-2 4-2-1v10H8V10l-2 1-2-4z"/>'),
+  costos: SVG('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M16 11h0M8 15h2M12 15h2M8 18h2M12 18h4"/>'),
+  categorias: SVG('<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>'),
+  ajustes: SVG('<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/>'),
+  plus: SVG('<path d="M12 5v14M5 12h14"/>'),
+  search: SVG('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'),
+  up: SVG('<path d="M12 19V5M6 11l6-6 6 6"/>'),
+  down: SVG('<path d="M12 5v14M6 13l6 6 6-6"/>'),
+  edit: SVG('<path d="M4 20h4L19 9l-4-4L4 16z"/>'),
+  x: SVG('<path d="M6 6l12 12M18 6L6 18"/>'),
+  cam: SVG('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+  copy: SVG('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>'),
+  back: SVG('<path d="M15 6l-6 6 6 6"/>'),
+  trash: SVG('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+  pedidos: SVG('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
+  bell: SVG('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
+  bellOff: SVG('<path d="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l1.5 2H8M10 20.5a2 2 0 0 0 4 0M4 4l16 16"/>'),
+  install: SVG('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 7v6M9.5 10.5 12 13l2.5-2.5"/>')
+};
+const VIEWS = [['pedidos', 'Pedidos'], ['prendas', 'Prendas'], ['costos', 'Costos y precios'], ['categorias', 'Categorías'], ['ajustes', 'Ajustes']];
+
+/* ---------------------- prendas de ejemplo (demo) ---------------------- */
+function garment(kind, color, bg){
+  const P = {
+    tee:'M120 120 L170 98 Q200 122 230 98 L280 120 L338 178 L300 212 L280 196 L280 430 L120 430 L120 196 L100 212 L62 178 Z',
+    hoodie:'M118 130 L165 104 L235 104 L282 130 Q318 150 326 270 L336 410 L298 414 L286 280 L284 430 L116 430 L114 280 L102 414 L64 410 L74 270 Q82 150 118 130 Z',
+    pants:'M128 86 L272 86 L290 432 L222 432 L200 196 L178 432 L110 432 Z',
+    dress:'M168 84 L232 84 L240 160 L306 432 L94 432 L160 160 Z',
+    puffer:'M116 128 L166 100 L234 100 L284 128 Q322 150 330 270 L338 412 L298 416 L286 282 L286 432 L114 432 L114 282 L102 416 L62 412 L70 270 Q78 150 116 128 Z',
+    tank:'M150 86 L174 86 Q200 128 226 86 L250 86 L262 166 L282 432 L118 432 L138 166 Z'
+  };
+  let extra = '';
+  if (kind === 'hoodie') extra = '<path d="M165 104 Q200 46 235 104 Q200 128 165 104Z" fill="#000" opacity=".16"/><rect x="152" y="300" width="96" height="52" rx="12" fill="#000" opacity=".1"/>';
+  if (kind === 'pants') extra = '<rect x="128" y="86" width="144" height="18" fill="#000" opacity=".15"/>';
+  if (kind === 'dress') extra = '<path d="M168 84 L176 54 M232 84 L224 54" stroke="' + color + '" stroke-width="6"/>';
+  if (kind === 'puffer') extra = [170,210,250,290,330,370,410].map(y => '<path d="M114 ' + y + ' L286 ' + y + '" stroke="#000" stroke-width="3" opacity=".13"/>').join('');
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500"><rect width="400" height="500" fill="' + bg + '"/><circle cx="310" cy="96" r="54" fill="#fff" opacity=".35"/><path d="' + P[kind] + '" fill="' + color + '"/>' + extra + '</svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+function seedDemo(){
+  const in10 = new Date(Date.now() + 9 * 864e5);
+  const ymd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const T = (list, off = []) => list.map(t => ({ t, ok: !off.includes(t) }));
+  const f = (k, c, b) => [{ id: 'demo', url: garment(k, c, b) }];
+  const config = {
+    nombreTienda:'Tienda Luna', whatsapp:'5492604000000', contactos:'[]', mensajeBanner:'Encargá tu talle antes del cierre. Lo que está en stock se entrega ya.',
+    fechaCierre: ymd(in10), diasEncargo:'15 a 20', senaPorcentaje:'50', aliasTransferencia:'tienda.luna.mp',
+    metodosPago:'["Transferencia","Efectivo","Mercado Pago"]', zonaEnvio:'San Rafael y alrededores', costoEnvio:'A coordinar según zona',
+    puntoRetiro:'Coordinamos el punto de retiro por WhatsApp', categorias:'["Remeras","Buzos","Pantalones","Vestidos","Abrigos","Accesorios"]', instagram:'',
+    gananciaDefault:'60', redondeo:'500', comisionCobro:'0'
+  };
+  const prods = [
+    { nombre:'Buzo oversize frisa', categoria:'Buzos', tipo:'encargo', costo:21000, gastos:900, ganancia:'', modoPrecio:'auto', talles:T(['S','M','L','XL']), colores:['Lila','Negro','Gris melange'], descripcion:'Frisa invisible, capucha forrada y bolsillo canguro.', fotos:f('hoodie','#9b7bc4','#ece4f4'), destacado:true },
+    { nombre:'Remera básica algodón peinado', categoria:'Remeras', tipo:'stock', costo:8500, gastos:400, ganancia:'', modoPrecio:'manual', precio:16500, talles:T(['S','M','L','XL'],['XL']), colores:['Blanco','Negro','Rosa viejo'], descripcion:'Algodón 24/1 peinado.', fotos:f('tee','#e9b9b4','#f7eceb') },
+    { nombre:'Jean mom tiro alto', categoria:'Pantalones', tipo:'stock', costo:26000, gastos:1200, ganancia:50, modoPrecio:'auto', talles:T(['36','38','40','42','44'],['36']), colores:['Azul clásico'], descripcion:'Rígido, tiro alto y botamanga recta.', fotos:f('pants','#5876a8','#e4e9f2') },
+    { nombre:'Vestido de lino con breteles', categoria:'Vestidos', tipo:'encargo', costo:19000, gastos:700, ganancia:'', modoPrecio:'manual', precio:35000, precioAnterior:41000, talles:T(['S','M','L']), colores:['Arena','Verde oliva'], descripcion:'Lino con viscosa.', fotos:f('dress','#c9b28a','#f3eee4'), destacado:true },
+    { nombre:'Campera puffer corta', categoria:'Abrigos', tipo:'encargo', costo:40000, gastos:1500, ganancia:'', modoPrecio:'auto', talles:T(['S','M','L','XL']), colores:['Negro','Crema'], descripcion:'Relleno de guata siliconada.', fotos:f('puffer','#3b3346','#e6e2ec') },
+    { nombre:'Musculosa morley', categoria:'Remeras', tipo:'stock', costo:0, gastos:0, ganancia:'', modoPrecio:'manual', precio:12000, precioAnterior:14500, talles:T(['Único']), colores:['Blanco','Negro','Lavanda'], descripcion:'Morley elastizado.', fotos:f('tank','#b8a2dc','#efeaf6') }
+  ].map((p, i) => Object.assign({ id: 'demo' + (i + 1), precio: 0, precioAnterior: 0, visible: true, destacado: false, orden: i, actualizado: Date.now() }, p));
+  CFG = config;
+  prods.forEach(p => { if (p.modoPrecio === 'auto') p.precio = pricing(p).precio; });
+  return { config, products: prods };
+}
+function seedOrders(){
+  const H = 36e5, now = Date.now();
+  const it = (nombre, talle, color, cant, precio, tipo) => ({ id: '', nombre, talle, color, cant, precio, tipo });
+  const mk = (h, estado, o) => Object.assign({ id: 'o' + Math.round(now - h * H).toString(36), fecha: now - h * H, actualizado: now - h * H, estado, direccion: '', modalidad: '', nota: '', sena: 0, contacto: '' }, o);
+  return [
+    mk(0.6, 'nuevo', { codigo: 'K7P2Q', nombre: 'Lucía Ferreyra', localidad: 'San Rafael', entrega: 'envio', direccion: 'Av. Mitre 1234', pago: 'Transferencia', modalidad: 'sena', items: [it('Buzo oversize frisa', 'M', 'Lila', 1, 35500, 'encargo'), it('Remera básica algodón peinado', 'S', 'Negro', 2, 16500, 'stock')], total: 68500, sena: 17750 }),
+    mk(27, 'nuevo', { codigo: 'H3MXA', nombre: 'Martina Gómez', localidad: 'Rama Caída', entrega: 'retiro', pago: 'Efectivo', items: [it('Jean mom tiro alto', '40', 'Azul clásico', 1, 41000, 'stock')], total: 41000, nota: '¿Puedo retirar el sábado a la mañana?' }),
+    mk(80, 'confirmado', { codigo: 'T9WEN', nombre: 'Camila Ruiz', localidad: 'San Rafael', entrega: 'retiro', pago: 'Mercado Pago', items: [it('Musculosa morley', 'Único', 'Lavanda', 2, 12000, 'stock')], total: 24000 }),
+    mk(200, 'confirmado', { codigo: 'B4RKD', nombre: 'Sofía Herrera', localidad: 'General Alvear', entrega: 'envio', direccion: 'Belgrano 455', pago: 'Transferencia', modalidad: 'sena', items: [it('Campera puffer corta', 'L', 'Negro', 1, 66500, 'encargo')], total: 66500, sena: 33250 }),
+    mk(150, 'entregado', { codigo: 'P8ZQM', nombre: 'Valentina Paz', localidad: 'San Rafael', entrega: 'retiro', pago: 'Efectivo', items: [it('Vestido de lino con breteles', 'M', 'Arena', 1, 35000, 'encargo')], total: 35000 })
+  ];
+}
+function demoDB(){
+  let db = store.get(DB_KEY, null);
+  if (!db){ db = seedDemo(); store.set(DB_KEY, db); }
+  if (!db.orders){ db.orders = seedOrders(); store.set(DB_KEY, db); }
+  return JSON.parse(JSON.stringify(db));
+}
+function demoPost(action, p){
+  if (p.key !== DEMO_PASS) throw new Error('Clave incorrecta');
+  const db = demoDB();
+  const ordList = since => ({ orders: db.orders.filter(o => !since || o.actualizado >= since - 2000).sort((a, b) => b.fecha - a.fecha), now: Date.now() });
+  if (action === 'changeKey') throw new Error('En la demostración la clave no se cambia. Con la planilla conectada sí.');
+  if (action === 'orders') return ordList(0);
+  if (action === 'ordersSince') return ordList(p.since);
+  if (action === 'setOrderStatus'){ const o = db.orders.find(x => x.id === p.id); if (o){ o.estado = p.estado; o.actualizado = Date.now(); } store.set(DB_KEY, db); return ordList(0); }
+  if (action === 'demoSimulate'){
+    const nombres = ['Agustina Molina', 'Florencia Díaz', 'Julieta Sosa', 'Romina Castro', 'Micaela Vega'];
+    const prods = db.products.filter(x => x.visible && x.precio);
+    const pr = prods[Math.floor(Math.random() * prods.length)] || { nombre: 'Buzo oversize frisa', precio: 35500, tipo: 'encargo', talles: [{ t: 'M' }], colores: ['Lila'] };
+    const now = Date.now(), A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = ''; for (let i = 0; i < 5; i++) code += A[Math.floor(Math.random() * A.length)];
+    db.orders.push({ id: 'o' + now.toString(36), codigo: code, fecha: now, actualizado: now, estado: 'nuevo', nombre: nombres[Math.floor(Math.random() * nombres.length)], localidad: 'San Rafael', entrega: 'retiro', direccion: '', pago: 'Transferencia', modalidad: '', nota: '', contacto: '',
+      items: [{ id: pr.id || '', nombre: pr.nombre, talle: ((pr.talles || [])[0] || {}).t || '', color: (pr.colores || [])[0] || '', cant: 1, precio: pr.precio, tipo: pr.tipo }], total: pr.precio, sena: 0 });
+    store.set(DB_KEY, db); return { ok: true };
+  }
+  const upsert = pr => {
+    if (!pr.id){ pr.id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); pr.orden = db.products.length; }
+    pr.actualizado = Date.now();
+    const i = db.products.findIndex(x => x.id === pr.id);
+    if (i < 0) db.products.push(pr); else db.products[i] = pr;
+  };
+  if (action === 'uploadPhoto') return { id: 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), url: p.data };
+  if (action === 'saveProduct') upsert(p.product);
+  if (action === 'saveProducts') p.products.forEach(upsert);
+  if (action === 'deleteProduct') db.products = db.products.filter(x => x.id !== p.id);
+  if (action === 'saveConfig') Object.assign(db.config, p.config);
+  if (action === 'reorder') db.products.forEach(x => { const i = p.ids.indexOf(x.id); if (i >= 0) x.orden = i; });
+  if (action === 'saveCategories'){
+    db.products.forEach(x => { if (Object.prototype.hasOwnProperty.call(p.renames || {}, x.categoria)) x.categoria = p.renames[x.categoria]; });
+    db.config.categorias = JSON.stringify(p.categorias);
+  }
+  db.products.sort((a, b) => a.orden - b.orden);
+  if (!store.set(DB_KEY, db)) throw new Error('El navegador no tiene más espacio para fotos de prueba.');
+  return db;
+}
+
+/* ------------------------------ API ------------------------------ */
+let KEY = store.get('tl_admin_key', null) || sess.get('tl_admin_key');
+async function api(action, payload = {}){
+  const body = Object.assign({ action, key: KEY }, payload);
+  if (DEMO){ await new Promise(r => setTimeout(r, 220)); return demoPost(action, body); }
+  let r;
+  try{ r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); }
+  catch(e){ throw new Error('Sin conexión con la planilla. Revisá internet y probá de nuevo.'); }
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'Error');
+  return j.data;
+}
+
+/* ----------------------------- estado ----------------------------- */
+let CFG = {}, ALL = [];
+let view = 'pedidos', editing = null, edDirty = false, confirmDel = false, edErr = '', busy = '';
+let drafts = {}, catEdit = null, pageErr = '', pendingNav = null;
+const filt = { q: '', cat: '', estado: 'todas' };
+
+function setData(d){
+  CFG = d.config || {};
+  ALL = (d.products || []).slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  ALL.forEach(p => { if (p.modoPrecio !== 'auto') p.modoPrecio = 'manual'; if (p.ganancia === undefined || p.ganancia === null) p.ganancia = ''; p.costo = Number(p.costo) || 0; p.gastos = Number(p.gastos) || 0; });
+  $$('.sname').forEach(e => e.textContent = CFG.nombreTienda || 'Tienda Luna');
+}
+
+/* ---------------------------- precios ---------------------------- */
+const gDefault = () => { const n = pnum(CFG.gananciaDefault); return n == null ? 60 : n; };
+const comision = () => Math.min(90, Math.max(0, pnum(CFG.comisionCobro) || 0));
+const redondeo = () => Math.max(0, money(CFG.redondeo));
+const roundUp = (v, r) => r ? Math.ceil(v / r - 1e-9) * r : Math.round(v);
+function pricing(p){
+  const costo = Number(p.costo) || 0, gastos = Number(p.gastos) || 0, ct = costo + gastos;
+  const gOwn = pnum(p.ganancia);
+  const g = gOwn == null ? gDefault() : gOwn;
+  const com = comision();
+  const sugerido = ct ? roundUp(ct * (1 + g / 100) / (1 - com / 100), redondeo()) : 0;
+  const auto = p.modoPrecio === 'auto' && ct > 0;
+  const precio = auto ? sugerido : (Number(p.precio) || 0);
+  const comMonto = precio * com / 100;
+  const gan = ct ? precio - comMonto - ct : null;
+  return { costo, gastos, ct, g, gOwn, com, comMonto, sugerido, auto, precio, gan,
+    pctCosto: ct && gan != null ? gan / ct * 100 : null, margen: precio && gan != null ? gan / precio * 100 : null };
+}
+
+/* ----------------------------- shell ----------------------------- */
+function navHTML(){
+  const sinCosto = ALL.filter(p => !(Number(p.costo) > 0)).length;
+  const nv = nuevos();
+  const badge = k => k === 'pedidos' && nv ? '<span class="badge" title="Pedidos nuevos">' + nv + '</span>'
+    : (k === 'costos' && sinCosto && innerWidth > 860 ? '<span class="badge" title="Prendas sin costo cargado">' + sinCosto + '</span>' : '');
+  return VIEWS.map(([k, label]) => '<button data-nav="' + k + '"' + ((view === k || (view === 'editar' && k === 'prendas')) ? ' aria-current="page"' : '') + '>' + IC[k] + '<span>' + (k === 'costos' && innerWidth <= 860 ? 'Costos' : label) + '</span>' + (innerWidth > 860 ? badge(k) : '') + '</button>').join('');
+}
+function navRefresh(){ $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML(); }
+function render(){
+  $('#sideNav').innerHTML = navHTML();
+  $('#tabNav').innerHTML = navHTML();
+  document.body.classList.toggle('editing', view === 'editar');
+  ({ pedidos: renderPedidos, prendas: renderPrendas, editar: renderEditor, costos: renderCostos, categorias: renderCategorias, ajustes: renderAjustes })[view]();
+}
+function go(v, opts = {}){
+  if (!opts.force && needsGuard()){ pendingNav = { v, opts }; return showGuard(); }
+  hideGuard();
+  if (view === 'costos' && v !== 'costos') drafts = {};
+  if (v !== 'categorias') catEdit = null;
+  view = v; pageErr = ''; busy = '';
+  if (v !== 'editar'){ editing = null; edDirty = false; }
+  try{ history.replaceState(null, '', '#' + (v === 'editar' ? 'prendas' : v)); }catch(e){}
+  render();
+  if (!opts.keepScroll) window.scrollTo(0, 0);
+}
+function needsGuard(){ return (view === 'editar' && edDirty) || (view === 'costos' && Object.keys(drafts).length > 0); }
+function showGuard(){
+  const g = $('#guard');
+  g.innerHTML = '<b>' + (view === 'editar' ? 'La prenda tiene cambios sin guardar.' : 'Hay precios sin guardar.') + '</b><button class="btn sm ghost" data-act="guard-stay">Seguir editando</button><button class="btn sm danger" data-act="guard-leave">Salir sin guardar</button>';
+  g.hidden = false;
+}
+function hideGuard(){ $('#guard').hidden = true; }
+window.addEventListener('beforeunload', e => { if (needsGuard()){ e.preventDefault(); e.returnValue = ''; } });
+let rsT; window.addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML(); }, 150); });
+
+/* ---------------------------- prendas ---------------------------- */
+function catsList(){
+  const fromCfg = parseList(CFG.categorias);
+  const used = [...new Set(ALL.map(p => p.categoria).filter(Boolean))].filter(c => !fromCfg.includes(c));
+  return [...fromCfg, ...used];
+}
+function filteredProducts(){
+  const q = filt.q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return ALL.filter(p => (!filt.cat || p.categoria === filt.cat)
+    && (filt.estado === 'todas' || (filt.estado === 'visibles' && p.visible) || (filt.estado === 'ocultas' && !p.visible) || (filt.estado === 'sincosto' && !(Number(p.costo) > 0)))
+    && (!q || (p.nombre + ' ' + p.categoria).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q)));
+}
+function gainHTML(p){
+  const r = pricing(p);
+  if (!r.ct) return '<span class="nocost">Sin costo</span>';
+  return '<div class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '<small>' + pctf(r.pctCosto) + ' sobre costo</small></div>';
+}
+function renderPrendas(){
+  const vis = ALL.filter(p => p.visible).length;
+  const stock = ALL.filter(p => p.tipo === 'stock').length;
+  const sinCosto = ALL.filter(p => !(Number(p.costo) > 0)).length;
+  const agot = ALL.reduce((s, p) => s + (p.talles || []).filter(t => !t.ok).length, 0);
+  const list = filteredProducts();
+  const canMove = !filt.q && !filt.cat && filt.estado === 'todas';
+  const cats = catsList();
+  $('#view').innerHTML =
+    '<div class="vh"><div><h1>Prendas</h1><p>Todo lo que se ve en la tienda. Tocá una prenda para editarla.</p></div><div class="acts"><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div></div>' +
+    '<div class="stats">' +
+      '<div class="stat"><span>Publicadas</span><b>' + vis + '</b><small>de ' + ALL.length + ' cargadas</small></div>' +
+      '<div class="stat"><span>Entrega inmediata</span><b>' + stock + '</b><small>' + (ALL.length - stock) + ' por encargo</small></div>' +
+      '<div class="stat"><span>Talles agotados</span><b>' + agot + '</b><small>tachados en la tienda</small></div>' +
+      '<button class="stat' + (sinCosto ? ' warn' : '') + '" data-act="f-sincosto"><span>Sin costo cargado</span><b>' + sinCosto + '</b><small>' + (sinCosto ? 'Tocá para verlas' : 'Todo calculado') + '</small></button>' +
+    '</div>' +
+    '<div class="tools"><label class="search field"><span class="sr">Buscar</span>' + IC.search + '<input id="f-q" type="search" placeholder="Buscar por nombre o categoría" value="' + esc(filt.q) + '"></label>' +
+      '<div class="field"><label class="sr" for="f-cat">Categoría</label><select id="f-cat"><option value="">Todas las categorías</option>' + cats.map(c => '<option' + (c === filt.cat ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select></div>' +
+      '<div class="seg" id="f-estado">' + [['todas', 'Todas'], ['visibles', 'Visibles'], ['ocultas', 'Ocultas'], ['sincosto', 'Sin costo']].map(([k, l]) => '<button data-estado="' + k + '" aria-pressed="' + (filt.estado === k) + '">' + l + '</button>').join('') + '</div></div>' +
+    '<div class="plist">' +
+      (ALL.length ? '<div class="pr head"><span></span><span>Prenda</span><span>Disponibilidad</span><span>Talles</span><span>Precio</span><span>Ganancia</span><span>Visible</span><span style="text-align:right">' + (canMove ? 'Orden' : '') + '</span></div>' : '') +
+      (list.length ? list.map((p, i) => {
+        const r = pricing(p);
+        return '<div class="pr" data-open="' + esc(p.id) + '">' +
+          '<div class="c-img"><img loading="lazy" src="' + esc(photoUrl((p.fotos || [])[0], 160)) + '" alt=""></div>' +
+          '<div class="c-name" style="min-width:0"><h4>' + esc(p.nombre) + '</h4><div class="sub"><span>' + esc(p.categoria || 'Sin categoría') + '</span>' + (p.destacado ? '<span>· Destacada</span>' : '') + '<span class="m-only pill ' + (p.tipo === 'stock' ? 'stock">Stock' : 'enc">Encargo') + '</span></div></div>' +
+          '<div class="c-tipo"><span class="pill ' + (p.tipo === 'stock' ? 'stock">Entrega inmediata' : 'enc">Por encargo') + '</span></div>' +
+          '<div class="c-talles">' + ((p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ') || '—') + '</div>' +
+          '<div class="c-precio">' + ars(r.precio) + (p.precioAnterior > r.precio ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '<span class="m-only">' + (r.ct ? '<span class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '" style="font-size:13px">ganás ' + ars(r.gan) + '</span>' : '<span class="nocost">sin costo</span>') + '</span></div>' +
+          '<div class="c-gain">' + gainHTML(p) + '</div>' +
+          '<div class="c-vis"><label class="switch" title="Visible en la tienda"><input type="checkbox" data-vis="' + esc(p.id) + '"' + (p.visible ? ' checked' : '') + ' aria-label="Visible en la tienda"><span></span></label></div>' +
+          '<div class="c-acts">' + (canMove ? '<button class="ib mv" data-mv="' + i + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>' + IC.up + '</button><button class="ib mv" data-mv="' + i + '" data-d="1" aria-label="Bajar"' + (i < list.length - 1 ? '' : ' disabled') + '>' + IC.down + '</button>' : '') +
+          '<button class="ib" data-open="' + esc(p.id) + '" aria-label="Editar">' + IC.edit + '</button></div></div>';
+      }).join('') :
+      '<div class="emptybox">' + (ALL.length ? '<h3>Nada con ese filtro</h3><p style="margin:0">Probá con otra categoría o borrá la búsqueda.</p><button class="link" data-act="clear-f">Ver todas</button>' :
+        '<h3>Cargá la primera prenda</h3><p style="margin:0;max-width:44ch">Subí fotos, poné el costo y la ganancia que querés, y el precio se calcula solo.</p><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button>') + '</div>') +
+    '</div>';
+}
+
+/* ----------------------------- editor ----------------------------- */
+function blankProduct(){
+  const cs = catsList();
+  return { id: '', nombre: '', categoria: filt.cat || cs[0] || '', precio: '', precioAnterior: '', tipo: 'encargo', costo: '', gastos: '', ganancia: '', modoPrecio: 'auto',
+    talles: ['S','M','L','XL'].map(t => ({ t, ok: true })), colores: [], descripcion: '', fotos: [], visible: true, destacado: false };
+}
+function openEditor(id){
+  const p = id ? ALL.find(x => x.id === id) : null;
+  editing = p ? JSON.parse(JSON.stringify(p)) : blankProduct();
+  ['talles', 'fotos', 'colores'].forEach(k => editing[k] = editing[k] || []);
+  if (editing.costo === 0) editing.costo = '';
+  if (editing.gastos === 0) editing.gastos = '';
+  if (!editing.precioAnterior) editing.precioAnterior = '';
+  edDirty = false; confirmDel = false; edErr = ''; busy = '';
+  go('editar', { force: true });
+}
+function priceCardHTML(){
+  const p = editing, auto = p.modoPrecio === 'auto';
+  return '<div class="card" id="priceCard"><h3>Costo y precio <span class="pill auto" style="letter-spacing:.04em">Solo lo ven ustedes</span></h3><div class="stack">' +
+    '<div class="grid2"><div class="field"><label for="e-costo">Costo de la prenda</label><div class="money"><input id="e-costo" inputmode="numeric" value="' + esc(p.costo) + '" placeholder="0"></div></div>' +
+    '<div class="field"><label for="e-gastos">Gastos por unidad</label><div class="money"><input id="e-gastos" inputmode="numeric" value="' + esc(p.gastos) + '" placeholder="0"></div><small>Flete, bolsa, etiqueta…</small></div></div>' +
+    '<div class="seg" role="group" aria-label="Cómo se calcula el precio"><button type="button" data-modo="auto" aria-pressed="' + auto + '">Calcular con % de ganancia</button><button type="button" data-modo="manual" aria-pressed="' + !auto + '">Precio manual</button></div>' +
+    (auto
+      ? '<div class="field"><label for="e-gan">Ganancia sobre el costo</label><div class="pct"><input id="e-gan" inputmode="decimal" value="' + esc(p.ganancia) + '" placeholder="' + esc(gDefault()) + ' (la de siempre)"></div>' +
+        '<div class="quick" id="quickG">' + [30, 40, 50, 60, 80, 100].map(n => '<button type="button" data-g="' + n + '" aria-pressed="' + (pnum(p.ganancia) === n) + '">' + n + '%</button>').join('') + '</div></div>'
+      : '<div class="field"><label for="e-precio">Precio de venta</label><div class="money"><input id="e-precio" inputmode="numeric" value="' + esc(p.precio) + '" placeholder="0"></div></div>') +
+    '<div id="pout"></div>' +
+    '<div class="field"><label for="e-ant">Precio anterior (opcional)</label><div class="money"><input id="e-ant" inputmode="numeric" value="' + esc(p.precioAnterior) + '" placeholder="Para mostrar una oferta"></div><small>Si es mayor al precio, la tienda lo muestra tachado con el % de descuento.</small></div>' +
+    '</div></div>';
+}
+function updatePout(){
+  readEditor();
+  const p = editing, r = pricing(p), el = $('#pout'); if (!el) return;
+  const auto = p.modoPrecio === 'auto';
+  let h = '<div class="pout"><div class="big"><span>Precio de venta</span><b>' + (r.precio ? ars(r.precio) : '—') + '</b></div>';
+  if (!r.ct){
+    h += '<div class="lines"><div><span>Cargá el costo para ver cuánto ganan' + (auto ? ' y calcular el precio' : '') + '.</span></div></div>';
+  } else {
+    h += '<div class="lines"><div><span>Costo de la prenda</span><span>' + ars(r.costo) + '</span></div>' +
+      (r.gastos ? '<div><span>Gastos</span><span>' + ars(r.gastos) + '</span></div>' : '') +
+      (r.com ? '<div><span>Comisión de cobro (' + pctf(r.com) + ')</span><span>' + ars(r.comMonto) + '</span></div>' : '') +
+      '<div class="tot"><span>Ganan por unidad</span><span class="' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span></div>' +
+      '<div><span>Sobre el costo · sobre la venta</span><span>' + pctf(r.pctCosto) + ' · ' + pctf(r.margen) + '</span></div></div>';
+    if (auto && redondeo()) h += '<div class="lines"><div><span>Redondeado hacia arriba a $' + redondeo().toLocaleString('es-AR') + ' (' + pctf(r.g) + ' de ganancia)</span></div></div>';
+    if (!auto && r.precio && r.gan < 0) h += '<div class="alert">Con este precio pierden ' + ars(-r.gan) + ' por prenda.</div>';
+    if (!auto && r.sugerido && r.sugerido !== r.precio) h += '<div class="sugg"><span>Con ' + pctf(r.g) + ' de ganancia sería <b>' + ars(r.sugerido) + '</b></span><button type="button" data-act="use-sugg">Usar</button></div>';
+  }
+  el.innerHTML = h + '</div>';
+  $$('#quickG button').forEach(b => b.setAttribute('aria-pressed', pnum(p.ganancia) === Number(b.dataset.g)));
+}
+function renderEditor(){
+  const p = editing, cs = catsList();
+  const catOpts = (cs.includes(p.categoria) || !p.categoria ? cs : [...cs, p.categoria]);
+  $('#view').innerHTML =
+    '<button class="back" data-nav="prendas">' + IC.back + 'Prendas</button>' +
+    '<div class="vh"><div><h1>' + (p.id ? esc(p.nombre || 'Editar prenda') : 'Prenda nueva') + '</h1><p>' + (p.id ? 'Los cambios se ven en la tienda en unos minutos.' : 'Completá lo básico y publicala. Después podés seguir ajustándola.') + '</p></div>' +
+    '<div class="acts">' + (p.id ? '<button class="btn ghost" data-act="dup">' + IC.copy + 'Duplicar</button>' : '') + '<button class="btn pri" data-act="save"' + (busy ? ' disabled' : '') + '>' + (busy || (p.id ? 'Guardar cambios' : 'Publicar prenda')) + '</button></div></div>' +
+    (edErr ? '<p class="err" style="margin:-8px 0 14px">' + esc(edErr) + '</p>' : '') +
+    '<form class="ed" id="edF" novalidate><div class="stack">' +
+      '<div class="card"><h3>Fotos <span style="text-transform:none;letter-spacing:0;font-weight:500">La primera es la portada</span></h3><div class="photos">' +
+        p.fotos.map((f, i) => '<div class="pt"><img src="' + esc(f.pending ? f.url : photoUrl(f, 320)) + '" alt=""><button type="button" class="rmx" data-rmph="' + i + '" aria-label="Quitar foto">×</button>' + (i ? '<button type="button" class="tagp mk" data-first="' + i + '">Hacer portada</button>' : '<span class="tagp main">Portada</span>') + '</div>').join('') +
+        '<label class="drop" id="drop">' + IC.cam + '<span>Agregar fotos</span><span style="font-weight:500">o arrastralas acá</span><input type="file" id="phIn" accept="image/*" multiple hidden></label></div></div>' +
+      '<div class="card"><h3>Datos</h3><div class="stack">' +
+        '<div class="field"><label for="e-nombre">Nombre</label><input id="e-nombre" value="' + esc(p.nombre) + '" placeholder="Ej: Buzo oversize frisa"></div>' +
+        '<div class="grid2"><div class="field"><label for="e-cat">Categoría</label><select id="e-cat">' + catOpts.map(c => '<option' + (c === p.categoria ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label for="e-col">Colores</label><input id="e-col" value="' + esc((p.colores || []).join(', ')) + '" placeholder="Negro, Lila, Crema"><small>Separados por coma</small></div></div>' +
+        '<div class="field"><span class="lbl">Disponibilidad</span><div class="choice"><label><input type="radio" name="e-tipo" value="stock"' + (p.tipo === 'stock' ? ' checked' : '') + '><span>Entrega inmediata<small>La tienen en stock</small></span></label>' +
+        '<label><input type="radio" name="e-tipo" value="encargo"' + (p.tipo !== 'stock' ? ' checked' : '') + '><span>Por encargo<small>Entra en la próxima tanda</small></span></label></div></div>' +
+        '<div class="field"><label for="e-desc">Descripción</label><textarea id="e-desc" placeholder="Tela, calce, recomendaciones de talle…">' + esc(p.descripcion) + '</textarea></div>' +
+      '</div></div>' +
+      '<div class="card"><h3>Talles <span style="text-transform:none;letter-spacing:0;font-weight:500">Tocá un talle para marcarlo agotado</span></h3><div class="stack">' +
+        '<div class="tchips">' + (p.talles.length ? p.talles.map((t, i) => '<span class="tch' + (t.ok ? '' : ' no') + '"><button type="button" data-tog="' + i + '" title="' + (t.ok ? 'Marcar agotado' : 'Marcar disponible') + '">' + esc(t.t) + '</button><button type="button" data-rmt="' + i + '" aria-label="Quitar ' + esc(t.t) + '">×</button></span>').join('') : '<span class="hint">Sin talles: la prenda se agrega sin elegir talle.</span>') + '</div>' +
+        '<div style="display:flex;gap:8px"><div class="field" style="flex:1"><label class="sr" for="e-newt">Talle nuevo</label><input id="e-newt" placeholder="Agregar talle (ej: XXL, 48)"></div><button type="button" class="btn ghost" data-act="addt">Agregar</button></div>' +
+        '<div class="presets"><span class="hint" style="align-self:center">Rápido:</span><button type="button" data-pre="XS,S,M,L,XL,XXL">XS a XXL</button><button type="button" data-pre="S,M,L,XL">S a XL</button><button type="button" data-pre="36,38,40,42,44,46">36 a 46</button><button type="button" data-pre="Único">Talle único</button></div>' +
+      '</div></div>' +
+    '</div><div class="ed-side">' + priceCardHTML() +
+      '<div class="card"><h3>Publicación</h3>' +
+        '<div class="togrow"><div><b>Visible en la tienda</b><small>Apagalo para ocultarla sin borrarla</small></div><label class="switch"><input type="checkbox" id="e-vis"' + (p.visible ? ' checked' : '') + '><span></span></label></div>' +
+        '<div class="togrow"><div><b>Destacada</b><small>Aparece primero, con etiqueta</small></div><label class="switch"><input type="checkbox" id="e-dest"' + (p.destacado ? ' checked' : '') + '><span></span></label></div>' +
+        (p.id ? '<div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">' + (confirmDel
+          ? '<p class="err" style="margin:0 0 8px">Se borra la prenda y sus fotos. No se puede deshacer.</p><div style="display:flex;gap:8px"><button type="button" class="btn ghost sm" data-act="nodel">Cancelar</button><button type="button" class="btn danger sm" style="flex:1" data-act="del2">Sí, eliminar</button></div>'
+          : '<button type="button" class="link" style="color:var(--bad)" data-act="del">Eliminar prenda</button>') + '</div>' : '') +
+      '</div>' +
+    '</div></form>' +
+    '<div class="savebar"><button class="btn ghost" data-nav="prendas">Volver</button><button class="btn pri" data-act="save"' + (busy ? ' disabled' : '') + '>' + (busy || (p.id ? 'Guardar' : 'Publicar')) + '</button></div>';
+  updatePout();
+}
+function readEditor(){
+  if (!editing || !$('#edF')) return;
+  const v = id => { const el = $(id); return el ? el.value : null; };
+  const set = (k, x) => { if (x !== null) editing[k] = x; };
+  set('nombre', v('#e-nombre') !== null ? v('#e-nombre').trim() : null);
+  set('categoria', v('#e-cat'));
+  const t = $('input[name="e-tipo"]:checked'); if (t) editing.tipo = t.value;
+  if (v('#e-col') !== null) editing.colores = v('#e-col').split(',').map(s => s.trim()).filter(Boolean);
+  set('descripcion', v('#e-desc'));
+  if (v('#e-costo') !== null) editing.costo = v('#e-costo').replace(/[^\d]/g, '');
+  if (v('#e-gastos') !== null) editing.gastos = v('#e-gastos').replace(/[^\d]/g, '');
+  if (v('#e-gan') !== null) editing.ganancia = v('#e-gan').trim() === '' ? '' : (pnum(v('#e-gan')) ?? '');
+  if (v('#e-precio') !== null) editing.precio = v('#e-precio').replace(/[^\d]/g, '');
+  if (v('#e-ant') !== null) editing.precioAnterior = v('#e-ant').replace(/[^\d]/g, '');
+  const vis = $('#e-vis'); if (vis) editing.visible = vis.checked;
+  const de = $('#e-dest'); if (de) editing.destacado = de.checked;
+}
+function rerenderEditor(){ readEditor(); const y = window.scrollY; renderEditor(); window.scrollTo(0, y); }
+async function saveEditor(){
+  readEditor();
+  const p = editing, r = pricing(p);
+  edErr = '';
+  if (!p.nombre) edErr = 'Poné un nombre a la prenda.';
+  else if (!p.fotos.length) edErr = 'Agregá al menos una foto.';
+  else if (p.modoPrecio === 'auto' && !r.ct) edErr = 'Cargá el costo para calcular el precio, o pasá a precio manual.';
+  else if (!r.precio) edErr = 'Falta el precio de venta.';
+  if (edErr){ rerenderEditor(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  try{
+    const pend = p.fotos.filter(f => f.pending);
+    for (let i = 0; i < pend.length; i++){
+      busy = 'Subiendo foto ' + (i + 1) + ' de ' + pend.length + '…'; rerenderEditor();
+      const up = await api('uploadPhoto', { data: pend[i].url, name: (p.nombre || 'foto').replace(/[^\w]+/g, '-').toLowerCase() });
+      p.fotos[p.fotos.indexOf(pend[i])] = { id: up.id, url: up.url };
+    }
+    busy = 'Guardando…'; rerenderEditor();
+    const prod = Object.assign({}, p, {
+      precio: r.precio, precioAnterior: money(p.precioAnterior), costo: money(p.costo), gastos: money(p.gastos),
+      ganancia: pnum(p.ganancia) == null ? '' : pnum(p.ganancia), modoPrecio: p.modoPrecio === 'auto' ? 'auto' : 'manual'
+    });
+    const nuevo = !p.id;
+    setData(await api('saveProduct', { product: prod }));
+    busy = ''; edDirty = false;
+    toast(nuevo ? 'Prenda publicada' : 'Cambios guardados');
+    go('prendas', { force: true });
+  }catch(err){ busy = ''; edErr = 'No se pudo guardar: ' + err.message; rerenderEditor(); }
+}
+function compress(file, max){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg', DEMO ? 0.72 : 0.84));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+async function addPhotos(files){
+  readEditor();
+  const list = [...files].filter(f => /^image\//.test(f.type)).slice(0, 10);
+  for (const file of list){
+    try{ editing.fotos.push({ pending: true, url: await compress(file, DEMO ? 700 : 1400) }); }
+    catch(e){ toast('No se pudo leer una foto'); }
+  }
+  edDirty = true; rerenderEditor();
+}
+
+/* ------------------------ costos y precios ------------------------ */
+function merged(p){ return Object.assign({}, p, drafts[p.id] || {}); }
+function costRowHTML(p0){
+  const p = merged(p0), r = pricing(p), auto = p.modoPrecio === 'auto';
+  const outGan = r.ct ? '<span class="out ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span>' : '<span class="out mut">—</span>';
+  return '<div class="cr' + (drafts[p.id] ? ' dirty' : '') + '" data-row="' + esc(p.id) + '">' +
+    '<div class="who"><img loading="lazy" src="' + esc(photoUrl((p.fotos || [])[0], 120)) + '" alt=""><div style="min-width:0"><b>' + esc(p.nombre) + '</b><small>' + esc(p.categoria || '') + (p.visible ? '' : ' · oculta') + '</small></div></div>' +
+    '<div data-l="Costo"><div class="money"><input class="inp" data-f="costo" inputmode="numeric" value="' + esc(Number(p.costo) || '') + '" placeholder="0" aria-label="Costo de ' + esc(p.nombre) + '"></div></div>' +
+    '<div data-l="Gastos"><div class="money"><input class="inp" data-f="gastos" inputmode="numeric" value="' + esc(Number(p.gastos) || '') + '" placeholder="0" aria-label="Gastos de ' + esc(p.nombre) + '"></div></div>' +
+    '<div data-l="Cálculo"><button class="modebtn' + (auto ? ' on' : '') + '" data-tmode="' + esc(p.id) + '" title="Cambiar entre automático y manual">' + (auto ? 'Automático' : 'Manual') + '</button></div>' +
+    '<div data-l="Ganancia">' + (auto ? '<div class="pct"><input class="inp" data-f="ganancia" inputmode="decimal" value="' + esc(p.ganancia) + '" placeholder="' + esc(gDefault()) + '" aria-label="Ganancia de ' + esc(p.nombre) + '"></div>' : '<span class="out mut" data-o="pc">' + pctf(r.pctCosto) + '</span>') + '</div>' +
+    '<div data-l="Precio">' + (auto ? '<span class="out" data-o="precio">' + (r.ct ? ars(r.precio) : '<span class="nocost">Falta costo</span>') + '</span>' : '<div class="money"><input class="inp" data-f="precio" inputmode="numeric" value="' + esc(Number(p.precio) || '') + '" aria-label="Precio de ' + esc(p.nombre) + '"></div>') + '</div>' +
+    '<div data-l="Ganan" data-o="gan">' + outGan + '</div>' +
+    '<div data-l="Margen"><span class="out mut" data-o="mg">' + pctf(r.margen) + '</span></div></div>';
+}
+function updateCostRow(id){
+  const row = $('.cr[data-row="' + CSS.escape(id) + '"]'); if (!row) return;
+  const p = merged(ALL.find(x => x.id === id)), r = pricing(p);
+  row.classList.toggle('dirty', !!drafts[id]);
+  const o = k => $('[data-o="' + k + '"]', row);
+  if (o('precio')) o('precio').innerHTML = r.ct ? ars(r.precio) : '<span class="nocost">Falta costo</span>';
+  if (o('pc')) o('pc').textContent = pctf(r.pctCosto);
+  o('gan').innerHTML = r.ct ? '<span class="out ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span>' : '<span class="out mut">—</span>';
+  o('mg').textContent = pctf(r.margen);
+  updateDirtyBar(); updateCostStats();
+}
+function costStats(){
+  const rows = ALL.map(merged).map(p => ({ p, r: pricing(p) })).filter(x => x.r.ct && x.r.precio);
+  const avg = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+  return { n: rows.length, gan: avg(rows.map(x => x.r.gan)), pc: avg(rows.map(x => x.r.pctCosto)), mg: avg(rows.map(x => x.r.margen)), sin: ALL.length - rows.length, perd: rows.filter(x => x.r.gan < 0).length };
+}
+function statsCostHTML(){
+  const s = costStats();
+  return '<div class="stat"><span>Ganancia promedio</span><b>' + (s.gan == null ? '—' : ars(s.gan)) + '</b><small>por prenda vendida</small></div>' +
+    '<div class="stat"><span>Sobre el costo</span><b>' + pctf(s.pc) + '</b><small>promedio · margen ' + pctf(s.mg) + ' sobre venta</small></div>' +
+    '<div class="stat' + (s.perd || s.sin ? ' warn' : '') + '"><span>' + (s.perd ? 'Vendiendo a pérdida' : 'Sin costo cargado') + '</span><b>' + (s.perd || s.sin) + '</b><small>' + (s.perd ? 'revisá el precio' : (s.sin ? 'cargalo en la tabla' : 'todas calculadas')) + '</small></div>' +
+    '<button class="stat" data-act="go-ajustes"><span>Ganancia de siempre</span><b>' + pctf(gDefault()) + '</b><small>' + (redondeo() ? 'redondeo $' + redondeo().toLocaleString('es-AR') : 'sin redondeo') + (comision() ? ' · comisión ' + pctf(comision()) : '') + ' · cambiar</small></button>';
+}
+function updateCostStats(){ const el = $('#costStats'); if (el) el.innerHTML = statsCostHTML(); }
+function updateDirtyBar(){
+  const n = Object.keys(drafts).length, el = $('#dirtyBar'); if (!el) return;
+  el.hidden = !n;
+  el.innerHTML = '<span><b>' + n + (n === 1 ? ' prenda' : ' prendas') + '</b> con cambios sin guardar</span><span style="display:flex;gap:8px"><button class="btn ghost sm" data-act="drafts-discard">Descartar</button><button class="btn pri sm" data-act="drafts-save"' + (busy ? ' disabled' : '') + '>' + (busy || 'Guardar precios') + '</button></span>';
+}
+let calc = { costo: '', gastos: '', gan: '', precio: '', modo: 'gan' };
+function calcHTML(){
+  return '<div class="card calc"><h3>Calculadora rápida <span style="text-transform:none;letter-spacing:0;font-weight:500">Para cotizar algo antes de cargarlo · no guarda nada</span></h3><div class="qgrid">' +
+    '<div class="field"><label for="q-costo">Costo</label><div class="money"><input id="q-costo" inputmode="numeric" value="' + esc(calc.costo) + '" placeholder="0"></div></div>' +
+    '<div class="field"><label for="q-gastos">Gastos</label><div class="money"><input id="q-gastos" inputmode="numeric" value="' + esc(calc.gastos) + '" placeholder="0"></div></div>' +
+    '<div class="field"><label for="q-gan">Ganancia</label><div class="pct"><input id="q-gan" inputmode="decimal" value="' + esc(calc.gan) + '" placeholder="' + esc(gDefault()) + '"></div></div>' +
+    '<div class="field"><label for="q-precio">o precio de venta</label><div class="money"><input id="q-precio" inputmode="numeric" value="' + esc(calc.precio) + '" placeholder="Ver ganancia"></div></div>' +
+    '<div id="qout" class="result"></div></div></div>';
+}
+function updateCalc(){
+  const el = $('#qout'); if (!el) return;
+  const p = { costo: money(calc.costo), gastos: money(calc.gastos) };
+  if (calc.modo === 'precio' && money(calc.precio)){ p.modoPrecio = 'manual'; p.precio = money(calc.precio); }
+  else { p.modoPrecio = 'auto'; p.ganancia = calc.gan; }
+  const r = pricing(p);
+  if (!r.ct){ el.innerHTML = '<div class="pout"><div class="big"><span>Precio sugerido</span><b>—</b></div><div class="lines"><div><span>Poné el costo para calcular.</span></div></div></div>'; return; }
+  el.innerHTML = '<div class="pout"><div class="big"><span>' + (p.modoPrecio === 'auto' ? 'Precio sugerido' : 'Si lo venden a') + '</span><b>' + ars(r.precio) + '</b></div><div class="lines">' +
+    '<div><span>Costo total</span><span>' + ars(r.ct) + '</span></div>' + (r.com ? '<div><span>Comisión de cobro</span><span>' + ars(r.comMonto) + '</span></div>' : '') +
+    '<div class="tot"><span>Ganan</span><span class="' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span></div>' +
+    '<div><span>Sobre costo · venta</span><span>' + pctf(r.pctCosto) + ' · ' + pctf(r.margen) + '</span></div></div></div>';
+}
+function renderCostos(){
+  $('#view').innerHTML =
+    '<div class="vh"><div><h1>Costos y precios</h1><p>Solo lo ven ustedes: la tienda muestra únicamente el precio de venta. Editá costos y ganancias directo en la tabla.</p></div></div>' +
+    '<div class="stats" id="costStats">' + statsCostHTML() + '</div>' +
+    '<div class="cl">' + calcHTML() + '<div style="min-width:0">' +
+      (ALL.length ? '<div class="ctab"><div class="cr head"><span>Prenda</span><span>Costo</span><span>Gastos</span><span>Cálculo</span><span>Ganancia</span><span>Precio</span><span>Ganan</span><span>Margen</span></div>' + ALL.map(costRowHTML).join('') + '</div>' +
+        '<p class="hint" style="margin:10px 2px 0"><b>Automático:</b> el precio sale del costo + gastos + ganancia' + (redondeo() ? ', redondeado hacia arriba a $' + redondeo().toLocaleString('es-AR') : '') + '. Si dejás la ganancia vacía, usa la de siempre (' + pctf(gDefault()) + '). <b>Manual:</b> ponen el precio y ven cuánto ganan.</p>'
+      : '<div class="card emptybox"><h3>Todavía no hay prendas</h3><p style="margin:0">Cuando carguen prendas, acá van a ver costo, precio y ganancia de cada una.</p><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div>') +
+      (pageErr ? '<p class="err">' + esc(pageErr) + '</p>' : '') +
+      '<div class="dirtybar" id="dirtyBar" hidden></div>' +
+    '</div></div>';
+  updateDirtyBar(); updateCalc();
+}
+async function saveDrafts(){
+  const ids = Object.keys(drafts);
+  const products = [];
+  pageErr = '';
+  for (const id of ids){
+    const p = merged(ALL.find(x => x.id === id)), r = pricing(p);
+    if (p.modoPrecio === 'auto' && !r.ct){ pageErr = '“' + p.nombre + '” está en automático pero no tiene costo. Cargá el costo o pasala a manual.'; break; }
+    if (!r.precio){ pageErr = '“' + p.nombre + '” quedó sin precio de venta.'; break; }
+    products.push(Object.assign(p, { precio: r.precio, costo: money(p.costo), gastos: money(p.gastos), ganancia: pnum(p.ganancia) == null ? '' : pnum(p.ganancia) }));
+  }
+  if (pageErr){ const y = scrollY; renderCostos(); scrollTo(0, y); return; }
+  busy = 'Guardando…'; updateDirtyBar();
+  try{ setData(await api('saveProducts', { products })); drafts = {}; busy = ''; const y = scrollY; renderCostos(); scrollTo(0, y); toast(products.length === 1 ? 'Precio guardado' : products.length + ' precios guardados'); }
+  catch(err){ busy = ''; pageErr = 'No se pudo guardar: ' + err.message; const y = scrollY; renderCostos(); scrollTo(0, y); }
+}
+
+/* --------------------------- categorías --------------------------- */
+function loadCatEdit(){
+  const count = c => ALL.filter(p => p.categoria === c).length;
+  return catsList().map(c => ({ orig: c, name: c, prev: c, count: count(c), del: false, moveTo: '' }));
+}
+function renderCategorias(){
+  if (!catEdit) catEdit = loadCatEdit();
+  const live = catEdit.filter(r => !r.del);
+  $('#view').innerHTML = '<div class="narrow">' +
+    '<div class="vh"><div><h1>Categorías</h1><p>Son los botones que filtran la tienda, en este orden. Si renombrás una, las prendas que tiene se actualizan solas.</p></div></div>' +
+    '<div class="plist">' + catEdit.map((r, i) => {
+      if (r.del){
+        const opts = live.map(x => x.name.trim()).filter(Boolean);
+        return '<div class="catrow del"><div style="min-width:0"><b>Se elimina “' + esc(r.orig || r.name) + '”.</b>' +
+          (r.count ? '<div class="field" style="margin-top:8px"><label for="mv-' + i + '">' + (r.count === 1 ? 'Su prenda pasa' : 'Sus ' + r.count + ' prendas pasan') + ' a</label><select id="mv-' + i + '" data-mvto="' + i + '">' + opts.map(o => '<option' + (o === r.moveTo ? ' selected' : '') + '>' + esc(o) + '</option>').join('') + '</select></div>' : '') +
+          '</div><button class="link" data-undel="' + i + '">Deshacer</button></div>';
+      }
+      const k = live.indexOf(r);
+      return '<div class="catrow"><div class="field"><label class="sr" for="cat-' + i + '">Nombre</label><input id="cat-' + i + '" data-ci="' + i + '" value="' + esc(r.name) + '"><small>' + (r.count ? r.count + (r.count === 1 ? ' prenda' : ' prendas') : 'Sin prendas: no aparece en la tienda') + (r.orig && r.name.trim() !== r.orig ? ' · antes “' + esc(r.orig) + '”' : '') + '</small></div>' +
+        '<div class="acts"><button class="ib" data-cmv="' + i + '" data-d="-1" aria-label="Subir"' + (k ? '' : ' disabled') + '>' + IC.up + '</button><button class="ib" data-cmv="' + i + '" data-d="1" aria-label="Bajar"' + (k < live.length - 1 ? '' : ' disabled') + '>' + IC.down + '</button><button class="ib" data-cdel="' + i + '" aria-label="Eliminar">' + IC.trash + '</button></div></div>';
+    }).join('') + '</div>' +
+    '<div style="display:flex;gap:8px;margin-top:14px"><div class="field" style="flex:1"><label class="sr" for="newCat">Categoría nueva</label><input id="newCat" placeholder="Nueva categoría (ej: Calzas)"></div><button class="btn ghost" data-act="cadd">Agregar</button></div>' +
+    (pageErr ? '<p class="err">' + esc(pageErr) + '</p>' : '') +
+    '<button class="btn pri" style="margin-top:18px;min-width:220px" data-act="csave"' + (busy ? ' disabled' : '') + '>' + (busy || 'Guardar categorías') + '</button></div>';
+}
+function rerenderCats(){ const y = scrollY; renderCategorias(); scrollTo(0, y); }
+async function saveCategories(){
+  pageErr = '';
+  const live = catEdit.filter(r => !r.del);
+  const names = live.map(r => r.name.trim());
+  if (names.some(n => !n)) pageErr = 'Hay una categoría sin nombre.';
+  else if (new Set(names.map(n => n.toLowerCase())).size !== names.length) pageErr = 'Hay dos categorías con el mismo nombre.';
+  else if (!names.length) pageErr = 'Dejá al menos una categoría.';
+  const renames = {};
+  live.forEach(r => { if (r.orig && r.name.trim() !== r.orig) renames[r.orig] = r.name.trim(); });
+  catEdit.filter(r => r.del && r.count).forEach(r => { if (!names.includes(r.moveTo)) pageErr = pageErr || 'Elegí a qué categoría pasan las prendas de “' + r.orig + '”.'; renames[r.orig] = r.moveTo; });
+  if (pageErr) return rerenderCats();
+  busy = 'Guardando…'; rerenderCats();
+  try{ setData(await api('saveCategories', { categorias: names, renames })); busy = ''; catEdit = null; rerenderCats(); toast('Categorías guardadas'); }
+  catch(err){ busy = ''; pageErr = err.message; rerenderCats(); }
+}
+
+/* ----------------------------- ajustes ----------------------------- */
+function contacts(){
+  let list = parseList(CFG.contactos).filter(k => k && typeof k === 'object' && String(k.numero || '').replace(/\D/g, ''));
+  if (!list.length && (CFG.whatsapp || '').replace(/\D/g, '')) list = [{ nombre: '', numero: CFG.whatsapp }];
+  return list.map(k => ({ nombre: String(k.nombre || '').trim(), numero: String(k.numero).replace(/\D/g, '') }));
+}
+function renderAjustes(){
+  const c = CFG;
+  const f = (id, label, val, extra = '', help = '', wrap = '') => '<div class="field"><label for="s-' + id + '">' + label + '</label>' + (wrap ? '<div class="' + wrap + '">' : '') + '<input id="s-' + id + '" value="' + esc(val) + '" ' + extra + '>' + (wrap ? '</div>' : '') + (help ? '<small>' + help + '</small>' : '') + '</div>';
+  const red = String(redondeo());
+  $('#view').innerHTML =
+    '<div class="vh"><div><h1>Ajustes</h1><p>Lo que ve el cliente al pedir y cómo se calculan los precios.</p></div><div class="acts"><button class="btn pri" data-act="cfg-save"' + (busy ? ' disabled' : '') + '>' + (busy || 'Guardar ajustes') + '</button></div></div>' +
+    (pageErr ? '<p class="err" style="margin:-8px 0 14px">' + esc(pageErr) + '</p>' : '') +
+    '<div class="settings" style="margin-bottom:18px">' + deviceCardHTML() + keyCardHTML() + '</div>' +
+    '<form class="settings" id="cfgF" novalidate>' +
+      '<div class="card"><h3>WhatsApp que recibe los pedidos</h3><p class="hint" style="margin:-6px 0 0">549 + característica + número, sin 0 ni 15. Ej: 5492604123456. Con más de un número, el cliente elige con quién hablar.</p>' +
+        [0, 1, 2].map(i => { const k = contacts()[i] || { nombre: '', numero: '' }; return '<div class="ctrow">' + f('cn' + i, i ? 'Nombre (opcional)' : 'Nombre', k.nombre, 'placeholder="' + (i ? 'Otra persona' : 'Ej: Fabri') + '"') + f('cw' + i, 'Número', k.numero, 'inputmode="tel" placeholder="549260…"') + '</div>'; }).join('') + '</div>' +
+      '<div class="card"><h3>Cálculo de precios</h3>' +
+        '<div class="grid2">' + f('gananciaDefault', 'Ganancia de siempre', c.gananciaDefault, 'inputmode="decimal"', 'Sobre el costo. Se usa cuando la prenda no tiene una propia.', 'pct') +
+        '<div class="field"><label for="s-redondeo">Redondear precios</label><select id="s-redondeo">' + [['0', 'Sin redondeo'], ['100', 'A $100'], ['500', 'A $500'], ['1000', 'A $1.000']].map(([v, l]) => '<option value="' + v + '"' + (v === red ? ' selected' : '') + '>' + l + '</option>').join('') + '</select><small>Siempre hacia arriba</small></div></div>' +
+        f('comisionCobro', 'Comisión de cobro', c.comisionCobro, 'inputmode="decimal"', 'Ej: lo que retiene Mercado Pago. Se descuenta para calcular lo que ganan. 0 si no aplica.', 'pct') +
+        '<div class="preview" id="cfgPreview"></div>' +
+        '<p class="hint" style="margin:0">Al guardar, se recalculan solas las prendas que están en automático.</p></div>' +
+      '<div class="card"><h3>Tanda de encargos</h3><div class="grid2">' + f('fechaCierre', 'Cierre de la tanda', String(c.fechaCierre || '').slice(0, 10), 'type="date"', 'Vacío = sin cuenta regresiva') + f('diasEncargo', 'Demora de encargos (días)', c.diasEncargo, 'placeholder="15 a 20"') + '</div>' +
+        f('mensajeBanner', 'Mensaje del cartel', c.mensajeBanner) + f('senaPorcentaje', 'Seña para encargos', c.senaPorcentaje, 'inputmode="numeric"', '0 = no pedir seña', 'pct') + '</div>' +
+      '<div class="card"><h3>Pago y entrega</h3>' + f('metodosPago', 'Formas de pago', parseList(c.metodosPago).join(', '), '', 'Separadas por coma') + f('aliasTransferencia', 'Alias para transferir', c.aliasTransferencia, '', 'Se muestra al elegir transferencia o Mercado Pago') +
+        '<div class="grid2">' + f('zonaEnvio', 'Zona de envío', c.zonaEnvio) + f('costoEnvio', 'Costo de envío', c.costoEnvio) + '</div>' + f('puntoRetiro', 'Dónde se retira', c.puntoRetiro) + '</div>' +
+      '<div class="card"><h3>Tienda</h3><div class="grid2">' + f('nombreTienda', 'Nombre', c.nombreTienda) + f('instagram', 'Instagram', c.instagram, 'placeholder="@tiendaluna"') + '</div></div>' +
+    '</form>';
+  updateCfgPreview();
+}
+function readCfgPricing(){
+  return { gananciaDefault: $('#s-gananciaDefault').value.trim(), redondeo: $('#s-redondeo').value, comisionCobro: $('#s-comisionCobro').value.trim() };
+}
+function withCfg(tmp, fn){ const old = CFG; CFG = Object.assign({}, CFG, tmp); try{ return fn(); } finally{ CFG = old; } }
+function updateCfgPreview(){
+  const el = $('#cfgPreview'); if (!el) return;
+  const r = withCfg(readCfgPricing(), () => pricing({ costo: 10000, gastos: 0, ganancia: '', modoPrecio: 'auto' }));
+  el.innerHTML = 'Ejemplo: algo que les cuesta <b>$10.000</b> se vende a <b>' + ars(r.precio) + '</b> y ganan <b>' + ars(r.gan) + '</b>.';
+}
+async function saveAjustes(){
+  const keys = ['nombreTienda','instagram','fechaCierre','diasEncargo','mensajeBanner','senaPorcentaje','metodosPago','aliasTransferencia','zonaEnvio','costoEnvio','puntoRetiro','gananciaDefault','comisionCobro'];
+  const cfg = {}; pageErr = '';
+  keys.forEach(k => { const el = $('#s-' + k); if (el) cfg[k] = el.value.trim(); });
+  cfg.redondeo = $('#s-redondeo').value;
+  const cts = [];
+  [0, 1, 2].forEach(i => {
+    const nombre = $('#s-cn' + i).value.trim(), numero = $('#s-cw' + i).value.replace(/\D/g, '');
+    if (!numero){ if (nombre && !pageErr) pageErr = 'Falta el número de ' + nombre + '.'; return; }
+    if (!/^549\d{8,11}$/.test(numero) && !pageErr) pageErr = 'Revisá el número' + (nombre ? ' de ' + nombre : '') + ': empieza con 549 y va sin 0 ni 15.';
+    cts.push({ nombre, numero });
+  });
+  if (cts.length > 1 && cts.some(k => !k.nombre) && !pageErr) pageErr = 'Con más de un número, poné el nombre de cada uno.';
+  const g = pnum(cfg.gananciaDefault), com = pnum(cfg.comisionCobro || '0');
+  if ((g == null || g < 0 || g > 1000) && !pageErr) pageErr = 'La ganancia de siempre tiene que ser un número (ej: 60).';
+  if ((com == null || com < 0 || com >= 90) && !pageErr) pageErr = 'La comisión tiene que estar entre 0 y 89%.';
+  cfg.gananciaDefault = String(g ?? 60); cfg.comisionCobro = String(com ?? 0);
+  cfg.contactos = JSON.stringify(cts);
+  cfg.whatsapp = cts.length ? cts[0].numero : '';
+  cfg.metodosPago = JSON.stringify(parseList(cfg.metodosPago));
+  cfg.senaPorcentaje = String(Math.max(0, Math.min(100, parseInt(cfg.senaPorcentaje, 10) || 0)));
+  if (pageErr){ renderAjustes(); scrollTo(0, 0); return; }
+  busy = 'Guardando…'; renderAjustes();
+  try{
+    setData(await api('saveConfig', { config: cfg }));
+    // recalcular precios automáticos con la configuración nueva
+    const changed = ALL.filter(p => p.modoPrecio === 'auto' && pricing(p).ct && pricing(p).precio !== Number(p.precio)).map(p => Object.assign({}, p, { precio: pricing(p).precio }));
+    if (changed.length){ busy = 'Actualizando ' + changed.length + ' precios…'; renderAjustes(); setData(await api('saveProducts', { products: changed })); }
+    busy = ''; renderAjustes();
+    toast('Ajustes guardados' + (changed.length ? ' · ' + changed.length + (changed.length === 1 ? ' precio actualizado' : ' precios actualizados') : ''));
+  }catch(err){ busy = ''; pageErr = 'No se pudo guardar: ' + err.message; renderAjustes(); }
+}
+
+
+/* ============================ PEDIDOS ============================ */
+let ORDERS = [], ordersReady = false, ordersSince = 0, lastFull = 0, pollT = null, ordersErr = '';
+const ofilt = { estado: 'abiertos', q: '' };
+const KNOWN_KEY = 'tl_known_orders';
+const OST = [['nuevo', 'Nuevo'], ['confirmado', 'Confirmado'], ['entregado', 'Entregado'], ['cancelado', 'Cancelado']];
+const isOpen = o => o.estado === 'nuevo' || o.estado === 'confirmado';
+function nuevos(){ return ORDERS.filter(o => o.estado === 'nuevo').length; }
+const pad2 = n => String(n).padStart(2, '0');
+const hhmm = ts => { const d = new Date(ts); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
+const sod = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); };
+const daysAgo = ts => Math.round((sod(Date.now()) - sod(ts)) / 864e5);
+const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+function dayTitle(ts){
+  const n = daysAgo(ts), d = new Date(ts);
+  const full = d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  if (n === 0) return ['Hoy', full];
+  if (n === 1) return ['Ayer', full];
+  return [cap(full.replace(',', '')), n < 7 ? 'hace ' + n + ' días' : ''];
+}
+function rel(ts){
+  const m = Math.max(0, Math.round((Date.now() - ts) / 6e4));
+  if (m < 1) return 'recién';
+  if (m < 60) return 'hace ' + m + ' min';
+  const h = Math.round(m / 60);
+  if (h < 24) return 'hace ' + h + ' h';
+  const d = Math.floor(h / 24);
+  return 'hace ' + d + (d === 1 ? ' día' : ' días');
+}
+function ageInfo(o){
+  const h = (Date.now() - o.fecha) / 36e5, d = h / 24;
+  if (o.estado === 'nuevo'){
+    if (h < 12) return ['ok', 'Para responder'];
+    return [h < 48 ? 'mid' : 'late', 'Sin responder · ' + rel(o.fecha)];
+  }
+  if (o.estado === 'confirmado'){
+    const enc = (o.items || []).some(i => i.tipo === 'encargo');
+    const lim = enc ? [10, 20] : [2, 4];
+    const dd = Math.floor(d);
+    return [d < lim[0] ? 'ok' : d < lim[1] ? 'mid' : 'late', (enc ? 'Encargo' : 'Para entregar') + ' · ' + (dd < 1 ? 'hoy' : 'día ' + dd)];
+  }
+  return ['done', o.estado === 'entregado' ? 'Entregado' : 'Cancelado'];
+}
+
+/* ---- campana: sonido, notificaciones, contador ---- */
+let actx = null;
+const soundOn = () => store.get('tl_sound', true) !== false;
+function unlockAudio(){
+  try{
+    if (!actx){ actx = new (window.AudioContext || window.webkitAudioContext)(); actx.onstatechange = () => { if (view === 'pedidos') refreshAlerts(); }; }
+    if (actx.state === 'suspended') actx.resume().catch(() => {});
+  }catch(e){}
+}
+const audioReady = () => !!actx && actx.state === 'running';
+document.addEventListener('pointerdown', unlockAudio, { passive: true });
+document.addEventListener('keydown', unlockAudio);
+function chime(){
+  unlockAudio(); if (!actx) return;
+  const t0 = actx.currentTime + 0.03;
+  const strike = (t, f, vol) => [[1, 1], [2.76, .32], [5.4, .1]].forEach(([m, a]) => {
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'sine'; o.frequency.value = f * m;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol * a, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5 / m + 0.35);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + 2.2);
+  });
+  strike(t0, 880, .3); strike(t0 + .2, 1174.66, .26); strike(t0 + .4, 1318.51, .3);
+}
+const notifPerm = () => ('Notification' in window) ? Notification.permission : 'unsupported';
+async function notify(title, body){
+  if (notifPerm() !== 'granted') return;
+  const opts = { body, icon: '../icon-panel-192.png', badge: '../icon-panel-192.png', tag: 'tl-pedido', renotify: true, data: { url: location.href.split('#')[0] + '#pedidos' } };
+  try{ const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration(); if (reg){ await reg.showNotification(title, opts); return; } }catch(e){}
+  try{ const n = new Notification(title, opts); n.onclick = () => { window.focus(); go('pedidos'); n.close(); }; }catch(e){}
+}
+function updateBadges(){
+  const n = nuevos();
+  document.title = (n ? '(' + n + ') ' : '') + 'Panel Tienda Luna';
+  try{ if (n && navigator.setAppBadge) navigator.setAppBadge(n); else if (!n && navigator.clearAppBadge) navigator.clearAppBadge(); }catch(e){}
+  $$('.bellbtn .n').forEach(el => { el.hidden = !n; el.textContent = n; });
+  $$('.bellbtn').forEach(b => b.setAttribute('aria-label', n ? n + (n === 1 ? ' pedido nuevo' : ' pedidos nuevos') : 'Pedidos'));
+  navRefresh();
+}
+function announce(fresh){
+  const o = fresh[0];
+  const title = fresh.length === 1 ? 'Nuevo pedido · ' + (o.nombre || 'Cliente') : 'Llegaron ' + fresh.length + ' pedidos nuevos';
+  const body = fresh.length === 1 ? ars(o.total) + ' · ' + (o.items || []).map(i => i.cant + '× ' + i.nombre).join(', ') : fresh.map(x => (x.nombre || 'Cliente') + ' ' + ars(x.total)).join(' · ');
+  if (soundOn()) chime();
+  notify(title, body);
+  toast(title);
+  $$('.bellbtn').forEach(b => { b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring'); });
+}
+function mergeOrders(list, replace){
+  const stored = store.get(KNOWN_KEY, null);
+  const known = new Set(stored || []);
+  const before = new Set(ORDERS.map(o => o.id));
+  const byId = replace ? new Map() : new Map(ORDERS.map(o => [o.id, o]));
+  const fresh = [];
+  list.forEach(o => {
+    o.fecha = Number(o.fecha) || 0; o.actualizado = Number(o.actualizado) || o.fecha; o.items = o.items || [];
+    if (!before.has(o.id) && !known.has(o.id) && o.estado === 'nuevo') fresh.push(o);
+    byId.set(o.id, o);
+  });
+  ORDERS = [...byId.values()].sort((a, b) => b.fecha - a.fecha);
+  store.set(KNOWN_KEY, [...new Set([...ORDERS.map(o => o.id), ...known])].slice(0, 800));
+  if (stored !== null && fresh.length) announce(fresh);
+}
+async function poll(){
+  clearTimeout(pollT);
+  if (!KEY) return;
+  try{
+    const full = !ordersReady || Date.now() - lastFull > 5 * 6e4;
+    const d = await api(full ? 'orders' : 'ordersSince', full ? {} : { since: ordersSince });
+    ordersSince = d.now || Date.now();
+    if (full) lastFull = Date.now();
+    mergeOrders(d.orders || [], full);
+    ordersReady = true; ordersErr = '';
+  }catch(e){
+    ordersErr = e.message;
+    if (e.message === 'Clave incorrecta'){ logout(); return; }
+  }
+  updateBadges();
+  if (view === 'pedidos') rerenderPedidos();
+  pollT = setTimeout(poll, document.hidden ? 60000 : 30000);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && KEY && ordersReady) poll(); });
+
+/* ---- vista ---- */
+function alertsHTML(){
+  const perm = notifPerm(), snd = soundOn();
+  const on = snd && perm === 'granted';
+  let ico = IC.bell, title, sub, acts = '';
+  if (!snd){ ico = IC.bellOff; title = 'La campana está silenciada en este dispositivo'; sub = 'Los pedidos se anotan igual, pero no suena.'; acts = '<button class="btn sm pri" data-act="alerts-on">Activar sonido</button>'; }
+  else if (perm === 'default'){ title = 'Activá los avisos en este dispositivo'; sub = 'Suena una campana y aparece un aviso cuando entra un pedido, aunque el panel esté minimizado.'; acts = '<button class="btn sm pri" data-act="alerts-on">Activar avisos</button>'; }
+  else if (perm === 'denied'){ title = 'La campana suena, pero los avisos están bloqueados'; sub = 'Para ver el cartel en la compu, permití las notificaciones desde el candado de la barra de direcciones.'; acts = '<button class="btn sm ghost" data-act="alerts-test">Probar</button>'; }
+  else { title = 'Campana activa en este dispositivo'; sub = 'Suena y avisa cuando entra un pedido mientras el panel esté abierto (puede estar minimizado).'; acts = '<button class="btn sm ghost" data-act="alerts-test">Probar</button><button class="btn sm ghost" data-act="alerts-mute">Silenciar</button>'; }
+  if (snd && actx && !audioReady()) sub += ' Tocá en cualquier parte del panel para habilitar el sonido.';
+  if (DEMO) acts += '<button class="btn sm ghost" data-act="demo-sim">Simular pedido</button>';
+  return '<div class="alerts' + (on ? '' : ' off') + '" id="alertsBar"><div class="txt"><span class="ico">' + ico + '</span><div><b>' + title + '</b><small>' + sub + '</small></div></div><div class="acts">' + acts + '</div></div>';
+}
+function refreshAlerts(){ const el = $('#alertsBar'); if (el) el.outerHTML = alertsHTML(); }
+function orderText(o){
+  const L = ['Pedido #' + o.codigo + ' · ' + cap(new Date(o.fecha).toLocaleDateString('es-AR', { weekday: 'long' })) + ' ' + new Date(o.fecha).getDate() + '/' + (new Date(o.fecha).getMonth() + 1) + ' ' + hhmm(o.fecha), (o.nombre || '') + (o.localidad ? ' (' + o.localidad + ')' : '')];
+  (o.items || []).forEach(i => L.push('• ' + i.cant + 'x ' + i.nombre + [i.talle, i.color].filter(Boolean).map(x => ' · ' + x).join('') + ' — ' + ars(i.precio * i.cant)));
+  L.push('Total: ' + ars(o.total) + (o.sena ? ' (seña ' + ars(o.sena) + ')' : ''));
+  L.push('Entrega: ' + (o.entrega === 'envio' ? 'Envío a ' + (o.direccion || '—') : 'Retiro'));
+  if (o.pago) L.push('Pago: ' + o.pago);
+  if (o.nota) L.push('Comentario: ' + o.nota);
+  return L.join('\n');
+}
+function orderCard(o){
+  const [lvl, ageTxt] = ageInfo(o);
+  const d = new Date(o.fecha);
+  const pago = (o.pago || 'A coordinar') + (o.modalidad === 'sena' ? ' · deja seña' : o.modalidad === 'total' ? ' · paga todo' : '');
+  return '<article class="ord st-' + esc(o.estado) + '" data-oid="' + esc(o.id) + '">' +
+    '<div class="when"><b>' + hhmm(o.fecha) + '</b><small>' + esc(d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')) + ' ' + d.getDate() + '/' + (d.getMonth() + 1) + '</small><small>' + rel(o.fecha) + '</small></div>' +
+    '<div class="obody"><div class="ohead"><h3>' + esc(o.nombre || 'Sin nombre') + '</h3>' + (o.localidad ? '<span class="loc">' + esc(o.localidad) + '</span>' : '') + '<span class="code">#' + esc(o.codigo) + '</span></div>' +
+      '<ul class="oitems">' + (o.items || []).map(i => '<li><span>' + i.cant + '× ' + esc(i.nombre) + [i.talle, i.color].filter(Boolean).map(x => ' · ' + esc(x)).join('') + '<span class="pill ' + (i.tipo === 'stock' ? 'stock">stock' : 'enc">encargo') + '</span></span><span>' + ars(i.precio * i.cant) + '</span></li>').join('') + '</ul>' +
+      '<div class="ometa"><span>Entrega <b>' + (o.entrega === 'envio' ? 'Envío' + (o.direccion ? ' a ' + esc(o.direccion) : '') : 'Retiro') + '</b></span><span>Pago <b>' + esc(pago) + '</b></span>' + (o.contacto ? '<span>Escribió a <b>' + esc(o.contacto) + '</b></span>' : '') + '</div>' +
+      (o.nota ? '<div class="onote">“' + esc(o.nota) + '”</div>' : '') + '</div>' +
+    '<div class="oside"><div class="otot"><b>' + ars(o.total) + '</b><small>' + (o.sena ? 'Seña ' + ars(o.sena) : (n => n + (n === 1 ? ' prenda' : ' prendas'))((o.items || []).reduce((s, i) => s + i.cant, 0))) + '</small></div>' +
+      '<span class="age ' + lvl + '">' + esc(ageTxt) + '</span>' +
+      '<div class="states" role="group" aria-label="Estado del pedido">' + OST.map(([k, l]) => '<button class="s-' + k + '" data-ost="' + k + '" aria-pressed="' + (o.estado === k) + '">' + l + '</button>').join('') + '</div>' +
+      '<button class="link" data-act="ocopy" style="font-size:13px">Copiar resumen</button></div>' +
+  '</article>';
+}
+function filteredOrders(){
+  const q = ofilt.q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return ORDERS.filter(o => (ofilt.estado === 'todos' || (ofilt.estado === 'abiertos' ? isOpen(o) : o.estado === ofilt.estado))
+    && (!q || (o.nombre + ' ' + o.codigo + ' ' + o.localidad + ' ' + (o.items || []).map(i => i.nombre).join(' ')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q)));
+}
+function listHTML(){
+  if (!ordersReady) return '<div class="loading">' + (ordersErr ? esc(ordersErr) : 'Cargando pedidos…') + '</div>';
+  const list = filteredOrders();
+  if (!ORDERS.length) return '<div class="card emptybox"><h3>Todavía no llegó ningún pedido</h3><p style="margin:0;max-width:52ch">Cuando un cliente toque “Enviar pedido por WhatsApp” en la tienda, aparece acá con la fecha y la hora, y suena la campana.</p></div>';
+  if (!list.length) return '<div class="card emptybox"><h3>' + (ofilt.estado === 'abiertos' && !ofilt.q ? 'Está todo al día' : 'Nada con ese filtro') + '</h3><p style="margin:0">' + (ofilt.estado === 'abiertos' && !ofilt.q ? 'No hay pedidos nuevos ni confirmados pendientes de entrega.' : 'Probá con otro estado o borrá la búsqueda.') + '</p></div>';
+  let h = '', lastDay = null;
+  list.forEach(o => {
+    const dk = sod(o.fecha);
+    if (dk !== lastDay){
+      if (lastDay !== null) h += '</div>';
+      const [t, sub] = dayTitle(o.fecha);
+      const n = list.filter(x => sod(x.fecha) === dk).length;
+      h += '<div class="day"><h2>' + esc(t) + '</h2><span>' + esc(sub) + (sub ? ' · ' : '') + n + (n === 1 ? ' pedido' : ' pedidos') + '</span></div><div class="olist">';
+      lastDay = dk;
+    }
+    h += orderCard(o);
+  });
+  return h + '</div>';
+}
+function statsOrdersHTML(){
+  const nv = ORDERS.filter(o => o.estado === 'nuevo');
+  const cf = ORDERS.filter(o => o.estado === 'confirmado');
+  const late = nv.filter(o => (Date.now() - o.fecha) > 12 * 36e5).length;
+  const hoy = ORDERS.filter(o => daysAgo(o.fecha) === 0).length;
+  const plata = ORDERS.filter(isOpen).reduce((s, o) => s + o.total, 0);
+  return '<button class="stat' + (late ? ' warn' : '') + '" data-ofilt="nuevo"><span>Por responder</span><b>' + nv.length + '</b><small>' + (late ? late + ' esperando hace más de 12 h' : 'pedidos nuevos') + '</small></button>' +
+    '<button class="stat" data-ofilt="confirmado"><span>Por entregar</span><b>' + cf.length + '</b><small>confirmados</small></button>' +
+    '<div class="stat"><span>Hoy</span><b>' + hoy + '</b><small>' + (hoy === 1 ? 'pedido recibido' : 'pedidos recibidos') + '</small></div>' +
+    '<div class="stat"><span>En pedidos abiertos</span><b>' + ars(plata) + '</b><small>nuevos + confirmados</small></div>';
+}
+function renderPedidos(){
+  $('#view').innerHTML =
+    '<div class="vh"><div><h1>Pedidos</h1><p>Cada pedido que mandan por WhatsApp desde la tienda queda anotado acá con el día y la hora. Si alguien no llegó a mandar el mensaje, marcalo como cancelado.</p></div></div>' +
+    alertsHTML() +
+    '<div class="stats" id="oStats">' + statsOrdersHTML() + '</div>' +
+    '<div class="tools"><label class="search field"><span class="sr">Buscar pedido</span>' + IC.search + '<input id="o-q" type="search" placeholder="Buscar por nombre, código o prenda" value="' + esc(ofilt.q) + '"></label>' +
+      '<div class="seg" id="o-estado">' + [['abiertos', 'Abiertos'], ['nuevo', 'Nuevos'], ['confirmado', 'Confirmados'], ['entregado', 'Entregados'], ['cancelado', 'Cancelados'], ['todos', 'Todos']].map(([k, l]) => '<button data-ofilt="' + k + '" aria-pressed="' + (ofilt.estado === k) + '">' + l + '</button>').join('') + '</div></div>' +
+    '<div id="oList">' + listHTML() + '</div>';
+}
+function rerenderPedidos(){
+  const st = $('#oStats'), li = $('#oList');
+  if (!st || !li) return renderPedidos();
+  st.innerHTML = statsOrdersHTML(); li.innerHTML = listHTML(); refreshAlerts();
+  $$('#o-estado button').forEach(b => b.setAttribute('aria-pressed', b.dataset.ofilt === ofilt.estado));
+}
+async function setOrderState(id, estado){
+  const o = ORDERS.find(x => x.id === id); if (!o || o.estado === estado) return;
+  const prev = o.estado; o.estado = estado; o.actualizado = Date.now();
+  updateBadges(); rerenderPedidos();
+  try{ const d = await api('setOrderStatus', { id, estado }); mergeOrders(d.orders || [], true); ordersSince = Math.max(ordersSince, d.now || 0); updateBadges(); rerenderPedidos();
+    toast('Pedido de ' + (o.nombre || '') + ': ' + OST.find(x => x[0] === estado)[1].toLowerCase()); }
+  catch(err){ o.estado = prev; updateBadges(); rerenderPedidos(); toast('No se pudo cambiar: ' + err.message); }
+}
+
+/* ---- instalar como app ---- */
+let deferredInstall = null;
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function updateInstallBtn(){ $$('.installBtn').forEach(b => b.hidden = isStandalone()); }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; updateInstallBtn(); });
+window.addEventListener('appinstalled', () => { deferredInstall = null; updateInstallBtn(); toast('Panel instalado'); });
+async function doInstall(){
+  if (deferredInstall){
+    deferredInstall.prompt();
+    try{ await deferredInstall.userChoice; }catch(e){}
+    deferredInstall = null; return;
+  }
+  const ua = navigator.userAgent;
+  const ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua);
+  const safariMac = /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Edg|Firefox/.test(ua);
+  const firefox = /Firefox/.test(ua);
+  let steps;
+  if (ios) steps = ['Abrí este panel en <b>Safari</b>.', 'Tocá el botón <b>Compartir</b> (el cuadrado con la flecha).', 'Elegí <b>Agregar a inicio</b> y después <b>Agregar</b>.'];
+  else if (android) steps = ['Tocá el menú <b>⋮</b> de Chrome.', 'Elegí <b>Instalar app</b> (o <b>Agregar a la pantalla principal</b>).', 'Confirmá con <b>Instalar</b>.'];
+  else if (safariMac) steps = ['En la barra de menú, abrí <b>Archivo</b>.', 'Elegí <b>Agregar al Dock</b>.'];
+  else if (firefox) steps = ['Firefox no instala apps web. Abrí este mismo link en <b>Chrome</b> o <b>Edge</b>.', 'Ahí tocá el ícono de instalar a la derecha de la barra de direcciones.'];
+  else steps = ['Mirá a la derecha de la barra de direcciones: hay un ícono de <b>instalar</b> (una pantalla con una flecha).', 'Tocalo y elegí <b>Instalar</b>.', 'Si no aparece: menú <b>⋮</b> → <b>Transmitir, guardar y compartir</b> → <b>Instalar página como app</b> (en Edge: <b>Aplicaciones</b> → <b>Instalar este sitio</b>).'];
+  openModal('<h3>Instalar el panel</h3><p>Queda como una app más de la compu, con su ícono en la barra de tareas y la campana sonando aunque esté minimizada.</p><ol>' + steps.map(x => '<li>' + x + '</li>').join('') + '</ol><button class="btn pri" data-act="modal-close">Listo</button>');
+}
+function openModal(html){ const m = $('#modal'); m.innerHTML = '<div class="box" role="dialog" aria-modal="true">' + html + '</div>'; m.hidden = false; }
+function closeModal(){ $('#modal').hidden = true; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal' || e.target.closest('[data-act="modal-close"]')) closeModal(); });
+function keyCardHTML(){
+  return '<div class="card devcard"><h3>Clave del panel</h3><p class="hint" style="margin:-6px 0 0">La misma para los dos. Al cambiarla, el otro dispositivo pide la clave nueva.</p>' +
+    '<div class="grid2"><div class="field"><label for="k-new">Clave nueva</label><input id="k-new" type="password" autocomplete="new-password" minlength="6"></div>' +
+    '<div class="field"><label for="k-rep">Repetir</label><input id="k-rep" type="password" autocomplete="new-password"></div></div>' +
+    '<div><button class="btn sm pri" data-act="key-save">Cambiar clave</button></div></div>';
+}
+function deviceCardHTML(){
+  const perm = notifPerm();
+  return '<div class="card devcard"><h3>Este dispositivo</h3>' +
+    '<div class="devrow"><div><b>App del panel</b><small>' + (isStandalone() ? 'Estás usando el panel instalado.' : 'Instalalo para abrirlo como una app y que la campana funcione mejor.') + '</small></div>' + (isStandalone() ? '<span class="pill stock">Instalado</span>' : '<button class="btn sm pri" data-act="install">Instalar</button>') + '</div>' +
+    '<div class="devrow"><div><b>Campana de pedidos</b><small>' + (soundOn() ? 'Sonido activado' : 'Silenciada') + ' · avisos ' + (perm === 'granted' ? 'permitidos' : perm === 'denied' ? 'bloqueados' : perm === 'unsupported' ? 'no disponibles' : 'sin activar') + '</small></div><span style="display:flex;gap:6px"><button class="btn sm ghost" data-act="alerts-test">Probar</button>' + (soundOn() ? '<button class="btn sm ghost" data-act="alerts-mute">Silenciar</button>' : '<button class="btn sm pri" data-act="alerts-on">Activar</button>') + '</span></div></div>';
+}
+
+/* ----------------------------- eventos ----------------------------- */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button, [data-open]'); if (!b) return;
+  if (b.closest('#login') || b.closest('#modal')) return;
+  const d = b.dataset;
+  // ---- pedidos / campana / instalar
+  if (d.act === 'install') return doInstall();
+  if (d.act === 'key-save'){
+    const a = $('#k-new').value, r = $('#k-rep').value;
+    if (a.length < 6) return toast('La clave nueva tiene que tener al menos 6 caracteres');
+    if (a !== r) return toast('Las dos claves no coinciden');
+    try{ await api('changeKey', { newKey: a }); KEY = a; if (store.get('tl_admin_key', null)) store.set('tl_admin_key', a); else sess.set('tl_admin_key', a); $('#k-new').value = ''; $('#k-rep').value = ''; toast('Clave cambiada'); }
+    catch(err){ toast(err.message); }
+    return;
+  }
+  if (d.act === 'alerts-on'){
+    unlockAudio(); store.set('tl_sound', true);
+    if (notifPerm() === 'default'){ try{ await Notification.requestPermission(); }catch(err){} }
+    chime(); toast('Campana activada'); refreshAlerts(); if (view === 'ajustes') renderAjustes(); return;
+  }
+  if (d.act === 'alerts-test'){ chime(); notify('Así suena un pedido nuevo', 'Lucía · $68.500 · 1× Buzo oversize frisa'); return; }
+  if (d.act === 'alerts-mute'){ store.set('tl_sound', false); toast('Campana silenciada en este dispositivo'); refreshAlerts(); if (view === 'ajustes') renderAjustes(); return; }
+  if (d.act === 'demo-sim'){ await api('demoSimulate'); toast('Pedido simulado: la campana suena en unos segundos'); setTimeout(poll, 1500); return; }
+  if (d.ofilt){ ofilt.estado = d.ofilt; return rerenderPedidos(); }
+  if (d.ost){ return setOrderState(b.closest('[data-oid]').dataset.oid, d.ost); }
+  if (d.act === 'ocopy'){ const o = ORDERS.find(x => x.id === b.closest('[data-oid]').dataset.oid); try{ await navigator.clipboard.writeText(orderText(o)); toast('Resumen copiado'); }catch(err){ toast('No se pudo copiar'); } return; }
+  if (d.nav){ return go(d.nav); }
+  // fila de prenda (no si tocaron el interruptor)
+  if (d.open !== undefined && !e.target.closest('.switch')){ if (b.tagName !== 'BUTTON' && e.target.closest('button')) return; return openEditor(d.open); }
+  const act = d.act;
+  if (act === 'logout'){ if (needsGuard()) { pendingNav = { v: '__logout' }; return showGuard(); } return logout(); }
+  if (act === 'guard-stay') return hideGuard();
+  if (act === 'guard-leave'){ hideGuard(); const p = pendingNav; pendingNav = null; drafts = {}; edDirty = false; if (p && p.v === '__logout') return logout(); return p && go(p.v, Object.assign({}, p.opts, { force: true })); }
+  if (act === 'new') return openEditor(null);
+  if (act === 'f-sincosto'){ filt.estado = filt.estado === 'sincosto' ? 'todas' : 'sincosto'; return renderPrendas(); }
+  if (act === 'clear-f'){ filt.q = ''; filt.cat = ''; filt.estado = 'todas'; return renderPrendas(); }
+  if (act === 'go-ajustes') return go('ajustes');
+  if (d.estado){ filt.estado = d.estado; return renderPrendas(); }
+  if (d.mv != null){
+    const ids = ALL.map(x => x.id); const i = Number(d.mv), j = i + Number(d.d);
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+    ids.forEach((id, k) => { ALL.find(x => x.id === id).orden = k; });
+    ALL.sort((a, c) => a.orden - c.orden); renderPrendas();
+    try{ setData(await api('reorder', { ids })); }catch(err){ toast('No se pudo reordenar: ' + err.message); }
+    return;
+  }
+  // ---- editor
+  if (view === 'editar'){
+    if (act === 'save') return saveEditor();
+    if (act === 'dup'){ readEditor(); const c = JSON.parse(JSON.stringify(editing)); c.id = ''; c.nombre = editing.nombre + ' (copia)'; c.orden = undefined; editing = c; edDirty = true; confirmDel = false; toast('Copia lista: cambiá lo que haga falta y publicala'); return rerenderEditor(); }
+    if (act === 'del'){ confirmDel = true; return rerenderEditor(); }
+    if (act === 'nodel'){ confirmDel = false; return rerenderEditor(); }
+    if (act === 'del2'){
+      busy = 'Eliminando…'; rerenderEditor();
+      try{ setData(await api('deleteProduct', { id: editing.id })); busy = ''; edDirty = false; toast('Prenda eliminada'); go('prendas', { force: true }); }
+      catch(err){ busy = ''; edErr = err.message; rerenderEditor(); }
+      return;
+    }
+    if (act === 'use-sugg'){ readEditor(); editing.precio = String(pricing(Object.assign({}, editing, { modoPrecio: 'auto' })).sugerido); edDirty = true; return rerenderEditor(); }
+    if (act === 'addt'){ readEditor(); const v = $('#e-newt').value.trim(); if (v && !editing.talles.some(t => t.t.toLowerCase() === v.toLowerCase())) editing.talles.push({ t: v, ok: true }); edDirty = true; rerenderEditor(); const n = $('#e-newt'); if (n) n.focus(); return; }
+    if (d.modo){ readEditor(); if (d.modo === 'manual' && !money(editing.precio)) editing.precio = String(pricing(editing).precio || ''); editing.modoPrecio = d.modo; edDirty = true; return rerenderEditor(); }
+    if (d.g){ $('#e-gan').value = d.g; edDirty = true; return updatePout(); }
+    if (d.tog != null){ readEditor(); const t = editing.talles[d.tog]; t.ok = !t.ok; edDirty = true; return rerenderEditor(); }
+    if (d.rmt != null){ readEditor(); editing.talles.splice(Number(d.rmt), 1); edDirty = true; return rerenderEditor(); }
+    if (d.pre){ readEditor(); editing.talles = d.pre.split(',').map(t => ({ t, ok: true })); edDirty = true; return rerenderEditor(); }
+    if (d.rmph != null){ readEditor(); editing.fotos.splice(Number(d.rmph), 1); edDirty = true; return rerenderEditor(); }
+    if (d.first != null){ readEditor(); const [f] = editing.fotos.splice(Number(d.first), 1); editing.fotos.unshift(f); edDirty = true; return rerenderEditor(); }
+  }
+  // ---- costos
+  if (view === 'costos'){
+    if (d.tmode){
+      const p = merged(ALL.find(x => x.id === d.tmode)); const r = pricing(p);
+      const nd = Object.assign({}, drafts[d.tmode] || {});
+      if (p.modoPrecio === 'auto'){ nd.modoPrecio = 'manual'; nd.precio = r.precio || p.precio; }
+      else nd.modoPrecio = 'auto';
+      drafts[d.tmode] = nd;
+      const row = $('.cr[data-row="' + CSS.escape(d.tmode) + '"]'); row.outerHTML = costRowHTML(ALL.find(x => x.id === d.tmode));
+      return updateCostRow(d.tmode);
+    }
+    if (act === 'drafts-discard'){ drafts = {}; pageErr = ''; const y = scrollY; renderCostos(); return scrollTo(0, y); }
+    if (act === 'drafts-save') return saveDrafts();
+  }
+  // ---- categorías
+  if (view === 'categorias'){
+    if (d.cmv != null){
+      const live = catEdit.filter(r => !r.del); const r = catEdit[d.cmv];
+      const k = live.indexOf(r), j = k + Number(d.d); if (j < 0 || j >= live.length) return;
+      const a = catEdit.indexOf(r), c = catEdit.indexOf(live[j]); [catEdit[a], catEdit[c]] = [catEdit[c], catEdit[a]];
+      return rerenderCats();
+    }
+    if (d.cdel != null){
+      const r = catEdit[d.cdel];
+      if (!r.orig){ catEdit.splice(Number(d.cdel), 1); return rerenderCats(); }
+      const other = catEdit.find(x => !x.del && x !== r && x.name.trim());
+      if (r.count && !other){ pageErr = 'No podés borrar la única categoría que tiene prendas. Creá otra primero.'; return rerenderCats(); }
+      r.del = true; r.moveTo = other ? other.name.trim() : ''; pageErr = '';
+      return rerenderCats();
+    }
+    if (d.undel != null){ catEdit[d.undel].del = false; return rerenderCats(); }
+    if (act === 'cadd'){
+      const v = $('#newCat').value.trim(); if (!v) return;
+      if (catEdit.some(r => !r.del && r.name.trim().toLowerCase() === v.toLowerCase())){ pageErr = 'Ya existe “' + v + '”.'; return rerenderCats(); }
+      catEdit.push({ orig: '', name: v, prev: v, count: 0, del: false, moveTo: '' }); pageErr = '';
+      rerenderCats(); const n = $('#newCat'); if (n) n.focus(); return;
+    }
+    if (act === 'csave') return saveCategories();
+  }
+  if (view === 'ajustes' && act === 'cfg-save') return saveAjustes();
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (view === 'pedidos' && t.id === 'o-q'){ ofilt.q = t.value; $('#oList').innerHTML = listHTML(); return; }
+  if (view === 'prendas' && t.id === 'f-q'){ filt.q = t.value; const pos = t.selectionStart; renderPrendas(); const n = $('#f-q'); n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} return; }
+  if (view === 'editar' && t.closest('#edF')){ edDirty = true; if (t.closest('#priceCard')) updatePout(); return; }
+  if (view === 'costos'){
+    if (t.dataset.f){
+      const id = t.closest('[data-row]').dataset.row, k = t.dataset.f;
+      drafts[id] = Object.assign({}, drafts[id] || {}, { [k]: k === 'ganancia' ? (t.value.trim() === '' ? '' : (pnum(t.value) ?? '')) : money(t.value) });
+      return updateCostRow(id);
+    }
+    if (/^q-/.test(t.id)){
+      const k = t.id.slice(2); calc[k] = t.value;
+      if (k === 'precio') calc.modo = t.value.trim() ? 'precio' : 'gan';
+      if (k === 'gan'){ calc.modo = 'gan'; calc.precio = ''; const pr = $('#q-precio'); if (pr) pr.value = ''; }
+      return updateCalc();
+    }
+  }
+  if (view === 'categorias' && t.dataset.ci != null){
+    const r = catEdit[t.dataset.ci]; const before = r.prev;
+    r.name = t.value; r.prev = t.value.trim();
+    catEdit.forEach(x => { if (x.del && x.moveTo === before) x.moveTo = r.prev; });
+    return;
+  }
+  if (view === 'ajustes' && /^s-(gananciaDefault|comisionCobro)$/.test(t.id)) updateCfgPreview();
+});
+document.addEventListener('change', async e => {
+  const t = e.target;
+  if (view === 'prendas' && t.id === 'f-cat'){ filt.cat = t.value; return renderPrendas(); }
+  if (view === 'prendas' && t.dataset.vis){
+    const p = ALL.find(x => x.id === t.dataset.vis); if (!p) return;
+    try{ setData(await api('saveProduct', { product: Object.assign({}, p, { visible: t.checked }) })); renderPrendas(); toast(t.checked ? 'Visible en la tienda' : 'Oculta de la tienda'); }
+    catch(err){ toast('No se pudo guardar: ' + err.message); t.checked = !t.checked; }
+    return;
+  }
+  if (view === 'editar' && t.id === 'phIn') return addPhotos(t.files);
+  if (view === 'editar' && t.closest('#edF')) edDirty = true;
+  if (view === 'categorias' && t.dataset.mvto != null){ catEdit[t.dataset.mvto].moveTo = t.value; return; }
+  if (view === 'ajustes' && t.id === 's-redondeo') updateCfgPreview();
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (e.target.id === 'e-newt'){ e.preventDefault(); $('[data-act="addt"]').click(); }
+  else if (e.target.id === 'newCat'){ e.preventDefault(); $('[data-act="cadd"]').click(); }
+  else if (e.target.closest('#edF, #cfgF') && e.target.tagName === 'INPUT') e.preventDefault();
+});
+document.addEventListener('submit', e => { if (e.target.id !== 'loginF') e.preventDefault(); });
+['dragenter', 'dragover'].forEach(ev => document.addEventListener(ev, e => { const dz = e.target.closest && e.target.closest('#drop'); if (dz){ e.preventDefault(); dz.classList.add('over'); } }));
+document.addEventListener('dragleave', e => { const dz = e.target.closest && e.target.closest('#drop'); if (dz) dz.classList.remove('over'); });
+document.addEventListener('drop', e => { const dz = e.target.closest && e.target.closest('#drop'); if (dz){ e.preventDefault(); dz.classList.remove('over'); addPhotos(e.dataTransfer.files); } });
+
+let toastT;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ------------------------------ sesión ------------------------------ */
+function showLogin(err){
+  if (!err && DEMO && /github\.io$/.test(location.hostname)) err = 'No se encontró config.js con la URL de la planilla. Revisá que esté subido junto a la tienda.';
+  $('#app').hidden = true; $('#login').hidden = false;
+  $('#l-demo').hidden = !DEMO;
+  $('#l-err').hidden = !err; $('#l-err').textContent = err || '';
+  $('#l-btn').disabled = false; $('#l-btn').textContent = 'Entrar';
+  setTimeout(() => $('#l-pass').focus(), 50);
+}
+function showApp(){
+  $('#login').hidden = true; $('#app').hidden = false; $('#demoPill').hidden = !DEMO;
+  updateInstallBtn(); try{ history.replaceState(null, '', '#' + (view === 'editar' ? 'prendas' : view)); }catch(e){} render(); updateBadges();
+  if (!ordersReady) poll();
+}
+function logout(){
+  clearTimeout(pollT); KEY = null; store.del('tl_admin_key'); sess.set('tl_admin_key', null);
+  drafts = {}; editing = null; view = 'pedidos'; ORDERS = []; ordersReady = false; updateBadges();
+  $('#l-pass').value = ''; showLogin();
+}
+$('#loginF').addEventListener('submit', async e => {
+  e.preventDefault();
+  KEY = $('#l-pass').value.trim(); if (!KEY) return;
+  $('#l-btn').disabled = true; $('#l-btn').textContent = 'Entrando…';
+  try{
+    setData(await api('login'));
+    if ($('#l-rem').checked) store.set('tl_admin_key', KEY); else sess.set('tl_admin_key', KEY);
+    showApp();
+  }catch(err){ KEY = null; showLogin(err.message === 'Clave incorrecta' ? 'La clave no es correcta.' : err.message); }
+});
+(async function init(){
+  if (window.TL_CONFIG && 'serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js', { scope: '../' }).catch(() => {});
+  const h = location.hash.slice(1);
+  if (VIEWS.some(v => v[0] === h)) view = h;
+  try{ unlockAudio(); }catch(e){}
+  if (!KEY) return showLogin();
+  $('#app').hidden = false; $('#view').innerHTML = '<div class="loading">Cargando la tienda…</div>';
+  $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML();
+  try{ setData(await api('catalogAdmin')); showApp(); }
+  catch(err){ if (err.message === 'Clave incorrecta'){ store.del('tl_admin_key'); KEY = null; showLogin('La clave cambió. Entrá de nuevo.'); } else { $('#view').innerHTML = '<div class="card emptybox"><h3>No se pudo cargar</h3><p style="margin:0">' + esc(err.message) + '</p><button class="btn pri" onclick="location.reload()">Reintentar</button></div>'; } }
+})();
+</script>
+</body>
+</html>
