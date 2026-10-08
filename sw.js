@@ -1,7 +1,7 @@
 /* Tienda Luna · service worker: permite instalar como app y abrir sin conexión.
    Siempre intenta traer lo último de internet; usa la copia guardada solo si no hay conexión.
    Nunca guarda las llamadas a la planilla. */
-const CACHE = 'tl-v3';
+const CACHE = 'tl-v4';
 const CORE = ['./', './config.js', './manifest.json', './icon-192.png', './icon-panel-192.png', './panel/', './panel/manifest.json'];
 self.addEventListener('install', e => {
   self.skipWaiting();
