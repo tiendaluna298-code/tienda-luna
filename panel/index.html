@@ -320,7 +320,7 @@ button.stat{cursor:pointer}
 /* ---------- avisos ---------- */
 .guard{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:50;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;max-width:calc(100% - 32px)}
 .guard b{font-size:14px}
-.toast{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--night);color:var(--on-night);padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:all .25s ease;pointer-events:none;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+.toast{position:fixed;left:50%;top:calc(18px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--night);color:var(--on-night);padding:11px 18px;border-radius:12px;font-weight:600;font-size:14px;z-index:80;opacity:0;transition:all .25s ease;pointer-events:none;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (max-width:860px){.toast{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px)}}
 .loading{padding:60px 0;text-align:center;color:var(--muted)}
@@ -391,6 +391,22 @@ button.stat{cursor:pointer}
 .modal h3{font-family:var(--f-display);font-weight:500;font-size:25px}
 .modal ol{margin:0;padding-left:20px;display:grid;gap:8px}
 .modal p{margin:0;color:var(--muted)}
+.modal .box.sbox{max-width:520px;gap:12px}
+.sprev{display:grid;place-items:center;background:var(--surface-2);border-radius:14px;padding:12px;min-height:220px}
+.sprev img{max-height:min(46vh,520px);width:auto;max-width:100%;border-radius:10px;box-shadow:var(--shadow)}
+.sprev .wait{color:var(--muted);font-size:14px;text-align:center;display:grid;gap:10px;justify-items:center}
+.spin{width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--violet);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stext{width:100%;min-height:104px;resize:vertical;font-size:14px}
+.sgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sgrid .btn{width:100%;justify-content:center}
+.sgrid .full{grid-column:1/-1}
+@media (max-width:520px){.sgrid .btn{font-size:13.5px;padding:0 8px;gap:6px}.sgrid .btn svg{width:16px;height:16px}.modal .box.sbox{padding:18px}}
+.btn.wa{background:#1f9d55;color:#fff;border-color:#1f9d55}
+.shint{font-size:12.5px;line-height:1.45}
+.swarn{background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--fg);border-radius:10px;padding:9px 12px;font-size:13px}
+.shead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
 .devcard{display:grid;gap:12px}
 .devrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
 .devrow:first-of-type{border-top:0;padding-top:0}
@@ -526,6 +542,9 @@ const IC = {
   pedidos: SVG('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
   bell: SVG('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
   bellOff: SVG('<path d="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l1.5 2H8M10 20.5a2 2 0 0 0 4 0M4 4l16 16"/>'),
+  wa: '<svg class="i" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2A9.8 9.8 0 0 0 3.6 17l-1.3 4.8 4.9-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8.9c-.1.2-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 5 5 0 0 0 1 2.6 11.3 11.3 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.6-.3z"/></svg>',
+  link: SVG('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+  dl: SVG('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'),
   share: SVG('<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/>'),
   install: SVG('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 7v6M9.5 10.5 12 13l2.5-2.5"/>')
 };
@@ -787,7 +806,7 @@ function renderPrendas(){
   const canMove = !filt.q && !filt.cat && filt.estado === 'todas' && filt.linea === 'todas';
   const cats = catsList(filt.linea === 'todas' ? '' : filt.linea);
   $('#view').innerHTML =
-    '<div class="vh"><div><h1>Prendas</h1><p>Todo lo que se ve en la tienda. Tocá una prenda para editarla.</p></div><div class="acts"><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div></div>' +
+    '<div class="vh"><div><h1>Prendas</h1><p>Todo lo que se ve en la tienda. Tocá una prenda para editarla o el botón compartir para mandarla por WhatsApp.</p></div><div class="acts"><button class="btn ghost" data-act="share-store">' + IC.link + 'Compartir la tienda</button><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div></div>' +
     '<div class="stats">' +
       '<div class="stat"><span>Publicadas</span><b>' + vis + '</b><small>de ' + ALL.length + ' cargadas</small></div>' +
       '<div class="stat"><span>Entrega inmediata</span><b>' + stock + '</b><small>' + (ALL.length - stock) + ' por encargo</small></div>' +
@@ -811,7 +830,7 @@ function renderPrendas(){
           '<div class="c-gain">' + gainHTML(p) + '</div>' +
           '<div class="c-vis"><label class="switch" title="Visible en la tienda"><input type="checkbox" data-vis="' + esc(p.id) + '"' + (p.visible ? ' checked' : '') + ' aria-label="Visible en la tienda"><span></span></label></div>' +
           '<div class="c-acts">' + (canMove ? '<button class="ib mv" data-mv="' + i + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>' + IC.up + '</button><button class="ib mv" data-mv="' + i + '" data-d="1" aria-label="Bajar"' + (i < list.length - 1 ? '' : ' disabled') + '>' + IC.down + '</button>' : '') +
-          '<a class="ib" href="../?p=' + encodeURIComponent(p.id) + '&compartir=1" target="_blank" rel="noopener" aria-label="Compartir ' + esc(p.nombre) + '" title="Compartir">' + IC.share + '</a>' +
+          '<button class="ib" data-share="' + esc(p.id) + '" aria-label="Compartir ' + esc(p.nombre) + '" title="Compartir">' + IC.share + '</button>' +
           '<button class="ib" data-open="' + esc(p.id) + '" aria-label="Editar">' + IC.edit + '</button></div></div>';
       }).join('') :
       '<div class="emptybox">' + (ALL.length ? '<h3>Nada con ese filtro</h3><p style="margin:0">Probá con otra categoría o borrá la búsqueda.</p><button class="link" data-act="clear-f">Ver todas</button>' :
@@ -876,7 +895,7 @@ function renderEditor(){
   $('#view').innerHTML =
     '<button class="back" data-nav="prendas">' + IC.back + 'Prendas</button>' +
     '<div class="vh"><div><h1>' + (p.id ? esc(p.nombre || 'Editar prenda') : 'Prenda nueva') + '</h1><p>' + (p.id ? 'Los cambios se ven en la tienda en unos minutos.' : 'Completá lo básico y publicala. Después podés seguir ajustándola.') + '</p></div>' +
-    '<div class="acts">' + (p.id ? '<button class="btn ghost" data-act="dup">' + IC.copy + 'Duplicar</button>' : '') + '<button class="btn pri" data-act="save"' + (busy ? ' disabled' : '') + '>' + (busy || (p.id ? 'Guardar cambios' : 'Publicar prenda')) + '</button></div></div>' +
+    '<div class="acts">' + (p.id ? '<button class="btn ghost" data-share="' + esc(p.id) + '">' + IC.share + 'Compartir</button><button class="btn ghost" data-act="dup">' + IC.copy + 'Duplicar</button>' : '') + '<button class="btn pri" data-act="save"' + (busy ? ' disabled' : '') + '>' + (busy || (p.id ? 'Guardar cambios' : 'Publicar prenda')) + '</button></div></div>' +
     (edErr ? '<p class="err" style="margin:-8px 0 14px">' + esc(edErr) + '</p>' : '') +
     '<form class="ed" id="edF" novalidate><div class="stack">' +
       '<div class="card"><h3>Fotos <span style="text-transform:none;letter-spacing:0;font-weight:500">La primera es la portada</span></h3><div class="photos">' +
@@ -1718,7 +1737,7 @@ function ghCardHTML(){
   const g = GH || {}, on = g.configured && CFG.paginasPrenda === 'true';
   const when = g.lastOk ? new Date(g.lastOk).toLocaleString('es-AR', { day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
   return '<div class="card devcard"><h3>Foto de la prenda al compartir el link ' + (on ? '<span class="pill stock">Activo</span>' : '<span class="pill hid">Sin activar</span>') + '</h3>' +
-    '<p class="hint" style="margin:-6px 0 0;max-width:80ch">Cuando comparten una prenda, el link ya abre la tienda con esa prenda. Si además conectan GitHub, la vista previa del link en WhatsApp, Instagram y Facebook muestra la foto, el nombre y el precio de esa prenda. La planilla publica las páginas sola cada vez que guardan.</p>' +
+    '<p class="hint" style="margin:-6px 0 0;max-width:80ch">Cuando comparten una prenda, el link ya abre la tienda con esa prenda. Si además conectan GitHub, la vista previa del link en WhatsApp, Instagram y Facebook muestra la foto y el nombre de esa prenda (sin precio). La planilla publica las páginas sola cada vez que guardan.</p>' +
     (g.lastError ? '<p class="err" style="margin:0">Último error: ' + esc(g.lastError) + '</p>' : (on && when ? '<p class="hint" style="margin:0">Última publicación: ' + esc(when) + '</p>' : '')) +
     '<div class="grid2"><div class="field"><label for="gh-repo">Repositorio</label><input id="gh-repo" value="' + esc(g.repo || ghGuess()) + '" placeholder="usuario/tienda-luna"></div>' +
     '<div class="field"><label for="gh-token">Token de GitHub</label><input id="gh-token" type="password" autocomplete="off" placeholder="' + (g.configured ? 'Guardado · dejalo vacío para mantenerlo' : 'github_pat_…') + '"><small>Se guarda en la planilla y no se vuelve a mostrar.</small></div></div>' +
@@ -1739,11 +1758,182 @@ function deviceCardHTML(){
     '<div class="devrow"><div><b>Campana de pedidos</b><small>' + (soundOn() ? 'Sonido activado' : 'Silenciada') + ' · avisos ' + (perm === 'granted' ? 'permitidos' : perm === 'denied' ? 'bloqueados' : perm === 'unsupported' ? 'no disponibles' : 'sin activar') + '</small></div><span style="display:flex;gap:6px"><button class="btn sm ghost" data-act="alerts-test">Probar</button>' + (soundOn() ? '<button class="btn sm ghost" data-act="alerts-mute">Silenciar</button>' : '<button class="btn sm pri" data-act="alerts-on">Activar</button>') + '</span></div></div>';
 }
 
+/* ----------------------------- compartir ----------------------------- */
+function storeBase(){
+  if (CFG.urlTienda) return String(CFG.urlTienda).replace(/\/?$/, '/');
+  return location.origin + location.pathname.replace(/panel\/[^/]*$/, '').replace(/[^/]*$/, '');
+}
+function shareUrl(p){
+  const base = storeBase();
+  if (CFG.paginasPrenda === 'true') return base + 'p/' + encodeURIComponent(p.id) + '.html' + (p.actualizado ? '?v=' + Math.round(Number(p.actualizado) / 1000).toString(36) : '');
+  return base + '?p=' + encodeURIComponent(p.id);
+}
+function shareText(p){
+  const talles = (p.talles || []).filter(t => t.ok).map(t => t.t).join(' · ');
+  const oferta = Number(p.precioAnterior) > Number(p.precio) ? ' · ✨ En oferta' : '';
+  return '🌙 *' + p.nombre + '*' + (lineaOf(p) === 'natura' ? ' · Natura' : '') + oferta + '\n' +
+    (p.tipo === 'stock' ? 'Entrega inmediata' : 'Por encargo') + (talles ? ' · Talles ' + talles : '') + '\n\n' +
+    'Mirá el precio y pedila acá 👉 ' + shareUrl(p);
+}
+function rrect(x, X, Y, w, h, r){ x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); }
+function loadImg(src){ return new Promise((res, rej) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
+async function photoForCanvas(p){
+  const f = (p.fotos || [])[0]; if (!f) return null;
+  if (/^data:/.test(f.url || '')) return loadImg(f.url).catch(() => null);
+  if (!DEMO && f.id){
+    try{ const r = await fetch(API_URL + '?action=photo&id=' + encodeURIComponent(f.id)); const j = await r.json(); if (j.ok) return await loadImg('data:' + j.data.mime + ';base64,' + j.data.b64); }catch(e){}
+  }
+  try{ return await loadImg(photoUrl(f, 1200)); }catch(e){ return null; }
+}
+function wrapLines(x, text, maxW, maxLines){
+  const words = String(text).split(/\s+/); const lines = []; let line = '';
+  for (const w of words){ const t = line ? line + ' ' + w : w; if (x.measureText(t).width > maxW && line){ lines.push(line); line = w; } else line = t; }
+  if (line) lines.push(line);
+  if (lines.length > maxLines){ const keep = lines.slice(0, maxLines); let last = keep[maxLines - 1]; while (x.measureText(last + '…').width > maxW && last.length) last = last.slice(0, -1); keep[maxLines - 1] = last.trim() + '…'; return keep; }
+  return lines;
+}
+function drawMoon(x, X, Y, size){
+  x.save(); x.translate(X, Y); x.scale(size / 48, size / 48);
+  x.strokeStyle = 'rgba(226,191,116,.6)'; x.lineWidth = 1.2; x.beginPath(); x.arc(24, 24, 22.5, 0, Math.PI * 2); x.stroke();
+  x.fillStyle = '#e2bf74'; x.fill(new Path2D('M29.5 9.5a15 15 0 1 0 9 26.2A13 13 0 0 1 29.5 9.5z')); x.fillStyle = '#f6effc'; x.fill(new Path2D('M35 12.5l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z')); x.restore();
+}
+function cpill(x, X, Y, text, bg, fg, size, alignRight){
+  x.font = '700 ' + size + 'px Figtree, system-ui, sans-serif';
+  const w = x.measureText(text).width + size * 1.1, h = size * 1.75, left = alignRight ? X - w : X;
+  x.fillStyle = bg; rrect(x, left, Y, w, h, size * .5); x.fill();
+  x.fillStyle = fg; x.textBaseline = 'middle'; x.fillText(text, left + size * .55, Y + h / 2 + 1); x.textBaseline = 'alphabetic';
+  return w;
+}
+async function makeShareImage(p){
+  try{ await Promise.all(['italic 600 74px "Bodoni Moda"', '700 80px Figtree', '600 32px Figtree', '500 28px Figtree'].map(f => document.fonts.load(f))); }catch(e){}
+  const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d0e34'); g.addColorStop(1, '#110619'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  g = x.createRadialGradient(880, 200, 0, 880, 200, 820); g.addColorStop(0, 'rgba(98,54,160,.55)'); g.addColorStop(1, 'rgba(98,54,160,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  let seed = [...String(p.id)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const rnd = () => (seed = (seed * 1103515245 + 12345) >>> 0) / 4294967296;
+  for (let i = 0; i < 90; i++){ x.globalAlpha = .2 + rnd() * .6; x.fillStyle = rnd() < .2 ? '#e2bf74' : '#ffffff'; x.beginPath(); x.arc(rnd() * W, rnd() * H, 1 + rnd() * 1.8, 0, Math.PI * 2); x.fill(); }
+  x.globalAlpha = 1;
+  drawMoon(x, 90, 112, 66);
+  x.fillStyle = '#f6effc'; x.font = 'italic 600 46px "Bodoni Moda", Georgia, serif'; x.fillText(CFG.nombreTienda || 'Tienda Luna', 176, 160);
+  const px = 90, py = 228, pw = 900, ph = 1000;
+  x.save(); rrect(x, px, py, pw, ph, 44); x.clip(); x.fillStyle = '#2a1c3e'; x.fillRect(px, py, pw, ph);
+  const img = await photoForCanvas(p);
+  if (img){ const sc = Math.max(pw / img.width, ph / img.height), iw = img.width * sc, ih = img.height * sc; x.drawImage(img, px + (pw - iw) / 2, py + (ph - ih) / 2, iw, ih); }
+  x.restore();
+  x.strokeStyle = 'rgba(226,191,116,.45)'; x.lineWidth = 2; rrect(x, px, py, pw, ph, 44); x.stroke();
+  const stock = p.tipo === 'stock', nat = lineaOf(p) === 'natura';
+  const w1 = cpill(x, px + 28, py + 28, stock ? 'ENTREGA INMEDIATA' : 'POR ENCARGO', stock ? '#173a2a' : '#3a2c12', stock ? '#7fe0ae' : '#e2bf74', 26);
+  if (nat) cpill(x, px + 28 + w1 + 12, py + 28, 'NATURA', '#4a2a18', '#f2b27a', 26);
+  if (Number(p.precioAnterior) > Number(p.precio)) cpill(x, px + pw - 28, py + 28, 'OFERTA', '#c2405a', '#ffffff', 26, true);
+  x.fillStyle = '#f6effc'; x.font = 'italic 600 74px "Bodoni Moda", Georgia, serif';
+  let y = 1322;
+  wrapLines(x, p.nombre, 900, 2).forEach(l => { x.fillText(l, 90, y); y += 84; });
+  x.font = '600 34px Figtree, system-ui, sans-serif'; x.fillStyle = stock ? '#7fe0ae' : '#e2bf74';
+  x.fillText(nat ? (stock ? 'La tengo para entregar' : 'Se pide en el ' + (CFG.cicloNatura || 'ciclo')) : (stock ? 'Lista para entregar' : 'Se encarga en la tanda'), 90, y - 14);
+  y += 6;
+  const tl = p.talles || [];
+  if (tl.length){
+    y += 70; let tx = 90; x.font = '600 32px Figtree, system-ui, sans-serif'; x.fillStyle = '#b9a6d0'; x.fillText('Talles', tx, y); tx += x.measureText('Talles').width + 22;
+    for (const t of tl){
+      const w = x.measureText(t.t).width + 36; if (tx + w > 990) break;
+      x.strokeStyle = t.ok ? 'rgba(226,191,116,.75)' : 'rgba(185,166,208,.3)'; x.lineWidth = 2; rrect(x, tx, y - 40, w, 56, 14); x.stroke();
+      x.fillStyle = t.ok ? '#f6effc' : 'rgba(185,166,208,.45)'; x.fillText(t.t, tx + 18, y);
+      if (!t.ok) x.fillRect(tx + 12, y - 12, w - 24, 2);
+      tx += w + 12;
+    }
+  }
+  x.font = '700 40px Figtree, system-ui, sans-serif';
+  const cta = 'Mirá el precio en la tienda', cw = x.measureText(cta).width + 96;
+  g = x.createLinearGradient(0, 1640, 0, 1736); g.addColorStop(0, '#ecc982'); g.addColorStop(1, '#d9b062');
+  x.fillStyle = g; rrect(x, (W - cw) / 2, 1640, cw, 96, 48); x.fill();
+  x.fillStyle = '#1d0f30'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(cta, W / 2, 1690);
+  x.textBaseline = 'alphabetic';
+  const host = storeBase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  if (/github\.io/.test(host)){ x.font = '500 28px Figtree, system-ui, sans-serif'; x.fillStyle = '#b9a6d0'; x.fillText(host, W / 2, 1790); }
+  x.textAlign = 'left';
+  return new Promise(r => c.toBlob(r, 'image/jpeg', .9));
+}
+let shareState = null;
+const slug = t => String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'prenda';
+function shareFile(){ return shareState && shareState.blob ? new File([shareState.blob], 'tienda-luna-' + slug(shareState.p.nombre) + '.jpg', { type: 'image/jpeg' }) : null; }
+async function openShare(id){
+  const p = ALL.find(x => x.id === id); if (!p) return;
+  if (shareState && shareState.url) URL.revokeObjectURL(shareState.url);
+  shareState = { p, blob: null, url: '', text: shareText(p), store: false, dirty: view === 'editar' && edDirty && editing && editing.id === id };
+  renderShare();
+  try{
+    const blob = await makeShareImage(p);
+    if (!shareState || shareState.p !== p) return;
+    shareState.blob = blob; shareState.url = URL.createObjectURL(blob);
+  }catch(e){ if (shareState) shareState.err = true; }
+  if (shareState && shareState.p === p && !$('#modal').hidden) renderShare();
+}
+function openShareStore(){
+  if (shareState && shareState.url) URL.revokeObjectURL(shareState.url);
+  const link = storeBase();
+  shareState = { p: null, store: true, link, text: '🌙 *' + (CFG.nombreTienda || 'Tienda Luna') + '*\nRopa en stock y por encargo' + (naturaOn() ? ', y Natura' : '') + '. Elegí tu talle, armá el pedido y nos llega por WhatsApp.\n\nMirá todo acá 👉 ' + link };
+  renderShare();
+}
+function renderShare(){
+  const st = shareState; if (!st) return;
+  const f = shareFile();
+  const canFiles = !!(f && navigator.canShare && (() => { try{ return navigator.canShare({ files: [f] }); }catch(e){ return false; } })());
+  const canText = !!navigator.share;
+  let h = '<div class="shead"><h3>' + (st.store ? 'Compartir la tienda' : 'Compartir prenda') + '</h3><button class="ib" data-sact="close" aria-label="Cerrar">' + IC.x + '</button></div>';
+  if (!st.store){
+    if (!st.p.visible) h += '<div class="swarn">Esta prenda está <b>oculta</b>: si comparten el link, el cliente no la va a ver. Activala en "Visible" antes de compartir.</div>';
+    if (st.dirty) h += '<div class="swarn">Tenés cambios sin guardar. Se comparte la versión guardada.</div>';
+    h += '<div class="sprev">' + (st.url ? '<img src="' + st.url + '" alt="Imagen para compartir: ' + esc(st.p.nombre) + '">' : st.err ? '<div class="wait">No se pudo armar la imagen. Podés compartir el link igual.</div>' : '<div class="wait"><span class="spin"></span>Armando la imagen…</div>') + '</div>';
+  }
+  h += '<div class="field"><label for="sText">Texto que acompaña' + (st.store ? '' : ' la imagen') + ' (sin precio)</label><textarea class="stext" id="sText">' + esc(st.text) + '</textarea></div>';
+  h += '<div class="sgrid">' +
+    (st.store ? (canText ? '<button class="btn pri full" data-sact="sharetext">' + IC.share + 'Compartir</button>' : '')
+              : (canFiles ? '<button class="btn pri full" data-sact="share">' + IC.share + 'Compartir imagen y texto</button>' : '')) +
+    '<a class="btn wa" data-sact="wa" href="https://wa.me/?text=' + encodeURIComponent(st.text) + '" target="_blank" rel="noopener">' + IC.wa + 'WhatsApp</a>' +
+    '<button class="btn ghost" data-sact="copy">' + IC.link + 'Copiar link</button>' +
+    (!st.store && st.url ? '<button class="btn ghost" data-sact="dl">' + IC.dl + 'Descargar imagen</button>' : '') +
+    '<button class="btn ghost" data-sact="copytext">' + IC.copy + 'Copiar texto</button>' +
+  '</div>';
+  h += '<p class="shint">' + (st.store ? 'Ideal para la bio de Instagram, el estado de WhatsApp o grupos.' : 'Desde el celu, "Compartir imagen y texto" abre WhatsApp, Instagram, etc. con la foto lista. Para estados: subí la imagen y después un estado de texto con el link. En Instagram usá el sticker de link: al compartir queda copiado.') + '</p>';
+  openModal(h);
+  $('#modal .box').classList.add('sbox');
+}
+async function copyTxt(t, msg){
+  try{ await navigator.clipboard.writeText(t); toast(msg); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast(msg); }catch(_){ toast('No se pudo copiar'); } ta.remove(); }
+}
+$('#modal').addEventListener('input', e => { if (e.target.id === 'sText' && shareState){ shareState.text = e.target.value; const a = $('#modal [data-sact="wa"]'); if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(shareState.text); } });
+$('#modal').addEventListener('click', async e => {
+  const b = e.target.closest('[data-sact]'); if (!b || !shareState) return;
+  const act = b.dataset.sact, link = shareState.store ? shareState.link : shareUrl(shareState.p);
+  if (act === 'close') return closeModal();
+  if (act === 'wa') return;
+  if (act === 'share'){
+    try{ navigator.clipboard.writeText(link).catch(() => {}); }catch(err){}
+    try{ await navigator.share({ files: [shareFile()], text: shareState.text }); }
+    catch(err){ if (err && err.name !== 'AbortError') toast('No se pudo abrir el menú de compartir'); }
+    return;
+  }
+  if (act === 'sharetext'){
+    try{ await navigator.share({ text: shareState.text }); }catch(err){ if (err && err.name !== 'AbortError') toast('No se pudo abrir el menú de compartir'); }
+    return;
+  }
+  if (act === 'copy') return copyTxt(link, 'Link copiado');
+  if (act === 'copytext') return copyTxt(shareState.text, 'Texto copiado');
+  if (act === 'dl'){
+    const a = document.createElement('a'); a.href = shareState.url; a.download = shareFile().name;
+    document.body.appendChild(a); a.click(); a.remove(); toast('Imagen descargada');
+  }
+});
+
 /* ----------------------------- eventos ----------------------------- */
 document.addEventListener('click', async e => {
   const b = e.target.closest('button, [data-open]'); if (!b) return;
   if (b.closest('#login') || b.closest('#modal')) return;
   const d = b.dataset;
+  if (d.share){ e.stopPropagation(); return openShare(d.share); }
+  if (d.act === 'share-store') return openShareStore();
   // ---- pedidos / campana / instalar
   if (d.act === 'install') return doInstall();
   if (d.act === 'gh-help'){
