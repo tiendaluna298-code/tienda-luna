@@ -1,0 +1,44 @@
+{
+  "id": "./",
+  "name": "Panel Tienda Luna",
+  "short_name": "Panel Luna",
+  "description": "Pedidos, prendas y precios de Tienda Luna",
+  "start_url": "./#pedidos",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#24123b",
+  "theme_color": "#24123b",
+  "icons": [
+    {
+      "src": "../icon-panel-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "../icon-panel-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "../icon-panel-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pedidos",
+      "url": "./#pedidos"
+    },
+    {
+      "name": "Nueva prenda",
+      "url": "./#prendas"
+    },
+    {
+      "name": "Costos y precios",
+      "url": "./#costos"
+    }
+  ]
+}
