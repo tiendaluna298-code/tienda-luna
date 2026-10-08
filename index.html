@@ -262,7 +262,7 @@ button.stat{cursor:pointer}
 @media (max-width:860px){
   .savebar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
   .savebar .btn{flex:1}
-  .vh .acts .btn.pri{display:none}
+  body.editing .vh .acts .btn.pri{display:none}
 }
 
 /* ---------- costos ---------- */
@@ -392,6 +392,48 @@ button.stat{cursor:pointer}
 .devrow:first-of-type{border-top:0;padding-top:0}
 .devrow b{display:block;font-size:14.5px}
 .devrow small{display:block;color:var(--muted);font-size:12.5px}
+/* ---------- pedido manual ---------- */
+.irows{display:grid;gap:10px}
+.irow{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,.9fr) minmax(0,1fr) 74px minmax(0,1.1fr) minmax(0,1.1fr) 38px;gap:8px;align-items:end;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.irow .field>label{font-size:12px}
+.irow .inp,.irow select,.irow input{min-height:40px!important;padding:7px 10px!important;font-size:14px!important}
+.irow .money::before{left:9px}.irow .money input{padding-left:21px!important}
+.irow .ib{width:38px;height:40px}
+@media (max-width:860px){.irow{grid-template-columns:repeat(2,minmax(0,1fr))}.irow .wide{grid-column:1/-1}.irow .ib{justify-self:end}}
+.quickd{display:flex;gap:6px;flex-wrap:wrap}
+.quickd button{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.quickd button:hover{color:var(--violet);border-color:var(--violet)}
+.ochip{font-size:11.5px;font-weight:700;color:var(--violet);background:var(--violet-soft);border-radius:6px;padding:2px 7px}
+/* ---------- ganancias ---------- */
+.tabs2{display:inline-flex;background:var(--surface-2);border-radius:12px;padding:4px;gap:2px;margin-bottom:20px}
+.tabs2 button{border:0;background:transparent;padding:9px 18px;border-radius:9px;font-weight:700;font-size:14.5px;color:var(--muted)}
+.tabs2 button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.chartcard{position:relative}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font-family:var(--f-body);fill:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .zero{stroke:var(--line-2);stroke-width:1.2}
+.chart .bar{fill:var(--violet)}
+.chart .bar.neg{fill:var(--bad)}
+.chart .hit{fill:transparent;cursor:default}
+.chart .hit:hover+.bar,.chart g:hover .bar{opacity:.82}
+.ctip{position:absolute;pointer-events:none;background:var(--night);color:var(--on-night);border-radius:10px;padding:8px 11px;font-size:13px;line-height:1.35;box-shadow:var(--shadow);white-space:nowrap;transform:translate(-50%,-100%);z-index:5}
+.ctip b{display:block;font-size:14.5px;font-variant-numeric:tabular-nums}
+.gl{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:18px;align-items:start}
+@media (max-width:1020px){.gl{grid-template-columns:minmax(0,1fr)}}
+.srow{display:grid;grid-template-columns:86px minmax(0,1fr) 110px 110px;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.srow.head{border-top:0;background:var(--surface-2);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.srow .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.srow .n.pos{color:var(--ok)} .srow .n.neg{color:var(--bad)}
+.srow small{display:block;color:var(--muted);font-size:12px}
+@media (max-width:560px){.srow{grid-template-columns:62px minmax(0,1fr) 92px}.srow .c-v{display:none}}
+.top{display:grid;gap:10px}
+.top .ti{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px}
+.top .ti b{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .ti span{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ok);font-size:14px}
+.top .ti small{color:var(--muted);font-size:12.5px;grid-column:1/-1}
+.top .meter{grid-column:1/-1;height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.top .meter i{display:block;height:100%;background:var(--violet);border-radius:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
@@ -442,7 +484,7 @@ const API_URL = (window.TL_CONFIG && window.TL_CONFIG.API_URL) || '';
 
 const DEMO = !API_URL;
 const DEMO_PASS = 'demo-' + Math.random().toString(36).slice(2);
-const DB_KEY = 'tl_demo_v2';
+const DB_KEY = 'tl_demo_v3';
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -483,7 +525,7 @@ const IC = {
   share: SVG('<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/>'),
   install: SVG('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 7v6M9.5 10.5 12 13l2.5-2.5"/>')
 };
-const VIEWS = [['pedidos', 'Pedidos'], ['prendas', 'Prendas'], ['costos', 'Costos y precios'], ['categorias', 'Categorías'], ['ajustes', 'Ajustes']];
+const VIEWS = [['pedidos', 'Pedidos'], ['prendas', 'Prendas'], ['costos', 'Costos y ganancias'], ['categorias', 'Categorías'], ['ajustes', 'Ajustes']];
 
 /* ---------------------- prendas de ejemplo (demo) ---------------------- */
 function garment(kind, color, bg){
@@ -536,8 +578,20 @@ function seedOrders(){
     mk(27, 'nuevo', { codigo: 'H3MXA', nombre: 'Martina Gómez', localidad: 'Rama Caída', entrega: 'retiro', pago: 'Efectivo', items: [it('Jean mom tiro alto', '40', 'Azul clásico', 1, 41000, 'stock')], total: 41000, nota: '¿Puedo retirar el sábado a la mañana?' }),
     mk(80, 'confirmado', { codigo: 'T9WEN', nombre: 'Camila Ruiz', localidad: 'San Rafael', entrega: 'retiro', pago: 'Mercado Pago', items: [it('Musculosa morley', 'Único', 'Lavanda', 2, 12000, 'stock')], total: 24000 }),
     mk(200, 'confirmado', { codigo: 'B4RKD', nombre: 'Sofía Herrera', localidad: 'General Alvear', entrega: 'envio', direccion: 'Belgrano 455', pago: 'Transferencia', modalidad: 'sena', items: [it('Campera puffer corta', 'L', 'Negro', 1, 66500, 'encargo')], total: 66500, sena: 33250 }),
-    mk(150, 'entregado', { codigo: 'P8ZQM', nombre: 'Valentina Paz', localidad: 'San Rafael', entrega: 'retiro', pago: 'Efectivo', items: [it('Vestido de lino con breteles', 'M', 'Arena', 1, 35000, 'encargo')], total: 35000 })
-  ];
+    mk(150, 'entregado', { codigo: 'P8ZQM', nombre: 'Valentina Paz', localidad: 'San Rafael', entrega: 'retiro', pago: 'Efectivo', items: [it('Vestido de lino con breteles', 'M', 'Arena', 1, 35000, 'encargo')], total: 35000 }),
+    mk(30, 'confirmado', { codigo: 'MQ7KD', nombre: 'Rocío Ledesma', localidad: 'San Rafael', entrega: 'retiro', pago: 'Efectivo', origen: 'manual', canal: 'Instagram', telefono: '5492604555111', entregarPara: ymdIn(1), items: [it('Remera básica algodón peinado', 'M', 'Blanco', 2, 16500, 'stock')], total: 33000 })
+  ].concat(history());
+}
+function ymdIn(days){ const d = new Date(Date.now() + days * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function history(){
+  const C = { 'Buzo oversize frisa': [35500, 21900, 'encargo'], 'Remera básica algodón peinado': [16500, 8900, 'stock'], 'Jean mom tiro alto': [41000, 27200, 'stock'], 'Vestido de lino con breteles': [35000, 19700, 'encargo'], 'Campera puffer corta': [66500, 41500, 'encargo'] };
+  const names = ['Ana Quiroga', 'Paula Reyes', 'Milagros Funes', 'Brenda Ortiz', 'Lucía Aguilar', 'Carla Méndez', 'Abril Torres', 'Daiana Vera', 'Noelia Pérez', 'Julieta Romero', 'Sabrina Gil', 'Ailén Moyano', 'Tamara Luna', 'Valeria Sosa'];
+  const plan = [[3, ['Remera básica algodón peinado', 2]], [5, ['Jean mom tiro alto', 1]], [9, ['Buzo oversize frisa', 1], ['Remera básica algodón peinado', 1]], [12, ['Campera puffer corta', 1]], [16, ['Vestido de lino con breteles', 1]], [19, ['Remera básica algodón peinado', 3]], [24, ['Buzo oversize frisa', 2]], [31, ['Jean mom tiro alto', 1], ['Remera básica algodón peinado', 1]], [38, ['Campera puffer corta', 1]], [44, ['Vestido de lino con breteles', 2]], [52, ['Buzo oversize frisa', 1]], [58, ['Jean mom tiro alto', 2]], [66, ['Remera básica algodón peinado', 2], ['Buzo oversize frisa', 1]], [74, ['Campera puffer corta', 1]]];
+  const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return plan.map(([daysAgo, ...lines], k) => {
+    const ts = Date.now() - daysAgo * 864e5 - (k % 5) * 36e5, items = lines.map(([n, q]) => ({ id: '', nombre: n, talle: 'M', color: '', cant: q, precio: C[n][0], costo: C[n][1], tipo: C[n][2] }));
+    return { id: 'h' + k, codigo: A[k] + A[k + 3] + A[k + 7] + A[k + 1] + A[k + 9], fecha: ts - 3 * 864e5, actualizado: ts, entregadoEl: ts, estado: 'entregado', nombre: names[k], localidad: 'San Rafael', entrega: 'retiro', direccion: '', pago: k % 3 ? 'Transferencia' : 'Mercado Pago', modalidad: '', nota: '', sena: 0, contacto: '', origen: k % 4 ? 'web' : 'manual', canal: k % 4 ? '' : 'En persona', items, total: items.reduce((t, i) => t + i.precio * i.cant, 0) };
+  });
 }
 function demoDB(){
   let db = store.get(DB_KEY, null);
@@ -553,7 +607,17 @@ function demoPost(action, p){
   if (action === 'changeKey') throw new Error('En la demostración la clave no se cambia. Con la planilla conectada sí.');
   if (action === 'orders') return ordList(0);
   if (action === 'ordersSince') return ordList(p.since);
-  if (action === 'setOrderStatus'){ const o = db.orders.find(x => x.id === p.id); if (o){ o.estado = p.estado; o.actualizado = Date.now(); } store.set(DB_KEY, db); return ordList(0); }
+  if (action === 'setOrderStatus'){ const o = db.orders.find(x => x.id === p.id); if (o){ o.estado = p.estado; o.actualizado = Date.now(); o.entregadoEl = p.estado === 'entregado' ? (o.entregadoEl || Date.now()) : 0; } store.set(DB_KEY, db); return ordList(0); }
+  if (action === 'saveOrder'){
+    const o = p.order, now = Date.now(), i = o.id ? db.orders.findIndex(x => x.id === o.id) : -1, prev = i >= 0 ? db.orders[i] : null;
+    const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code = 'M'; for (let k = 0; k < 4; k++) code += A[Math.floor(Math.random() * A.length)];
+    const rec = Object.assign({}, prev || {}, o, { id: prev ? prev.id : 'o' + now.toString(36), codigo: prev ? prev.codigo : code, origen: prev ? (prev.origen || 'web') : 'manual',
+      fecha: Number(o.fecha) || (prev ? prev.fecha : now), actualizado: now, total: o.items.reduce((t, it) => t + it.precio * it.cant, 0),
+      entregadoEl: o.estado === 'entregado' ? ((prev && prev.entregadoEl) || now) : 0 });
+    if (prev) db.orders[i] = rec; else db.orders.push(rec);
+    store.set(DB_KEY, db); return ordList(0);
+  }
+  if (action === 'deleteOrder'){ db.orders = db.orders.filter(x => x.id !== p.id); store.set(DB_KEY, db); return ordList(0); }
   if (action === 'demoSimulate'){
     const nombres = ['Agustina Molina', 'Florencia Díaz', 'Julieta Sosa', 'Romina Castro', 'Micaela Vega'];
     const prods = db.products.filter(x => x.visible && x.precio);
@@ -638,14 +702,14 @@ function navHTML(){
   const nv = nuevos();
   const badge = k => k === 'pedidos' && nv ? '<span class="badge" title="Pedidos nuevos">' + nv + '</span>'
     : (k === 'costos' && sinCosto && innerWidth > 860 ? '<span class="badge" title="Prendas sin costo cargado">' + sinCosto + '</span>' : '');
-  return VIEWS.map(([k, label]) => '<button data-nav="' + k + '"' + ((view === k || (view === 'editar' && k === 'prendas')) ? ' aria-current="page"' : '') + '>' + IC[k] + '<span>' + (k === 'costos' && innerWidth <= 860 ? 'Costos' : label) + '</span>' + (innerWidth > 860 ? badge(k) : '') + '</button>').join('');
+  return VIEWS.map(([k, label]) => '<button data-nav="' + k + '"' + ((view === k || (view === 'editar' && k === 'prendas') || (view === 'pedido' && k === 'pedidos')) ? ' aria-current="page"' : '') + '>' + IC[k] + '<span>' + (k === 'costos' && innerWidth <= 860 ? 'Costos' : label) + '</span>' + (innerWidth > 860 ? badge(k) : '') + '</button>').join('');
 }
 function navRefresh(){ $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML(); }
 function render(){
   $('#sideNav').innerHTML = navHTML();
   $('#tabNav').innerHTML = navHTML();
-  document.body.classList.toggle('editing', view === 'editar');
-  ({ pedidos: renderPedidos, prendas: renderPrendas, editar: renderEditor, costos: renderCostos, categorias: renderCategorias, ajustes: renderAjustes })[view]();
+  document.body.classList.toggle('editing', view === 'editar' || view === 'pedido');
+  ({ pedidos: renderPedidos, pedido: renderOrderEditor, prendas: renderPrendas, editar: renderEditor, costos: renderCostos, categorias: renderCategorias, ajustes: renderAjustes })[view]();
 }
 function go(v, opts = {}){
   if (!opts.force && needsGuard()){ pendingNav = { v, opts }; return showGuard(); }
@@ -654,19 +718,20 @@ function go(v, opts = {}){
   if (v !== 'categorias') catEdit = null;
   view = v; pageErr = ''; busy = '';
   if (v !== 'editar'){ editing = null; edDirty = false; }
-  try{ history.replaceState(null, '', '#' + (v === 'editar' ? 'prendas' : v)); }catch(e){}
+  if (v !== 'pedido'){ ordEdit = null; ordDirty = false; }
+  try{ history.replaceState(null, '', '#' + (v === 'editar' ? 'prendas' : v === 'pedido' ? 'pedidos' : v)); }catch(e){}
   render();
   if (!opts.keepScroll) window.scrollTo(0, 0);
 }
-function needsGuard(){ return (view === 'editar' && edDirty) || (view === 'costos' && Object.keys(drafts).length > 0); }
+function needsGuard(){ return (view === 'editar' && edDirty) || (view === 'pedido' && ordDirty) || (view === 'costos' && Object.keys(drafts).length > 0); }
 function showGuard(){
   const g = $('#guard');
-  g.innerHTML = '<b>' + (view === 'editar' ? 'La prenda tiene cambios sin guardar.' : 'Hay precios sin guardar.') + '</b><button class="btn sm ghost" data-act="guard-stay">Seguir editando</button><button class="btn sm danger" data-act="guard-leave">Salir sin guardar</button>';
+  g.innerHTML = '<b>' + (view === 'editar' ? 'La prenda tiene cambios sin guardar.' : view === 'pedido' ? 'El pedido tiene cambios sin guardar.' : 'Hay precios sin guardar.') + '</b><button class="btn sm ghost" data-act="guard-stay">Seguir editando</button><button class="btn sm danger" data-act="guard-leave">Salir sin guardar</button>';
   g.hidden = false;
 }
 function hideGuard(){ $('#guard').hidden = true; }
 window.addEventListener('beforeunload', e => { if (needsGuard()){ e.preventDefault(); e.returnValue = ''; } });
-let rsT; window.addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML(); }, 150); });
+let rsT; window.addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(() => { $('#sideNav').innerHTML = navHTML(); $('#tabNav').innerHTML = navHTML(); if (view === 'costos' && costTab === 'ganancias') renderCostos(); }, 150); });
 
 /* ---------------------------- prendas ---------------------------- */
 function catsList(){
@@ -946,9 +1011,12 @@ function updateCalc(){
     '<div class="tot"><span>Ganan</span><span class="' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span></div>' +
     '<div><span>Sobre costo · venta</span><span>' + pctf(r.pctCosto) + ' · ' + pctf(r.margen) + '</span></div></div></div>';
 }
+let costTab = 'ganancias';
 function renderCostos(){
+  const tabs = '<div class="tabs2" role="tablist"><button role="tab" data-ctab="ganancias" aria-selected="' + (costTab === 'ganancias') + '">Ganancias</button><button role="tab" data-ctab="precios" aria-selected="' + (costTab === 'precios') + '">Precios y costos</button></div>';
+  if (costTab === 'ganancias') return renderGanancias(tabs);
   $('#view').innerHTML =
-    '<div class="vh"><div><h1>Costos y precios</h1><p>Solo lo ven ustedes: la tienda muestra únicamente el precio de venta. Editá costos y ganancias directo en la tabla.</p></div></div>' +
+    '<div class="vh"><div><h1>Costos y ganancias</h1><p>Solo lo ven ustedes: la tienda muestra únicamente el precio de venta. Editá costos y ganancias directo en la tabla.</p></div></div>' + tabs +
     '<div class="stats" id="costStats">' + statsCostHTML() + '</div>' +
     '<div class="cl">' + calcHTML() + '<div style="min-width:0">' +
       (ALL.length ? '<div class="ctab"><div class="cr head"><span>Prenda</span><span>Costo</span><span>Gastos</span><span>Cálculo</span><span>Ganancia</span><span>Precio</span><span>Ganan</span><span>Margen</span></div>' + ALL.map(costRowHTML).join('') + '</div>' +
@@ -1092,6 +1160,239 @@ async function saveAjustes(){
 }
 
 
+
+/* ========================= PEDIDO A MANO ========================= */
+let ordEdit = null, ordDirty = false, ordErr = '', ordBusy = '';
+const CANALES = ['En persona', 'WhatsApp', 'Instagram', 'Facebook', 'Otro'];
+const unitCost = p => p ? (Number(p.costo) || 0) + (Number(p.gastos) || 0) : 0;
+const toLocalInput = ts => { const d = new Date(ts); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()); };
+const ymdOf = ts => { const d = new Date(ts); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
+function blankItem(){ return { pid: '', id: '', nombre: '', talle: '', color: '', cant: 1, precio: '', costo: '', tipo: 'stock' }; }
+function openOrderEditor(id){
+  const o = id ? ORDERS.find(x => x.id === id) : null;
+  ordEdit = o ? JSON.parse(JSON.stringify(o)) : { id: '', nombre: '', localidad: '', telefono: '', canal: 'En persona', fecha: Date.now(), entregarPara: '', items: [blankItem()], entrega: 'retiro', direccion: '', pago: parseList(CFG.metodosPago)[0] || '', modalidad: '', sena: '', nota: '', estado: 'confirmado' };
+  ordEdit.items = (ordEdit.items || []).map(i => Object.assign(blankItem(), i, { pid: ALL.some(p => p.id === i.id) ? i.id : (i.nombre ? '__otra' : '') }));
+  if (!ordEdit.items.length) ordEdit.items.push(blankItem());
+  ordDirty = false; ordErr = ''; ordBusy = '';
+  go('pedido', { force: true });
+}
+function orderFin(o){
+  let venta = 0, ventaCC = 0, costo = 0, sin = 0;
+  (o.items || []).forEach(i => {
+    const q = Number(i.cant) || 0, pr = (Number(i.precio) || 0) * q; venta += pr;
+    let c = Number(i.costo) || 0;
+    if (!c){ const p = ALL.find(x => x.id === i.id) || ALL.find(x => x.nombre === i.nombre); c = unitCost(p); }
+    if (c){ costo += c * q; ventaCC += pr; } else sin += q;
+  });
+  const com = /mercado/i.test(o.pago || '') ? ventaCC * comision() / 100 : 0;
+  return { venta, ventaCC, costo, com, gan: ventaCC - costo - com, sin };
+}
+function itemRowHTML(it, i){
+  const p = ALL.find(x => x.id === it.pid);
+  const prodOpts = '<option value="">Elegí una prenda…</option>' + ALL.map(x => '<option value="' + esc(x.id) + '"' + (x.id === it.pid ? ' selected' : '') + '>' + esc(x.nombre) + (x.visible ? '' : ' (oculta)') + '</option>').join('') + '<option value="__otra"' + (it.pid === '__otra' ? ' selected' : '') + '>Otra (escribir)</option>';
+  const talles = p && (p.talles || []).length ? '<select data-if="talle" id="it-t-' + i + '"><option value="">—</option>' + p.talles.map(t => '<option' + (t.t === it.talle ? ' selected' : '') + '>' + esc(t.t) + '</option>').join('') + '</select>' : '<input data-if="talle" id="it-t-' + i + '" value="' + esc(it.talle) + '" placeholder="—">';
+  const colores = p && (p.colores || []).length ? '<select data-if="color" id="it-c-' + i + '"><option value="">—</option>' + p.colores.map(c => '<option' + (c === it.color ? ' selected' : '') + '>' + esc(c) + '</option>').join('') + '</select>' : '<input data-if="color" id="it-c-' + i + '" value="' + esc(it.color) + '" placeholder="—">';
+  return '<div class="irow" data-ii="' + i + '">' +
+    '<div class="field wide"><label for="it-p-' + i + '">Prenda</label><select data-if="pid" id="it-p-' + i + '">' + prodOpts + '</select>' +
+      (it.pid === '__otra' ? '<input data-if="nombre" id="it-n-' + i + '" value="' + esc(it.nombre) + '" placeholder="Nombre de la prenda" style="margin-top:6px">' : '') + '</div>' +
+    '<div class="field"><label for="it-t-' + i + '">Talle</label>' + talles + '</div>' +
+    '<div class="field"><label for="it-c-' + i + '">Color</label>' + colores + '</div>' +
+    '<div class="field"><label for="it-q-' + i + '">Cant.</label><input data-if="cant" id="it-q-' + i + '" inputmode="numeric" value="' + esc(it.cant) + '"></div>' +
+    '<div class="field"><label for="it-pr-' + i + '">Precio c/u</label><div class="money"><input data-if="precio" id="it-pr-' + i + '" inputmode="numeric" value="' + esc(it.precio) + '"></div></div>' +
+    '<div class="field"><label for="it-co-' + i + '">Costo c/u</label><div class="money"><input data-if="costo" id="it-co-' + i + '" inputmode="numeric" value="' + esc(it.costo) + '" placeholder="0"></div></div>' +
+    '<button type="button" class="ib" data-irm="' + i + '" aria-label="Quitar prenda"' + (ordEdit.items.length > 1 ? '' : ' disabled') + '>' + IC.x + '</button></div>';
+}
+function readOrderForm(){
+  if (!ordEdit || !$('#ordF')) return;
+  const v = id => { const el = $(id); return el ? el.value : null; };
+  ['nombre', 'localidad', 'telefono', 'direccion', 'nota'].forEach(k => { const x = v('#of-' + k); if (x !== null) ordEdit[k] = x.trim(); });
+  const f = v('#of-fecha'); if (f) { const t = new Date(f).getTime(); if (t) ordEdit.fecha = t; }
+  const ep = v('#of-ep'); if (ep !== null) ordEdit.entregarPara = ep;
+  const pg = v('#of-pago'); if (pg !== null) ordEdit.pago = pg;
+  const sn = v('#of-sena'); if (sn !== null) ordEdit.sena = money(sn) || '';
+  const en = $('input[name="of-entrega"]:checked'); if (en) ordEdit.entrega = en.value;
+  $$('.irow').forEach(row => {
+    const it = ordEdit.items[row.dataset.ii]; if (!it) return;
+    $$('[data-if]', row).forEach(el => {
+      const k = el.dataset.if;
+      if (k === 'pid') return;
+      if (k === 'cant') it.cant = Math.max(1, parseInt(el.value, 10) || 1);
+      else if (k === 'precio' || k === 'costo') it[k] = el.value.trim() === '' ? '' : money(el.value);
+      else it[k] = el.value.trim();
+    });
+  });
+}
+function ordSummaryHTML(){
+  const items = ordEdit.items.filter(i => i.nombre).map(i => Object.assign({}, i, { precio: Number(i.precio) || 0, costo: Number(i.costo) || 0 }));
+  const f = orderFin({ items, pago: ordEdit.pago });
+  return '<div class="pout"><div class="big"><span>Total</span><b>' + ars(f.venta) + '</b></div><div class="lines">' +
+    '<div><span>Costo de las prendas</span><span>' + ars(f.costo) + '</span></div>' + (f.com ? '<div><span>Comisión Mercado Pago</span><span>' + ars(f.com) + '</span></div>' : '') +
+    '<div class="tot"><span>Ganan con este pedido</span><span class="' + (f.gan >= 0 ? 'pos' : 'neg') + '">' + ars(f.gan) + '</span></div>' +
+    (f.sin ? '<div><span>' + f.sin + (f.sin === 1 ? ' prenda sin costo: no suma' : ' prendas sin costo: no suman') + '</span><span></span></div>' : '') + '</div></div>';
+}
+function renderOrderEditor(){
+  const o = ordEdit, pagos = parseList(CFG.metodosPago);
+  if (o.pago && !pagos.includes(o.pago)) pagos.push(o.pago);
+  $('#view').innerHTML =
+    '<button class="back" data-nav="pedidos">' + IC.back + 'Pedidos</button>' +
+    '<div class="vh"><div><h1>' + (o.id ? 'Editar pedido <span style="font-family:var(--f-body);font-size:.5em;color:var(--muted)">#' + esc(o.codigo || '') + '</span>' : 'Cargar pedido') + '</h1><p>' + (o.id ? 'Corregí lo que haga falta. La fecha del pedido no cambia salvo que la edites.' : 'Para ventas por Instagram, en persona o por WhatsApp. Queda con su fecha y suma a las ganancias cuando lo entregan.') + '</p></div>' +
+    '<div class="acts"><button class="btn pri" data-act="osave"' + (ordBusy ? ' disabled' : '') + '>' + (ordBusy || 'Guardar pedido') + '</button></div></div>' +
+    (ordErr ? '<p class="err" style="margin:-8px 0 14px">' + esc(ordErr) + '</p>' : '') +
+    '<form class="ed" id="ordF" novalidate><div class="stack">' +
+      '<div class="card"><h3>Cliente</h3><div class="stack">' +
+        '<div class="grid2"><div class="field"><label for="of-nombre">Nombre</label><input id="of-nombre" value="' + esc(o.nombre) + '" placeholder="Ej: Rocío Ledesma"></div>' +
+        '<div class="field"><label for="of-localidad">Localidad</label><input id="of-localidad" value="' + esc(o.localidad) + '" placeholder="San Rafael"></div></div>' +
+        '<div class="grid2"><div class="field"><label for="of-telefono">WhatsApp (opcional)</label><input id="of-telefono" inputmode="tel" value="' + esc(o.telefono || '') + '" placeholder="5492604…"><small>Para escribirle con un toque desde el pedido</small></div>' +
+        '<div class="field"><span class="lbl">Por dónde lo pidió</span><div class="quickd" style="margin-top:4px">' + CANALES.map(c => '<button type="button" data-canal="' + esc(c) + '" style="' + (o.canal === c ? 'border-color:var(--violet);color:var(--violet);background:var(--violet-soft)' : '') + '">' + esc(c) + '</button>').join('') + '</div></div></div>' +
+      '</div></div>' +
+      '<div class="card"><h3>Prendas <span style="text-transform:none;letter-spacing:0;font-weight:500">El costo se completa solo si la prenda lo tiene cargado</span></h3><div class="irows">' + o.items.map(itemRowHTML).join('') + '</div>' +
+        '<button type="button" class="btn ghost sm" data-act="iadd" style="margin-top:12px">' + IC.plus + 'Agregar otra prenda</button></div>' +
+      '<div class="card"><h3>Entrega y pago</h3><div class="stack">' +
+        '<div class="choice"><label><input type="radio" name="of-entrega" value="retiro"' + (o.entrega !== 'envio' ? ' checked' : '') + '><span>Retiro</span></label><label><input type="radio" name="of-entrega" value="envio"' + (o.entrega === 'envio' ? ' checked' : '') + '><span>Envío</span></label></div>' +
+        (o.entrega === 'envio' ? '<div class="field"><label for="of-direccion">Dirección</label><input id="of-direccion" value="' + esc(o.direccion) + '"></div>' : '') +
+        '<div class="grid2"><div class="field"><label for="of-pago">Pago</label><select id="of-pago">' + pagos.map(m => '<option' + (m === o.pago ? ' selected' : '') + '>' + esc(m) + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label for="of-sena">Seña recibida</label><div class="money"><input id="of-sena" inputmode="numeric" value="' + esc(o.sena || '') + '" placeholder="0"></div></div></div>' +
+        '<div class="field"><label for="of-nota">Nota</label><textarea id="of-nota" placeholder="Lo que haga falta recordar">' + esc(o.nota) + '</textarea></div>' +
+      '</div></div>' +
+    '</div><div class="ed-side">' +
+      '<div class="card"><h3>Fechas</h3><div class="stack">' +
+        '<div class="field"><label for="of-fecha">Fecha en que lo pidieron</label><input id="of-fecha" type="datetime-local" value="' + toLocalInput(o.fecha || Date.now()) + '"></div>' +
+        '<div class="field"><label for="of-ep">Entregar para (opcional)</label><input id="of-ep" type="date" value="' + esc(o.entregarPara || '') + '"><small>El pedido avisa cuando se acerca y si se pasa.</small></div>' +
+        '<div class="quickd">' + [[3, '+3 días'], [7, '+1 semana'], [15, '+15 días'], [20, '+20 días']].map(([n, l]) => '<button type="button" data-epd="' + n + '">' + l + '</button>').join('') + (o.entregarPara ? '<button type="button" data-epd="0">Sin fecha</button>' : '') + '</div>' +
+      '</div></div>' +
+      '<div class="card"><h3>Estado</h3><div class="states" style="justify-content:flex-start">' + OST.map(([k, l]) => '<button type="button" class="s-' + k + '" data-oest="' + k + '" aria-pressed="' + (o.estado === k) + '">' + l + '</button>').join('') + '</div>' +
+        '<p class="hint" style="margin:10px 0 0">Suma a las ganancias cuando está en <b>Entregado</b>.</p></div>' +
+      '<div class="card"><h3>Resumen</h3><div id="ordSum">' + ordSummaryHTML() + '</div>' +
+        (o.id ? '<div style="border-top:1px solid var(--line);padding-top:12px;margin-top:14px">' + (o._confirmDel ? '<p class="err" style="margin:0 0 8px">Se borra el pedido. No se puede deshacer.</p><div style="display:flex;gap:8px"><button type="button" class="btn ghost sm" data-act="odelno">Cancelar</button><button type="button" class="btn danger sm" style="flex:1" data-act="odelok">Sí, borrar</button></div>' : '<button type="button" class="link" style="color:var(--bad)" data-act="odel">Borrar pedido</button>') + '</div>' : '') +
+      '</div>' +
+    '</div></form>' +
+    '<div class="savebar"><button class="btn ghost" data-nav="pedidos">Volver</button><button class="btn pri" data-act="osave"' + (ordBusy ? ' disabled' : '') + '>' + (ordBusy || 'Guardar') + '</button></div>';
+}
+function rerenderOrder(){ const y = scrollY; renderOrderEditor(); scrollTo(0, y); }  // quien llama ya leyó el formulario
+async function saveOrderForm(){
+  readOrderForm();
+  const o = ordEdit; ordErr = '';
+  const items = o.items.filter(i => i.nombre);
+  if (!o.nombre) ordErr = 'Poné el nombre de quien lo pidió.';
+  else if (!items.length) ordErr = 'Agregá al menos una prenda.';
+  else if (items.some(i => !(Number(i.precio) >= 0) || i.precio === '')) ordErr = 'Falta el precio de alguna prenda.';
+  if (ordErr){ rerenderOrder(); scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const payload = {
+    id: o.id || '', nombre: o.nombre, localidad: o.localidad, telefono: o.telefono, canal: o.canal, fecha: o.fecha, entregarPara: o.entregarPara,
+    entrega: o.entrega, direccion: o.entrega === 'envio' ? o.direccion : '', pago: o.pago, modalidad: o.sena ? 'sena' : '', sena: Number(o.sena) || 0,
+    nota: o.nota, estado: o.estado, contacto: o.contacto || '',
+    items: items.map(i => ({ id: i.pid && i.pid !== '__otra' ? i.pid : '', nombre: i.nombre, talle: i.talle, color: i.color, cant: Number(i.cant) || 1, precio: Number(i.precio) || 0, costo: Number(i.costo) || 0, tipo: i.tipo || 'stock' }))
+  };
+  ordBusy = 'Guardando…'; rerenderOrder();
+  try{
+    const d = await api('saveOrder', { order: payload });  // el formulario ya fue leído arriba
+    store.set(KNOWN_KEY, [...new Set([...(d.orders || []).map(x => x.id), ...(store.get(KNOWN_KEY, []) || [])])].slice(0, 800));
+    mergeOrders(d.orders || [], true); ordersSince = Math.max(ordersSince, d.now || 0);
+    ordBusy = ''; ordDirty = false; updateBadges();
+    toast(o.id ? 'Pedido actualizado' : 'Pedido cargado');
+    go('pedidos', { force: true });
+  }catch(err){ ordBusy = ''; ordErr = 'No se pudo guardar: ' + err.message; rerenderOrder(); }
+}
+
+/* =========================== GANANCIAS =========================== */
+let gPeriod = 'mes';
+const PERIODS = [['mes', 'Este mes'], ['mesant', 'Mes pasado'], ['3m', 'Últimos 3 meses'], ['anio', 'Este año'], ['todo', 'Todo']];
+const saleTs = o => Number(o.entregadoEl) || Number(o.actualizado) || o.fecha;
+function periodRange(k){
+  const now = new Date(), y = now.getFullYear(), m = now.getMonth();
+  if (k === 'mes') return [new Date(y, m, 1).getTime(), Date.now() + 1];
+  if (k === 'mesant') return [new Date(y, m - 1, 1).getTime(), new Date(y, m, 1).getTime()];
+  if (k === '3m') return [sod(Date.now()) - 90 * 864e5, Date.now() + 1];
+  if (k === 'anio') return [new Date(y, 0, 1).getTime(), Date.now() + 1];
+  return [0, Date.now() + 1];
+}
+const kfmt = n => { const a = Math.abs(n), s = n < 0 ? '−' : ''; return a >= 1e6 ? s + '$' + (a / 1e6).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' M' : a >= 1e3 ? s + '$' + Math.round(a / 1e3) + ' mil' : s + '$' + Math.round(a); };
+function buckets(list, k, from, to){
+  const weekly = k === 'mes' || k === 'mesant' || k === '3m';
+  const monday = ts => { const d = new Date(sod(ts)); const wd = (d.getDay() + 6) % 7; return d.getTime() - wd * 864e5; };
+  const out = [];
+  if (weekly){
+    let t = monday(from || Date.now());
+    const end = Math.min(to, Date.now() + 1);
+    while (t < end){ out.push({ from: t, to: t + 7 * 864e5, label: new Date(t).getDate() + '/' + (new Date(t).getMonth() + 1), title: 'Semana del ' + new Date(t).getDate() + '/' + (new Date(t).getMonth() + 1), gan: 0, venta: 0, n: 0 }); t += 7 * 864e5; }
+  } else {
+    const first = list.length ? Math.min(...list.map(saleTs)) : Date.now();
+    const s0 = new Date(Math.max(from, first)); let d = new Date(s0.getFullYear(), s0.getMonth(), 1);
+    while (d.getTime() < Math.min(to, Date.now() + 1)){
+      const nx = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+      out.push({ from: d.getTime(), to: nx.getTime(), label: d.toLocaleDateString('es-AR', { month: 'short' }).replace('.', ''), title: cap(d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })), gan: 0, venta: 0, n: 0 });
+      d = nx;
+    }
+  }
+  list.forEach(o => { const t = saleTs(o), b = out.find(x => t >= x.from && t < x.to); if (b){ const f = orderFin(o); b.gan += f.gan; b.venta += f.venta; b.n++; } });
+  return { weekly, out };
+}
+function chartSVG(bk){
+  const sm = innerWidth < 640, W = sm ? 360 : 720, H = sm ? 200 : 240, L = sm ? 52 : 64, Rr = 8, T = 14, B = 30, iw = W - L - Rr, ih = H - T - B;
+  const vals = bk.out.map(b => b.gan), mx = Math.max(0, ...vals), mn = Math.min(0, ...vals);
+  const nice = v => { if (v <= 0) return 0; const p = Math.pow(10, Math.floor(Math.log10(v))), f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+  const top = nice(mx) || 1, bot = mn < 0 ? -nice(-mn) : 0;
+  const y = v => T + ih * (top - v) / (top - bot);
+  const n = bk.out.length || 1, slot = iw / n, bw = Math.max(6, Math.min(44, slot * .62));
+  const ticks = [top, top / 2, 0].concat(bot < 0 ? [bot] : []);
+  let g = ticks.map(t => '<line class="' + (t === 0 ? 'zero' : 'grid') + '" x1="' + L + '" x2="' + (W - Rr) + '" y1="' + y(t).toFixed(1) + '" y2="' + y(t).toFixed(1) + '"/><text x="' + (L - 10) + '" y="' + (y(t) + 4).toFixed(1) + '" text-anchor="end">' + kfmt(t) + '</text>').join('');
+  const every = Math.ceil(n / (sm ? 6 : 12));
+  bk.out.forEach((b, i) => {
+    const cx = L + slot * i + slot / 2, y0 = y(0), y1 = y(b.gan), h = Math.abs(y1 - y0), r = Math.min(4, h / 2), x0 = cx - bw / 2;
+    const neg = b.gan < 0, top0 = neg ? y0 : y1;
+    const path = h < .5 ? '' : neg
+      ? 'M' + x0 + ' ' + y0 + 'H' + (x0 + bw) + 'V' + (y0 + h - r) + 'Q' + (x0 + bw) + ' ' + (y0 + h) + ' ' + (x0 + bw - r) + ' ' + (y0 + h) + 'H' + (x0 + r) + 'Q' + x0 + ' ' + (y0 + h) + ' ' + x0 + ' ' + (y0 + h - r) + 'Z'
+      : 'M' + x0 + ' ' + y0 + 'V' + (top0 + r) + 'Q' + x0 + ' ' + top0 + ' ' + (x0 + r) + ' ' + top0 + 'H' + (x0 + bw - r) + 'Q' + (x0 + bw) + ' ' + top0 + ' ' + (x0 + bw) + ' ' + (top0 + r) + 'V' + y0 + 'Z';
+    g += '<g data-bi="' + i + '"><rect class="hit" x="' + (L + slot * i).toFixed(1) + '" y="' + T + '" width="' + slot.toFixed(1) + '" height="' + ih + '"/>' + (path ? '<path class="bar' + (neg ? ' neg' : '') + '" d="' + path + '"/>' : '') + '</g>';
+    if (i % every === 0) g += '<text x="' + cx.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + esc(b.label) + '</text>';
+  });
+  return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Ganancia por ' + (bk.weekly ? 'semana' : 'mes') + '">' + g + '</svg>';
+}
+let gBuckets = null;
+function renderGanancias(tabs){
+  const [from, to] = periodRange(gPeriod);
+  const sold = ORDERS.filter(o => o.estado === 'entregado' && saleTs(o) >= from && saleTs(o) < to).sort((a, b) => saleTs(b) - saleTs(a));
+  const enCurso = ORDERS.filter(o => o.estado === 'confirmado');
+  const sum = list => list.reduce((acc, o) => { const f = orderFin(o); acc.venta += f.venta; acc.costo += f.costo; acc.com += f.com; acc.gan += f.gan; acc.sin += f.sin; acc.ventaCC += f.ventaCC; acc.u += (o.items || []).reduce((s, i) => s + (Number(i.cant) || 0), 0); return acc; }, { venta: 0, costo: 0, com: 0, gan: 0, sin: 0, ventaCC: 0, u: 0 });
+  const S = sum(sold), E = sum(enCurso);
+  const mg = S.ventaCC ? S.gan / S.ventaCC * 100 : null;
+  gBuckets = buckets(sold, gPeriod, from, to);
+  const tops = {};
+  sold.forEach(o => (o.items || []).forEach(i => { const k = i.nombre; const f = orderFin({ items: [i], pago: o.pago }); tops[k] = tops[k] || { n: k, u: 0, gan: 0 }; tops[k].u += Number(i.cant) || 0; tops[k].gan += f.gan; }));
+  const topList = Object.values(tops).sort((a, b) => b.gan - a.gan).slice(0, 6), topMax = Math.max(1, ...topList.map(t => t.gan));
+  $('#view').innerHTML =
+    '<div class="vh"><div><h1>Costos y ganancias</h1><p>Cada pedido que marcan como <b>Entregado</b> suma acá, con el costo que tenía la prenda cuando lo pidieron.</p></div>' +
+    '<div class="acts"><div class="field"><label class="sr" for="g-period">Período</label><select id="g-period" style="min-width:190px">' + PERIODS.map(([k, l]) => '<option value="' + k + '"' + (k === gPeriod ? ' selected' : '') + '>' + l + '</option>').join('') + '</select></div></div></div>' + tabs +
+    '<div class="stats">' +
+      '<div class="stat"><span>Ganancia</span><b style="color:' + (S.gan >= 0 ? 'var(--ok)' : 'var(--bad)') + '">' + ars(S.gan) + '</b><small>' + (mg == null ? 'sin ventas con costo' : pctf(mg) + ' de lo vendido') + '</small></div>' +
+      '<div class="stat"><span>Vendido</span><b>' + ars(S.venta) + '</b><small>' + sold.length + (sold.length === 1 ? ' pedido' : ' pedidos') + ' · ' + S.u + (S.u === 1 ? ' prenda' : ' prendas') + '</small></div>' +
+      '<div class="stat"><span>Costo de lo vendido</span><b>' + ars(S.costo + S.com) + '</b><small>' + (S.com ? 'incluye ' + ars(S.com) + ' de Mercado Pago' : 'prendas y gastos') + '</small></div>' +
+      '<button class="stat" data-nav-ofilt="confirmado"><span>En curso</span><b>' + ars(E.gan) + '</b><small>ganancia de ' + enCurso.length + (enCurso.length === 1 ? ' pedido confirmado' : ' pedidos confirmados') + '</small></button>' +
+    '</div>' +
+    (S.sin ? '<div class="alerts off" style="margin-bottom:18px"><div class="txt"><span class="ico">' + IC.costos + '</span><div><b>' + S.sin + (S.sin === 1 ? ' prenda vendida no tiene costo' : ' prendas vendidas no tienen costo') + '</b><small>No suman a la ganancia. Cargá el costo en la prenda o editá el pedido.</small></div></div></div>' : '') +
+    '<div class="gl"><div class="stack" style="min-width:0">' +
+      '<div class="card chartcard"><h3>Ganancia por ' + (gBuckets.weekly ? 'semana' : 'mes') + '</h3>' + (sold.length ? chartSVG(gBuckets) : '<p class="hint" style="margin:0">Todavía no hay pedidos entregados en este período.</p>') + '<div class="ctip" id="ctip" hidden></div></div>' +
+      '<div class="plist"><div class="srow head"><span>Fecha</span><span>Pedido</span><span class="n c-v">Vendido</span><span class="n">Ganancia</span></div>' +
+        (sold.length ? sold.slice(0, 60).map(o => { const f = orderFin(o), d = new Date(saleTs(o)); return '<div class="srow"><span>' + d.getDate() + '/' + (d.getMonth() + 1) + '</span><span style="min-width:0">' + esc(o.nombre) + '<small>' + (o.items || []).map(i => i.cant + '× ' + esc(i.nombre)).join(', ') + '</small></span><span class="n c-v">' + ars(f.venta) + '</span><span class="n ' + (f.gan >= 0 ? 'pos' : 'neg') + '">' + ars(f.gan) + (f.sin ? '<small>' + f.sin + ' sin costo</small>' : '') + '</span></div>'; }).join('')
+          : '<div class="emptybox" style="padding:28px"><p style="margin:0">Cuando marquen pedidos como Entregado, aparecen acá.</p></div>') +
+      '</div></div>' +
+      '<div class="card"><h3>Lo que más deja</h3>' + (topList.length ? '<div class="top">' + topList.map(t => '<div class="ti"><b>' + esc(t.n) + '</b><span>' + ars(t.gan) + '</span><small>' + t.u + (t.u === 1 ? ' vendida' : ' vendidas') + '</small><div class="meter"><i style="width:' + Math.max(2, t.gan / topMax * 100).toFixed(1) + '%"></i></div></div>').join('') + '</div>' : '<p class="hint" style="margin:0">Aparece cuando haya ventas en el período.</p>') + '</div>' +
+    '</div>';
+}
+function chartTip(e){
+  const tip = $('#ctip'); if (!tip || view !== 'costos' || !gBuckets) return;
+  const g = e.target.closest && e.target.closest('.chart [data-bi]');
+  if (!g){ tip.hidden = true; return; }
+  const b = gBuckets.out[g.dataset.bi], card = g.closest('.chartcard').getBoundingClientRect();
+  const r = (g.querySelector('.bar') || g.querySelector('.hit')).getBoundingClientRect(), hit = g.querySelector('.hit').getBoundingClientRect();
+  tip.innerHTML = esc(b.title) + '<b>' + ars(b.gan) + '</b>' + b.n + (b.n === 1 ? ' pedido' : ' pedidos') + ' · vendido ' + ars(b.venta);
+  tip.hidden = false;
+  const half = tip.offsetWidth / 2, cx = hit.left + hit.width / 2 - card.left;
+  tip.style.left = Math.max(half + 8, Math.min(card.width - half - 8, cx)) + 'px';
+  tip.style.top = Math.max(tip.offsetHeight + 8, r.top - card.top - 8) + 'px';
+}
+document.addEventListener('pointermove', chartTip);
+document.addEventListener('pointerdown', chartTip);
 /* ============================ PEDIDOS ============================ */
 let ORDERS = [], ordersReady = false, ordersSince = 0, lastFull = 0, pollT = null, ordersErr = '';
 const ofilt = { estado: 'abiertos', q: '' };
@@ -1120,8 +1421,18 @@ function rel(ts){
   const d = Math.floor(h / 24);
   return 'hace ' + d + (d === 1 ? ' día' : ' días');
 }
+const ymdTs = s => { const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? new Date(+m[1], +m[2] - 1, +m[3]).getTime() : 0; };
+const fmtDia = s => { const t = ymdTs(s); if (!t) return ''; const d = new Date(t); return d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '') + ' ' + d.getDate() + '/' + (d.getMonth() + 1); };
 function ageInfo(o){
   const h = (Date.now() - o.fecha) / 36e5, d = h / 24;
+  if (isOpen(o) && o.entregarPara && ymdTs(o.entregarPara)){
+    const n = Math.round((ymdTs(o.entregarPara) - sod(Date.now())) / 864e5), lbl = fmtDia(o.entregarPara);
+    if (n < 0) return ['late', 'Atrasado ' + (-n) + (n === -1 ? ' día' : ' días') + ' · era el ' + lbl];
+    if (n === 0) return ['late', 'Entregar hoy'];
+    if (n === 1) return ['mid', 'Entregar mañana · ' + lbl];
+    if (n <= 3) return ['mid', 'Entregar en ' + n + ' días · ' + lbl];
+    return ['ok', 'Entregar el ' + lbl];
+  }
   if (o.estado === 'nuevo'){
     if (h < 12) return ['ok', 'Para responder'];
     return [h < 48 ? 'mid' : 'late', 'Sin responder · ' + rel(o.fecha)];
@@ -1191,7 +1502,7 @@ function mergeOrders(list, replace){
   const fresh = [];
   list.forEach(o => {
     o.fecha = Number(o.fecha) || 0; o.actualizado = Number(o.actualizado) || o.fecha; o.items = o.items || [];
-    if (!before.has(o.id) && !known.has(o.id) && o.estado === 'nuevo') fresh.push(o);
+    if (!before.has(o.id) && !known.has(o.id) && o.estado === 'nuevo' && o.origen !== 'manual') fresh.push(o);
     byId.set(o.id, o);
   });
   ORDERS = [...byId.values()].sort((a, b) => b.fecha - a.fecha);
@@ -1247,14 +1558,14 @@ function orderCard(o){
   const pago = (o.pago || 'A coordinar') + (o.modalidad === 'sena' ? ' · deja seña' : o.modalidad === 'total' ? ' · paga todo' : '');
   return '<article class="ord st-' + esc(o.estado) + '" data-oid="' + esc(o.id) + '">' +
     '<div class="when"><b>' + hhmm(o.fecha) + '</b><small>' + esc(d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')) + ' ' + d.getDate() + '/' + (d.getMonth() + 1) + '</small><small>' + rel(o.fecha) + '</small></div>' +
-    '<div class="obody"><div class="ohead"><h3>' + esc(o.nombre || 'Sin nombre') + '</h3>' + (o.localidad ? '<span class="loc">' + esc(o.localidad) + '</span>' : '') + '<span class="code">#' + esc(o.codigo) + '</span></div>' +
+    '<div class="obody"><div class="ohead"><h3>' + esc(o.nombre || 'Sin nombre') + '</h3>' + (o.localidad ? '<span class="loc">' + esc(o.localidad) + '</span>' : '') + '<span class="code">#' + esc(o.codigo) + '</span>' + (o.origen === 'manual' ? '<span class="ochip">Cargado a mano' + (o.canal ? ' · ' + esc(o.canal) : '') + '</span>' : '') + '</div>' +
       '<ul class="oitems">' + (o.items || []).map(i => '<li><span>' + i.cant + '× ' + esc(i.nombre) + [i.talle, i.color].filter(Boolean).map(x => ' · ' + esc(x)).join('') + '<span class="pill ' + (i.tipo === 'stock' ? 'stock">stock' : 'enc">encargo') + '</span></span><span>' + ars(i.precio * i.cant) + '</span></li>').join('') + '</ul>' +
-      '<div class="ometa"><span>Entrega <b>' + (o.entrega === 'envio' ? 'Envío' + (o.direccion ? ' a ' + esc(o.direccion) : '') : 'Retiro') + '</b></span><span>Pago <b>' + esc(pago) + '</b></span>' + (o.contacto ? '<span>Escribió a <b>' + esc(o.contacto) + '</b></span>' : '') + '</div>' +
+      '<div class="ometa"><span>Entrega <b>' + (o.entrega === 'envio' ? 'Envío' + (o.direccion ? ' a ' + esc(o.direccion) : '') : 'Retiro') + '</b></span><span>Pago <b>' + esc(pago) + '</b></span>' + (o.contacto ? '<span>Escribió a <b>' + esc(o.contacto) + '</b></span>' : '') + (o.telefono ? '<span>Tel <a href="https://wa.me/' + esc(String(o.telefono).replace(/\D/g, '')) + '" target="_blank" rel="noopener"><b>' + esc(o.telefono) + '</b></a></span>' : '') + (o.entregarPara ? '<span>Entregar <b>' + esc(fmtDia(o.entregarPara)) + '</b></span>' : '') + '</div>' +
       (o.nota ? '<div class="onote">“' + esc(o.nota) + '”</div>' : '') + '</div>' +
     '<div class="oside"><div class="otot"><b>' + ars(o.total) + '</b><small>' + (o.sena ? 'Seña ' + ars(o.sena) : (n => n + (n === 1 ? ' prenda' : ' prendas'))((o.items || []).reduce((s, i) => s + i.cant, 0))) + '</small></div>' +
       '<span class="age ' + lvl + '">' + esc(ageTxt) + '</span>' +
       '<div class="states" role="group" aria-label="Estado del pedido">' + OST.map(([k, l]) => '<button class="s-' + k + '" data-ost="' + k + '" aria-pressed="' + (o.estado === k) + '">' + l + '</button>').join('') + '</div>' +
-      '<button class="link" data-act="ocopy" style="font-size:13px">Copiar resumen</button></div>' +
+      '<span style="display:flex;gap:14px"><button class="link" data-act="oedit" style="font-size:13px">Editar</button><button class="link" data-act="ocopy" style="font-size:13px">Copiar resumen</button></span></div>' +
   '</article>';
 }
 function filteredOrders(){
@@ -1294,7 +1605,7 @@ function statsOrdersHTML(){
 }
 function renderPedidos(){
   $('#view').innerHTML =
-    '<div class="vh"><div><h1>Pedidos</h1><p>Cada pedido que mandan por WhatsApp desde la tienda queda anotado acá con el día y la hora. Si alguien no llegó a mandar el mensaje, marcalo como cancelado.</p></div></div>' +
+    '<div class="vh"><div><h1>Pedidos</h1><p>Los que llegan por la tienda se anotan solos con el día y la hora. Los que venden por otro lado, cargalos con “Cargar pedido”.</p></div><div class="acts"><button class="btn pri" data-act="onew">' + IC.plus + 'Cargar pedido</button></div></div>' +
     alertsHTML() +
     '<div class="stats" id="oStats">' + statsOrdersHTML() + '</div>' +
     '<div class="tools"><label class="search field"><span class="sr">Buscar pedido</span>' + IC.search + '<input id="o-q" type="search" placeholder="Buscar por nombre, código o prenda" value="' + esc(ofilt.q) + '"></label>' +
@@ -1420,6 +1731,25 @@ document.addEventListener('click', async e => {
   if (d.act === 'alerts-mute'){ store.set('tl_sound', false); toast('Campana silenciada en este dispositivo'); refreshAlerts(); if (view === 'ajustes') renderAjustes(); return; }
   if (d.act === 'demo-sim'){ await api('demoSimulate'); toast('Pedido simulado: la campana suena en unos segundos'); setTimeout(poll, 1500); return; }
   if (d.ofilt){ ofilt.estado = d.ofilt; return rerenderPedidos(); }
+  if (b.dataset.navOfilt){ ofilt.estado = b.dataset.navOfilt; return go('pedidos'); }
+  if (d.ctab){ if (costTab === 'precios' && d.ctab !== 'precios' && Object.keys(drafts).length) return toast('Guardá o descartá los precios antes de cambiar de pestaña'); costTab = d.ctab; return renderCostos(); }
+  if (d.act === 'onew') return openOrderEditor(null);
+  if (d.act === 'oedit') return openOrderEditor(b.closest('[data-oid]').dataset.oid);
+  if (view === 'pedido'){
+    if (d.act === 'osave') return saveOrderForm();
+    if (d.act === 'iadd'){ readOrderForm(); ordEdit.items.push(blankItem()); ordDirty = true; rerenderOrder(); return; }
+    if (d.irm != null){ readOrderForm(); ordEdit.items.splice(Number(d.irm), 1); ordDirty = true; return rerenderOrder(); }
+    if (d.canal){ readOrderForm(); ordEdit.canal = d.canal; ordDirty = true; return rerenderOrder(); }
+    if (d.oest){ readOrderForm(); ordEdit.estado = d.oest; ordDirty = true; return rerenderOrder(); }
+    if (d.epd != null){ readOrderForm(); ordEdit.entregarPara = Number(d.epd) ? ymdOf(sod(Date.now()) + Number(d.epd) * 864e5) : ''; ordDirty = true; return rerenderOrder(); }
+    if (d.act === 'odel'){ readOrderForm(); ordEdit._confirmDel = true; return rerenderOrder(); }
+    if (d.act === 'odelno'){ readOrderForm(); ordEdit._confirmDel = false; return rerenderOrder(); }
+    if (d.act === 'odelok'){
+      try{ const r = await api('deleteOrder', { id: ordEdit.id }); mergeOrders(r.orders || [], true); updateBadges(); ordDirty = false; toast('Pedido borrado'); go('pedidos', { force: true }); }
+      catch(err){ toast(err.message); }
+      return;
+    }
+  }
   if (d.ost){ return setOrderState(b.closest('[data-oid]').dataset.oid, d.ost); }
   if (d.act === 'ocopy'){ const o = ORDERS.find(x => x.id === b.closest('[data-oid]').dataset.oid); try{ await navigator.clipboard.writeText(orderText(o)); toast('Resumen copiado'); }catch(err){ toast('No se pudo copiar'); } return; }
   if (d.nav){ return go(d.nav); }
@@ -1428,7 +1758,7 @@ document.addEventListener('click', async e => {
   const act = d.act;
   if (act === 'logout'){ if (needsGuard()) { pendingNav = { v: '__logout' }; return showGuard(); } return logout(); }
   if (act === 'guard-stay') return hideGuard();
-  if (act === 'guard-leave'){ hideGuard(); const p = pendingNav; pendingNav = null; drafts = {}; edDirty = false; if (p && p.v === '__logout') return logout(); return p && go(p.v, Object.assign({}, p.opts, { force: true })); }
+  if (act === 'guard-leave'){ hideGuard(); const p = pendingNav; pendingNav = null; drafts = {}; edDirty = false; ordDirty = false; if (p && p.v === '__logout') return logout(); return p && go(p.v, Object.assign({}, p.opts, { force: true })); }
   if (act === 'new') return openEditor(null);
   if (act === 'f-sincosto'){ filt.estado = filt.estado === 'sincosto' ? 'todas' : 'sincosto'; return renderPrendas(); }
   if (act === 'clear-f'){ filt.q = ''; filt.cat = ''; filt.estado = 'todas'; return renderPrendas(); }
@@ -1507,6 +1837,7 @@ document.addEventListener('click', async e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (view === 'pedido' && t.closest('#ordF')){ ordDirty = true; readOrderForm(); const sm = $('#ordSum'); if (sm) sm.innerHTML = ordSummaryHTML(); return; }
   if (view === 'pedidos' && t.id === 'o-q'){ ofilt.q = t.value; $('#oList').innerHTML = listHTML(); return; }
   if (view === 'prendas' && t.id === 'f-q'){ filt.q = t.value; const pos = t.selectionStart; renderPrendas(); const n = $('#f-q'); n.focus(); try{ n.setSelectionRange(pos, pos); }catch(_){} return; }
   if (view === 'editar' && t.closest('#edF')){ edDirty = true; if (t.closest('#priceCard')) updatePout(); return; }
@@ -1533,6 +1864,20 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', async e => {
   const t = e.target;
+  if (view === 'costos' && t.id === 'g-period'){ gPeriod = t.value; return renderCostos(); }
+  if (view === 'pedido' && t.closest('#ordF')){
+    ordDirty = true;
+    if (t.dataset.if === 'pid'){
+      readOrderForm();
+      const it = ordEdit.items[t.closest('.irow').dataset.ii], p = ALL.find(x => x.id === t.value);
+      it.pid = t.value;
+      if (p){ const libres = (p.talles || []).filter(x => x.ok); Object.assign(it, { id: p.id, nombre: p.nombre, precio: Number(p.precio) || '', costo: unitCost(p) || '', tipo: p.tipo, talle: libres.length === 1 ? libres[0].t : '', color: (p.colores || []).length === 1 ? p.colores[0] : '' }); }
+      else if (t.value === '__otra') Object.assign(it, { id: '', nombre: '', precio: '', costo: '', talle: '', color: '' });
+      return rerenderOrder();
+    }
+    if (t.name === 'of-entrega'){ readOrderForm(); return rerenderOrder(); }
+    readOrderForm(); const sm = $('#ordSum'); if (sm) sm.innerHTML = ordSummaryHTML(); return;
+  }
   if (view === 'prendas' && t.id === 'f-cat'){ filt.cat = t.value; return renderPrendas(); }
   if (view === 'prendas' && t.dataset.vis){
     const p = ALL.find(x => x.id === t.dataset.vis); if (!p) return;
