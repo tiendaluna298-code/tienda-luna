@@ -104,8 +104,8 @@ svg.i{width:20px;height:20px;flex:none}
   .mtop .brand svg{width:32px;height:32px}
   .mtop .brand b{font-size:19px}
   .mtop a{color:var(--on-night-dim);display:flex;align-items:center;gap:6px;font-size:13.5px;text-decoration:none;font-weight:600}
-  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
-  .tabbar button{border:0;background:none;display:grid;justify-items:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--muted);padding:6px 2px;border-radius:10px}
+  .tabbar{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar button{border:0;background:none;display:grid;justify-items:center;gap:2px;font-size:10.5px;min-width:0;overflow:hidden;font-weight:600;color:var(--muted);padding:6px 2px;border-radius:10px}
   .tabbar button[aria-current="page"]{color:var(--violet)}
   .tabbar svg{width:22px;height:22px}
   .main{padding:18px 16px 110px}
@@ -235,11 +235,66 @@ button.stat{cursor:pointer}
 .pt .tagp.mk{background:rgba(255,255,255,.9);color:#24123b}
 .drop{border:1.5px dashed var(--line-2);border-radius:12px;aspect-ratio:4/5;display:grid;place-items:center;align-content:center;gap:6px;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;background:var(--surface-2);text-align:center;padding:8px;max-width:100%}
 .drop svg{width:26px;height:26px}
+.pt .reck{position:absolute;top:6px;left:6px;width:28px;height:28px;padding:0;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(15,8,25,.75);color:#fff}
+.pt .reck svg{width:14px;height:14px}
+.pr.off .c-img img,.pr.off h4,.pr.off .c-precio{opacity:.45}
+.pill.off{background:var(--bad-soft);color:var(--bad)}
+.visoff{margin:10px 0 0;padding:9px 12px;border-radius:10px;background:var(--bad-soft);color:var(--bad);font-size:13px;font-weight:600}
+/* recortador de fotos */
+#cropper{position:fixed;inset:0;z-index:90;background:#0d0716;color:#f4ecfb;display:flex;flex-direction:column}
+#cropper[hidden]{display:none}
+.ck-top{display:flex;align-items:center;gap:12px;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top))}
+.ck-top b{font-family:var(--f-display);font-weight:500;font-size:22px}
+.ck-top span{color:#ad9bc4;font-size:13.5px;font-weight:600}
+.ck-top .ck-x{margin-left:auto;width:38px;height:38px;border-radius:50%;border:1px solid #45365f;background:none;color:#f4ecfb;font-size:18px}
+.ck-stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none;cursor:grab;user-select:none}
+.ck-stage.drag{cursor:grabbing}
+.ck-stage canvas{position:absolute;left:0;top:0;transform-origin:0 0;max-width:none;pointer-events:none}
+.ck-frame{position:absolute;border:2px solid #e2bf74;border-radius:6px;box-shadow:0 0 0 100vmax rgba(13,7,22,.72);pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,.28)),linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,.28)),linear-gradient(90deg,rgba(255,255,255,.28),rgba(255,255,255,.28)),linear-gradient(90deg,rgba(255,255,255,.28),rgba(255,255,255,.28));
+  background-size:100% 1px,100% 1px,1px 100%,1px 100%;background-position:0 33.33%,0 66.66%,33.33% 0,66.66% 0;background-repeat:no-repeat}
+.ck-bar{width:100%;max-width:620px;margin:0 auto;padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:grid;gap:12px}
+.ck-hint{text-align:center;color:#ad9bc4;font-size:12.5px}
+.ck-ratios{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.ck-ratios button{height:34px;padding:0 13px;border-radius:17px;border:1px solid #45365f;background:none;color:#f4ecfb;font-size:13px;font-weight:600}
+.ck-ratios button[aria-pressed="true"]{background:#e2bf74;border-color:#e2bf74;color:#24123b}
+.ck-zoom{display:flex;align-items:center;gap:12px}
+.ck-zoom input{flex:1;accent-color:#e2bf74}
+.ck-zoom button{height:38px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;border-radius:10px;border:1px solid #45365f;background:none;color:#f4ecfb;font-size:13px;font-weight:600}
+.ck-zoom svg{width:18px;height:18px}
+.ck-acts{display:flex;gap:8px}
+.ck-acts button{flex:1;height:46px;border-radius:12px;font-weight:700;font-size:14.5px;border:1px solid #45365f;background:none;color:#f4ecfb}
+.ck-acts .ck-ok{background:#e2bf74;border-color:#e2bf74;color:#24123b;flex:1.4}
 .drop.over{border-color:var(--violet);color:var(--violet);background:var(--violet-soft)}
 .tchips{display:flex;flex-wrap:wrap;gap:6px}
 .tch{display:inline-flex;align-items:center;border-radius:10px;border:1.5px solid var(--violet);background:var(--violet-soft);color:var(--violet);font-weight:700;font-size:14px;overflow:hidden}
 .tch.no{border-color:var(--line-2);background:var(--surface);color:var(--muted);text-decoration:line-through}
 .tch button{border:0;background:none;color:inherit;padding:8px 10px;font-weight:700}
+.tch .tq{width:40px;height:26px;margin:0 2px 0 -2px;border:1px solid var(--line-2);border-radius:7px;background:var(--surface);color:var(--fg);text-align:center;font-weight:700;font-size:13px;padding:0}
+.tch.no .tq{text-decoration:none}
+.c-talles .q{font-size:11px;font-weight:700;color:var(--violet);margin-left:2px;vertical-align:super}
+.pill.sold{background:var(--surface-2);color:var(--muted);border:1px solid var(--line-2)}
+.pill.new{background:var(--gold-soft);color:var(--gold-ink)}
+.est{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:18px;align-items:start}
+@media (max-width:1000px){.est{grid-template-columns:1fr}.est-out{order:-1;position:static}}
+.est-out{position:sticky;top:16px}
+.estbig{margin:0;font-family:var(--f-display);font-size:34px;font-style:italic;color:var(--violet);display:grid;gap:2px}
+.estbig small{font-family:var(--f-body);font-style:normal;font-size:13.5px;color:var(--muted)}
+.etools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.epick{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px;max-height:520px;overflow:auto;padding:2px}
+.ep{position:relative;border:2px solid transparent;border-radius:12px;background:var(--surface-2);padding:0;overflow:hidden;text-align:left;display:grid;align-content:start}
+.ep img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.ep span{font-size:11.5px;font-weight:600;padding:5px 6px 6px;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;color:var(--fg)}
+.ep[aria-pressed="true"]{border-color:var(--violet);box-shadow:0 0 0 2px var(--violet-soft)}
+.ep i{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--violet);color:var(--on-violet);font-style:normal;font-weight:800;font-size:12.5px;display:grid;place-items:center}
+.ep em{position:absolute;left:6px;top:6px;font-style:normal;font-size:9.5px;font-weight:800;padding:2px 6px;border-radius:6px;background:rgba(15,8,25,.78);color:#fff;text-transform:uppercase;letter-spacing:.04em}
+.ep em.st{color:#7fe0ae}.ep em.en{color:#e2bf74}.ep em.so{color:#f2899a}
+.eimgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;transition:opacity .2s}
+.eimgs.one{grid-template-columns:1fr;justify-items:center}
+.eimgs.busy{opacity:.45}
+.eimgs a{display:block;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.eimgs img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover}
+.eimgs.one a{width:min(100%,300px)}
 .tch button+button{padding:8px 9px 8px 2px;opacity:.6;text-decoration:none}
 .presets{display:flex;gap:6px;flex-wrap:wrap}
 .presets button{border:1px dashed var(--line-2);background:none;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--muted)}
@@ -496,6 +551,7 @@ button.stat{cursor:pointer}
 </div>
 <div class="guard" id="guard" hidden></div>
 <div class="modal" id="modal" hidden></div>
+<div id="cropper" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -539,6 +595,7 @@ const IC = {
   copy: SVG('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>'),
   back: SVG('<path d="M15 6l-6 6 6 6"/>'),
   trash: SVG('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+  estados: SVG('<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M12 8l1 2.3 2.3 1-2.3 1L12 14.6l-1-2.3-2.3-1 2.3-1z"/>'),
   pedidos: SVG('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>'),
   bell: SVG('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'),
   bellOff: SVG('<path d="M6 16V11a6 6 0 0 1 9.5-4.9M18 11v5l1.5 2H8M10 20.5a2 2 0 0 0 4 0M4 4l16 16"/>'),
@@ -548,7 +605,7 @@ const IC = {
   share: SVG('<circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.4M8.3 13.2l7.4 4.4"/>'),
   install: SVG('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 7v6M9.5 10.5 12 13l2.5-2.5"/>')
 };
-const VIEWS = [['pedidos', 'Pedidos'], ['prendas', 'Prendas'], ['costos', 'Costos y ganancias'], ['categorias', 'Categorías'], ['ajustes', 'Ajustes']];
+const VIEWS = [['pedidos', 'Pedidos'], ['prendas', 'Prendas'], ['estados', 'Estados'], ['costos', 'Costos y ganancias'], ['categorias', 'Categorías'], ['ajustes', 'Ajustes']];
 
 /* ---------------------- prendas de ejemplo (demo) ---------------------- */
 function garment(kind, color, bg){
@@ -704,11 +761,19 @@ let view = 'pedidos', editing = null, edDirty = false, confirmDel = false, edErr
 let drafts = {}, catEdit = null, pageErr = '', pendingNav = null;
 const filt = { q: '', cat: '', estado: 'todas', linea: 'todas' };
 
-let GH = null;
+let GH = null, stockSupported = false;
+const SOLD_STATES = ['confirmado', 'entregado'];
+const stockMap = p => (p && p.stockTalles && typeof p.stockTalles === 'object' && !Array.isArray(p.stockTalles)) ? p.stockTalles : {};
+const stockOf = (p, t) => { const v = stockMap(p)[t]; return v === '' || v == null || isNaN(Number(v)) ? null : Math.max(0, Math.floor(Number(v))); };
+const soldOut = p => (p.talles || []).length > 0 && !(p.talles || []).some(t => t.ok);
+const createdAt = p => { const m = /^p([0-9a-z]{8})[0-9a-z]{3}$/.exec((p && p.id) || ''); return m ? parseInt(m[1], 36) : 0; };
+const diasNuevo = () => CFG.diasNuevo === undefined || CFG.diasNuevo === '' ? 4 : Math.max(0, Number(CFG.diasNuevo) || 0);
+const isNew = p => { const t = createdAt(p); return diasNuevo() > 0 && t > 0 && Date.now() - t < diasNuevo() * 864e5; };
 function setData(d){
   CFG = d.config || {};
   if (d.github) GH = d.github;
   ALL = (d.products || []).slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  stockSupported = ALL.some(p => Object.prototype.hasOwnProperty.call(p, 'stockTalles'));
   ALL.forEach(p => { if (p.modoPrecio !== 'auto') p.modoPrecio = 'manual'; if (p.ganancia === undefined || p.ganancia === null) p.ganancia = ''; p.costo = Number(p.costo) || 0; p.gastos = Number(p.gastos) || 0; });
   $$('.sname').forEach(e => e.textContent = CFG.nombreTienda || 'Tienda Luna');
 }
@@ -745,7 +810,7 @@ function render(){
   $('#sideNav').innerHTML = navHTML();
   $('#tabNav').innerHTML = navHTML();
   document.body.classList.toggle('editing', view === 'editar' || view === 'pedido');
-  ({ pedidos: renderPedidos, pedido: renderOrderEditor, prendas: renderPrendas, editar: renderEditor, costos: renderCostos, categorias: renderCategorias, ajustes: renderAjustes })[view]();
+  ({ pedidos: renderPedidos, pedido: renderOrderEditor, prendas: renderPrendas, estados: () => { renderEstados(); estSchedule(); }, editar: renderEditor, costos: renderCostos, categorias: renderCategorias, ajustes: renderAjustes })[view]();
 }
 function go(v, opts = {}){
   if (!opts.force && needsGuard()){ pendingNav = { v, opts }; return showGuard(); }
@@ -806,9 +871,9 @@ function renderPrendas(){
   const canMove = !filt.q && !filt.cat && filt.estado === 'todas' && filt.linea === 'todas';
   const cats = catsList(filt.linea === 'todas' ? '' : filt.linea);
   $('#view').innerHTML =
-    '<div class="vh"><div><h1>Prendas</h1><p>Todo lo que se ve en la tienda. Tocá una prenda para editarla o el botón compartir para mandarla por WhatsApp.</p></div><div class="acts"><button class="btn ghost" data-act="share-store">' + IC.link + 'Compartir la tienda</button><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div></div>' +
+    '<div class="vh"><div><h1>Prendas</h1><p>Todo lo que se ve en la tienda. Tocá una prenda para editarla o el botón compartir para mandarla por WhatsApp.</p></div><div class="acts"><button class="btn ghost" data-act="share-many">' + IC.share + 'Compartir varias</button><button class="btn ghost" data-act="share-store">' + IC.link + 'Compartir la tienda</button><button class="btn pri" data-act="new">' + IC.plus + 'Nueva prenda</button></div></div>' +
     '<div class="stats">' +
-      '<div class="stat"><span>Publicadas</span><b>' + vis + '</b><small>de ' + ALL.length + ' cargadas</small></div>' +
+      (ALL.length - vis ? '<button class="stat warn" data-act="f-ocultas"><span>Publicadas</span><b>' + vis + ' de ' + ALL.length + '</b><small>' + (ALL.length - vis) + (ALL.length - vis === 1 ? ' oculta' : ' ocultas') + ' · tocá para verlas</small></button>' : '<div class="stat"><span>Publicadas</span><b>' + vis + '</b><small>de ' + ALL.length + ' cargadas</small></div>') +
       '<div class="stat"><span>Entrega inmediata</span><b>' + stock + '</b><small>' + (ALL.length - stock) + ' por encargo</small></div>' +
       '<div class="stat"><span>Talles agotados</span><b>' + agot + '</b><small>tachados en la tienda</small></div>' +
       '<button class="stat' + (sinCosto ? ' warn' : '') + '" data-act="f-sincosto"><span>Sin costo cargado</span><b>' + sinCosto + '</b><small>' + (sinCosto ? 'Tocá para verlas' : 'Todo calculado') + '</small></button>' +
@@ -821,11 +886,11 @@ function renderPrendas(){
       (ALL.length ? '<div class="pr head"><span></span><span>Prenda</span><span>Disponibilidad</span><span>Talles</span><span>Precio</span><span>Ganancia</span><span>Visible</span><span style="text-align:right">' + (canMove ? 'Orden' : '') + '</span></div>' : '') +
       (list.length ? list.map((p, i) => {
         const r = pricing(p);
-        return '<div class="pr" data-open="' + esc(p.id) + '">' +
+        return '<div class="pr' + (p.visible ? '' : ' off') + '" data-open="' + esc(p.id) + '">' +
           '<div class="c-img"><img loading="lazy" src="' + esc(photoUrl((p.fotos || [])[0], 160)) + '" alt=""></div>' +
-          '<div class="c-name" style="min-width:0"><h4>' + esc(p.nombre) + '</h4><div class="sub">' + (lineaOf(p) === 'natura' ? '<span class="pill nat">Natura</span>' : '') + '<span>' + esc(p.categoria || 'Sin categoría') + '</span>' + (p.destacado ? '<span>· Destacada</span>' : '') + '<span class="m-only pill ' + (p.tipo === 'stock' ? 'stock">Stock' : 'enc">Encargo') + '</span></div></div>' +
+          '<div class="c-name" style="min-width:0"><h4>' + esc(p.nombre) + '</h4><div class="sub">' + (lineaOf(p) === 'natura' ? '<span class="pill nat">Natura</span>' : '') + (p.visible ? '' : '<span class="pill off">Oculta</span>') + (soldOut(p) ? '<span class="pill sold">Agotada</span>' : '') + (isNew(p) ? '<span class="pill new">Nueva</span>' : '') + '<span>' + esc(p.categoria || 'Sin categoría') + '</span>' + (p.destacado ? '<span>· Destacada</span>' : '') + '<span class="m-only pill ' + (p.tipo === 'stock' ? 'stock">Stock' : 'enc">Encargo') + '</span></div></div>' +
           '<div class="c-tipo"><span class="pill ' + (p.tipo === 'stock' ? 'stock">Entrega inmediata' : 'enc">Por encargo') + '</span></div>' +
-          '<div class="c-talles">' + ((p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ') || '—') + '</div>' +
+          '<div class="c-talles">' + ((p.talles || []).map(t => { const n = stockOf(p, t.t); return (t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>') + (n != null && t.ok ? '<span class="q">' + n + '</span>' : ''); }).join(' · ') || '—') + '</div>' +
           '<div class="c-precio">' + ars(r.precio) + (p.precioAnterior > r.precio ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '<span class="m-only">' + (r.ct ? '<span class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '" style="font-size:13px">ganás ' + ars(r.gan) + '</span>' : '<span class="nocost">sin costo</span>') + '</span></div>' +
           '<div class="c-gain">' + gainHTML(p) + '</div>' +
           '<div class="c-vis"><label class="switch" title="Visible en la tienda"><input type="checkbox" data-vis="' + esc(p.id) + '"' + (p.visible ? ' checked' : '') + ' aria-label="Visible en la tienda"><span></span></label></div>' +
@@ -849,6 +914,7 @@ function openEditor(id){
   editing = p ? JSON.parse(JSON.stringify(p)) : blankProduct();
   editing.linea = lineaOf(editing);
   ['talles', 'fotos', 'colores'].forEach(k => editing[k] = editing[k] || []);
+  editing.stockTalles = Object.assign({}, stockMap(editing));
   if (editing.costo === 0) editing.costo = '';
   if (editing.gastos === 0) editing.gastos = '';
   if (!editing.precioAnterior) editing.precioAnterior = '';
@@ -899,7 +965,7 @@ function renderEditor(){
     (edErr ? '<p class="err" style="margin:-8px 0 14px">' + esc(edErr) + '</p>' : '') +
     '<form class="ed" id="edF" novalidate><div class="stack">' +
       '<div class="card"><h3>Fotos <span style="text-transform:none;letter-spacing:0;font-weight:500">La primera es la portada</span></h3><div class="photos">' +
-        p.fotos.map((f, i) => '<div class="pt"><img src="' + esc(f.pending ? f.url : photoUrl(f, 320)) + '" alt=""><button type="button" class="rmx" data-rmph="' + i + '" aria-label="Quitar foto">×</button>' + (i ? '<button type="button" class="tagp mk" data-first="' + i + '">Hacer portada</button>' : '<span class="tagp main">Portada</span>') + '</div>').join('') +
+        p.fotos.map((f, i) => '<div class="pt"><img src="' + esc(f.pending ? f.url : photoUrl(f, 320)) + '" alt=""><button type="button" class="reck" data-reck="' + i + '" aria-label="Recortar foto" title="Recortar">' + CROP_IC + '</button><button type="button" class="rmx" data-rmph="' + i + '" aria-label="Quitar foto">×</button>' + (i ? '<button type="button" class="tagp mk" data-first="' + i + '">Hacer portada</button>' : '<span class="tagp main">Portada</span>') + '</div>').join('') +
         '<label class="drop" id="drop">' + IC.cam + '<span>Agregar fotos</span><span style="font-weight:500">o arrastralas acá</span><input type="file" id="phIn" accept="image/*" multiple hidden></label></div></div>' +
       '<div class="card"><h3>Datos</h3><div class="stack">' +
         (naturaOn() ? '<div class="field"><span class="lbl">Sección de la tienda</span><div class="choice"><label><input type="radio" name="e-linea" value="ropa"' + (!nat ? ' checked' : '') + '><span>Ropa<small>Tienda Luna</small></span></label><label><input type="radio" name="e-linea" value="natura"' + (nat ? ' checked' : '') + '><span>Natura<small>Lo atiende quien vende Natura</small></span></label></div></div>' : '') +
@@ -911,13 +977,18 @@ function renderEditor(){
         '<div class="field"><label for="e-desc">Descripción</label><textarea id="e-desc" placeholder="' + (nat ? 'Tamaño, para qué sirve, promo del ciclo…' : 'Tela, calce, recomendaciones de talle…') + '">' + esc(p.descripcion) + '</textarea></div>' +
       '</div></div>' +
       (nat && !p.talles.length ? '' : '<div class="card"><h3>Talles <span style="text-transform:none;letter-spacing:0;font-weight:500">Tocá un talle para marcarlo agotado</span></h3><div class="stack">' +
-        '<div class="tchips">' + (p.talles.length ? p.talles.map((t, i) => '<span class="tch' + (t.ok ? '' : ' no') + '"><button type="button" data-tog="' + i + '" title="' + (t.ok ? 'Marcar agotado' : 'Marcar disponible') + '">' + esc(t.t) + '</button><button type="button" data-rmt="' + i + '" aria-label="Quitar ' + esc(t.t) + '">×</button></span>').join('') : '<span class="hint">Sin talles: la prenda se agrega sin elegir talle.</span>') + '</div>' +
+        (p.tipo === 'stock' && p.talles.length ? '<p class="hint" style="margin:0">El número es cuántas tienen de cada talle (solo lo ven ustedes). Cuando llega a 0 el talle se tacha solo, y baja solo al confirmar o entregar un pedido. Vacío = no llevan la cuenta.</p>' : '') +
+        '<div class="tchips">' + (p.talles.length ? p.talles.map((t, i) => { const n = stockOf(p, t.t);
+          return '<span class="tch' + (t.ok ? '' : ' no') + '"><button type="button" data-tog="' + i + '" title="' + (t.ok ? 'Marcar agotado' : 'Marcar disponible') + '">' + esc(t.t) + '</button>' +
+            (p.tipo === 'stock' ? '<input class="tq" data-tq="' + i + '" inputmode="numeric" maxlength="3" value="' + (n == null ? '' : n) + '" placeholder="–" aria-label="Cantidad del talle ' + esc(t.t) + '" title="Cantidad">' : '') +
+            '<button type="button" data-rmt="' + i + '" aria-label="Quitar ' + esc(t.t) + '">×</button></span>'; }).join('') : '<span class="hint">Sin talles: la prenda se agrega sin elegir talle.</span>') + '</div>' +
         '<div style="display:flex;gap:8px"><div class="field" style="flex:1"><label class="sr" for="e-newt">Talle nuevo</label><input id="e-newt" placeholder="Agregar talle (ej: XXL, 48)"></div><button type="button" class="btn ghost" data-act="addt">Agregar</button></div>' +
-        '<div class="presets"><span class="hint" style="align-self:center">Rápido:</span><button type="button" data-pre="XS,S,M,L,XL,XXL">XS a XXL</button><button type="button" data-pre="S,M,L,XL">S a XL</button><button type="button" data-pre="36,38,40,42,44,46">36 a 46</button><button type="button" data-pre="Único">Talle único</button></div>' +
+        '<div class="presets"><span class="hint" style="align-self:center">Rápido:</span><button type="button" data-pre="XS,S,M,L,XL,XXL">XS a XXL</button><button type="button" data-pre="S,M,L,XL">S a XL</button><button type="button" data-pre="36,38,40,42,44,46">36 a 46</button><button type="button" data-pre="Único">Talle único</button>' + (p.talles.length ? '<span style="flex:1"></span>' + (soldOut(p) ? '<button type="button" data-act="all-ok">Volver a tener todo</button>' : '<button type="button" data-act="all-no">Marcar todo agotado</button>') : '') + '</div>' +
       '</div></div>') +
     '</div><div class="ed-side">' + priceCardHTML() +
       '<div class="card"><h3>Publicación</h3>' +
         '<div class="togrow"><div><b>Visible en la tienda</b><small>Apagalo para ocultarla sin borrarla</small></div><label class="switch"><input type="checkbox" id="e-vis"' + (p.visible ? ' checked' : '') + '><span></span></label></div>' +
+        '<p class="visoff" id="visoff"' + (p.visible ? ' hidden' : '') + '>Está oculta: no aparece en la tienda ni en los links compartidos.</p>' +
         '<div class="togrow"><div><b>Destacada</b><small>Aparece primero, con etiqueta</small></div><label class="switch"><input type="checkbox" id="e-dest"' + (p.destacado ? ' checked' : '') + '><span></span></label></div>' +
         (p.id ? '<div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">' + (confirmDel
           ? '<p class="err" style="margin:0 0 8px">Se borra la prenda y sus fotos. No se puede deshacer.</p><div style="display:flex;gap:8px"><button type="button" class="btn ghost sm" data-act="nodel">Cancelar</button><button type="button" class="btn danger sm" style="flex:1" data-act="del2">Sí, eliminar</button></div>'
@@ -942,6 +1013,12 @@ function readEditor(){
   if (v('#e-gan') !== null) editing.ganancia = v('#e-gan').trim() === '' ? '' : (pnum(v('#e-gan')) ?? '');
   if (v('#e-precio') !== null) editing.precio = v('#e-precio').replace(/[^\d]/g, '');
   if (v('#e-ant') !== null) editing.precioAnterior = v('#e-ant').replace(/[^\d]/g, '');
+  $$('[data-tq]').forEach(inp => {
+    const tl = editing.talles[Number(inp.dataset.tq)]; if (!tl) return;
+    const v = inp.value.replace(/[^\d]/g, '');
+    if (v === '') delete editing.stockTalles[tl.t];
+    else { editing.stockTalles[tl.t] = Number(v); tl.ok = Number(v) > 0; }
+  });
   const vis = $('#e-vis'); if (vis) editing.visible = vis.checked;
   const de = $('#e-dest'); if (de) editing.destacado = de.checked;
 }
@@ -963,14 +1040,17 @@ async function saveEditor(){
       p.fotos[p.fotos.indexOf(pend[i])] = { id: up.id, url: up.url };
     }
     busy = 'Guardando…'; rerenderEditor();
-    const prod = Object.assign({}, p, {
+    const st = {};
+    if (p.tipo === 'stock') p.talles.forEach(t => { const n = stockOf(p, t.t); if (n != null) st[t.t] = n; });
+    const prod = Object.assign({}, p, { stockTalles: st,
       precio: r.precio, precioAnterior: money(p.precioAnterior), costo: money(p.costo), gastos: money(p.gastos),
       ganancia: pnum(p.ganancia) == null ? '' : pnum(p.ganancia), modoPrecio: p.modoPrecio === 'auto' ? 'auto' : 'manual'
     });
     const nuevo = !p.id;
     setData(await api('saveProduct', { product: prod }));
     busy = ''; edDirty = false;
-    toast(nuevo ? 'Prenda publicada' : 'Cambios guardados');
+    toast(!prod.visible ? 'Guardada, pero está OCULTA: no se ve en la tienda' : (nuevo ? 'Prenda publicada' : 'Cambios guardados'));
+    if (Object.keys(st).length && !stockSupported) setTimeout(stockHelp, 400);
     go('prendas', { force: true });
   }catch(err){ busy = ''; edErr = 'No se pudo guardar: ' + err.message; rerenderEditor(); }
 }
@@ -990,12 +1070,175 @@ function compress(file, max){
 async function addPhotos(files){
   readEditor();
   const list = [...files].filter(f => /^image\//.test(f.type)).slice(0, 10);
-  for (const file of list){
-    try{ editing.fotos.push({ pending: true, url: await compress(file, DEMO ? 700 : 1400) }); }
-    catch(e){ toast('No se pudo leer una foto'); }
+  let added = 0;
+  for (let i = 0; i < list.length; i++){
+    let src;
+    try{ src = toCanvas(await fileToImg(list[i]), 2000); }
+    catch(e){ toast('No se pudo leer una foto'); continue; }
+    const r = await cropImage(src, { i, n: list.length });
+    if (r === 'stop') break;
+    if (!r) continue;
+    editing.fotos.push({ pending: true, url: r, src: src.toDataURL('image/jpeg', .9) });
+    added++; edDirty = true; rerenderEditor();
   }
-  edDirty = true; rerenderEditor();
+  if (added) rerenderEditor();
 }
+async function reCrop(i){
+  readEditor();
+  const f = editing.fotos[i]; if (!f) return;
+  let img = null;
+  try{ img = f.pending ? await loadImg(f.src || f.url) : await loadFoto(f); }catch(e){}
+  if (!img){ toast('No se pudo abrir la foto para recortar'); return; }
+  let src;
+  try{ src = toCanvas(img, 2000); src.toDataURL('image/jpeg', .5); }
+  catch(e){ toast('Esta foto no se puede recortar desde acá. Volvé a subirla.'); return; }
+  const r = await cropImage(src, { i: 0, n: 1, again: true });
+  if (!r || r === 'stop') return;
+  editing.fotos[i] = { pending: true, url: r, src: f.src || src.toDataURL('image/jpeg', .9) };
+  edDirty = true; rerenderEditor(); toast('Foto recortada. Se sube al guardar.');
+}
+
+/* ------------------------- recortador de fotos ------------------------- */
+const CROP_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>';
+const ROT_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>';
+const CK_RATIOS = [['4:5', 4 / 5, 'Tienda 4:5'], ['1:1', 1, 'Cuadrada'], ['3:4', 3 / 4, '3:4'], ['orig', 0, 'Original']];
+let ck = null;
+function fileToImg(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => res(img); img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+function toCanvas(img, max){
+  const w0 = img.naturalWidth || img.width, h0 = img.naturalHeight || img.height;
+  const k = Math.min(1, max / Math.max(w0, h0));
+  const c = document.createElement('canvas'); c.width = Math.round(w0 * k); c.height = Math.round(h0 * k);
+  c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+  if (/^blob:/.test(img.src)) URL.revokeObjectURL(img.src);
+  return c;
+}
+function canvasJpeg(src, sx, sy, sw, sh){
+  const max = DEMO ? 700 : 1400, k = Math.min(1, max / Math.max(sw, sh));
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k));
+  const x = c.getContext('2d'); x.imageSmoothingQuality = 'high';
+  x.drawImage(src, sx, sy, sw, sh, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', DEMO ? 0.72 : 0.84);
+}
+function cropImage(src, opt){
+  return new Promise(resolve => {
+    const saved = store.get('tl_crop_ratio', '4:5');
+    ck = { src, ratio: CK_RATIOS.some(r => r[0] === saved) ? saved : '4:5', s: 1, x: 0, y: 0, minS: 1, f: null, ptr: new Map(), last: null, resolve, opt };
+    const el = $('#cropper');
+    el.innerHTML = '<div class="ck-top"><b>' + (opt.again ? 'Recortar foto' : 'Encuadrá la foto') + '</b>' + (opt.n > 1 ? '<span>' + (opt.i + 1) + ' de ' + opt.n + '</span>' : '') +
+      '<button type="button" class="ck-x" data-ck="skip" aria-label="' + (opt.again ? 'Cancelar' : 'Descartar esta foto') + '" title="' + (opt.again ? 'Cancelar' : 'Descartar esta foto') + '">×</button></div>' +
+      '<div class="ck-stage" id="ckStage"><div class="ck-frame" id="ckFrame"></div></div>' +
+      '<div class="ck-bar"><div class="ck-hint">Arrastrá para mover · pellizcá o usá la rueda para acercar</div>' +
+      '<div class="ck-ratios" role="group" aria-label="Formato">' + CK_RATIOS.map(r => '<button type="button" data-ckr="' + r[0] + '" aria-pressed="' + (r[0] === ck.ratio) + '">' + r[2] + '</button>').join('') + '</div>' +
+      '<div class="ck-zoom"><button type="button" data-ck="rot" aria-label="Girar">' + ROT_IC + 'Girar</button><input type="range" id="ckZoom" min="1" max="5" step="0.01" value="1" aria-label="Zoom"></div>' +
+      '<div class="ck-acts"><button type="button" data-ck="full">' + (opt.again ? 'Foto completa' : 'Sin recortar') + '</button><button type="button" class="ck-ok" data-ck="ok">' + (opt.n > 1 && opt.i < opt.n - 1 ? 'Usar y seguir' : 'Usar foto') + '</button></div></div>';
+    el.hidden = false; document.body.style.overflow = 'hidden';
+    $('#ckStage').insertBefore(src, $('#ckFrame'));
+    ckLayout(true);
+  });
+}
+function ckDone(val){
+  if (!ck) return;
+  const r = ck.resolve; ck = null;
+  const el = $('#cropper'); el.hidden = true; el.innerHTML = ''; document.body.style.overflow = '';
+  r(val);
+}
+function ckLayout(reset){
+  if (!ck) return;
+  const st = $('#ckStage'), W = ck.src.width, H = ck.src.height;
+  const sw = st.clientWidth, sh = st.clientHeight, pad = Math.min(28, sw * .05);
+  const r = (CK_RATIOS.find(x => x[0] === ck.ratio) || [])[1] || W / H;
+  let fw = sw - pad * 2, fh = fw / r;
+  if (fh > sh - pad * 2){ fh = sh - pad * 2; fw = fh * r; }
+  const prev = ck.f;
+  ck.f = { x: (sw - fw) / 2, y: (sh - fh) / 2, w: fw, h: fh };
+  const minS = Math.max(fw / W, fh / H);
+  if (reset || !prev){
+    ck.s = minS; ck.x = ck.f.x + (fw - W * minS) / 2; ck.y = ck.f.y + (fh - H * minS) / 2;
+  } else {
+    // mantener el mismo centro de la foto dentro del nuevo marco
+    const cx = (prev.x + prev.w / 2 - ck.x) / ck.s, cy = (prev.y + prev.h / 2 - ck.y) / ck.s, z = ck.s / ck.minS;
+    ck.s = minS * z; ck.x = ck.f.x + fw / 2 - cx * ck.s; ck.y = ck.f.y + fh / 2 - cy * ck.s;
+  }
+  ck.minS = minS;
+  const fr = $('#ckFrame'); Object.assign(fr.style, { left: ck.f.x + 'px', top: ck.f.y + 'px', width: fw + 'px', height: fh + 'px' });
+  Object.assign(ck.src.style, { width: W + 'px', height: H + 'px' });
+  ckApply();
+}
+function ckClamp(){
+  const f = ck.f, W = ck.src.width * ck.s, H = ck.src.height * ck.s;
+  ck.x = Math.min(f.x, Math.max(f.x + f.w - W, ck.x));
+  ck.y = Math.min(f.y, Math.max(f.y + f.h - H, ck.y));
+}
+function ckApply(){
+  ckClamp();
+  ck.src.style.transform = 'translate(' + ck.x + 'px,' + ck.y + 'px) scale(' + ck.s + ')';
+  const z = $('#ckZoom'); if (z) z.value = (ck.s / ck.minS).toFixed(2);
+}
+function ckZoomAt(ns, cx, cy){
+  ns = Math.min(ck.minS * 5, Math.max(ck.minS, ns));
+  ck.x = cx - (cx - ck.x) * ns / ck.s; ck.y = cy - (cy - ck.y) * ns / ck.s; ck.s = ns; ckApply();
+}
+function ckRotate(){
+  const o = ck.src, c = document.createElement('canvas'); c.width = o.height; c.height = o.width;
+  const x = c.getContext('2d'); x.translate(c.width, 0); x.rotate(Math.PI / 2); x.drawImage(o, 0, 0);
+  o.replaceWith(c); ck.src = c; ckLayout(true);
+}
+function ckOutput(full){
+  const src = ck.src;
+  if (full) return canvasJpeg(src, 0, 0, src.width, src.height);
+  const f = ck.f, sx = (f.x - ck.x) / ck.s, sy = (f.y - ck.y) / ck.s, sw = f.w / ck.s, sh = f.h / ck.s;
+  return canvasJpeg(src, Math.max(0, sx), Math.max(0, sy), Math.min(src.width, sw), Math.min(src.height, sh));
+}
+function ckLocal(e){ const r = $('#ckStage').getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+$('#cropper').addEventListener('click', e => {
+  if (!ck) return;
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.ckr){ ck.ratio = b.dataset.ckr; store.set('tl_crop_ratio', ck.ratio); $$('#cropper [data-ckr]').forEach(x => x.setAttribute('aria-pressed', x === b)); return ckLayout(false); }
+  const a = b.dataset.ck;
+  if (a === 'rot') return ckRotate();
+  if (a === 'skip') return ckDone(null);
+  if (a === 'ok' || a === 'full'){
+    let out = null;
+    try{ out = ckOutput(a === 'full'); }catch(err){ toast('No se pudo recortar esta foto'); }
+    return ckDone(out);
+  }
+});
+$('#cropper').addEventListener('input', e => { if (ck && e.target.id === 'ckZoom'){ const f = ck.f; ckZoomAt(ck.minS * Number(e.target.value), f.x + f.w / 2, f.y + f.h / 2); } });
+$('#cropper').addEventListener('pointerdown', e => {
+  if (!ck || !e.target.closest('#ckStage')) return;
+  const st = $('#ckStage'); st.setPointerCapture(e.pointerId); st.classList.add('drag');
+  ck.ptr.set(e.pointerId, ckLocal(e)); ck.last = null;
+});
+$('#cropper').addEventListener('pointermove', e => {
+  if (!ck || !ck.ptr.has(e.pointerId)) return;
+  const prev = ck.ptr.get(e.pointerId), cur = ckLocal(e);
+  if (ck.ptr.size === 1){ ck.x += cur.x - prev.x; ck.y += cur.y - prev.y; ck.ptr.set(e.pointerId, cur); return ckApply(); }
+  ck.ptr.set(e.pointerId, cur);
+  const [a, b] = [...ck.ptr.values()];
+  const dist = Math.hypot(a.x - b.x, a.y - b.y), mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  if (ck.last){ ck.x += mid.x - ck.last.mid.x; ck.y += mid.y - ck.last.mid.y; ckZoomAt(ck.s * dist / (ck.last.dist || dist), mid.x, mid.y); }
+  ck.last = { dist, mid };
+});
+['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => $('#cropper').addEventListener(ev, e => {
+  if (!ck) return; ck.ptr.delete(e.pointerId); ck.last = null;
+  if (!ck.ptr.size){ const st = $('#ckStage'); if (st) st.classList.remove('drag'); }
+}));
+$('#cropper').addEventListener('wheel', e => {
+  if (!ck || !e.target.closest('#ckStage')) return;
+  e.preventDefault(); const p = ckLocal(e); ckZoomAt(ck.s * Math.exp(-e.deltaY * 0.0015), p.x, p.y);
+}, { passive: false });
+document.addEventListener('keydown', e => {
+  if (!ck) return;
+  if (e.key === 'Escape'){ e.preventDefault(); ckDone(null); }
+  else if (e.key === 'Enter'){ e.preventDefault(); $('#cropper [data-ck="ok"]').click(); }
+}, true);
+window.addEventListener('resize', () => { if (ck) ckLayout(false); });
 
 /* ------------------------ costos y precios ------------------------ */
 function merged(p){ return Object.assign({}, p, drafts[p.id] || {}); }
@@ -1166,7 +1409,8 @@ function renderAjustes(){
         f('mensajeBanner', 'Mensaje del cartel', c.mensajeBanner) + f('senaPorcentaje', 'Seña para encargos', c.senaPorcentaje, 'inputmode="numeric"', '0 = no pedir seña', 'pct') + '</div>' +
       '<div class="card"><h3>Pago y entrega</h3>' + f('metodosPago', 'Formas de pago', parseList(c.metodosPago).join(', '), '', 'Separadas por coma') + f('aliasTransferencia', 'Alias para transferir', c.aliasTransferencia, '', 'Se muestra al elegir transferencia o Mercado Pago') +
         '<div class="grid2">' + f('zonaEnvio', 'Zona de envío', c.zonaEnvio) + f('costoEnvio', 'Costo de envío', c.costoEnvio) + '</div>' + f('puntoRetiro', 'Dónde se retira', c.puntoRetiro) + '</div>' +
-      '<div class="card"><h3>Tienda</h3><div class="grid2">' + f('nombreTienda', 'Nombre', c.nombreTienda) + f('instagram', 'Instagram', c.instagram, 'placeholder="@tiendaluna"') + '</div></div>' +
+      '<div class="card"><h3>Tienda</h3><div class="grid2">' + f('nombreTienda', 'Nombre', c.nombreTienda) + f('instagram', 'Instagram', c.instagram, 'placeholder="@tiendaluna"') + '</div>' +
+        f('diasNuevo', 'Etiqueta “Nuevo” (días)', String(diasNuevo()), 'inputmode="numeric"', 'Las prendas subidas hace menos de estos días llevan la etiqueta Nuevo en la tienda. 0 = no mostrarla.') + '</div>' +
       naturaCardHTML(f) +
     '</form>';
   updateCfgPreview();
@@ -1191,7 +1435,7 @@ function updateCfgPreview(){
   el.innerHTML = 'Ejemplo: algo que les cuesta <b>$10.000</b> se vende a <b>' + ars(r.precio) + '</b> y ganan <b>' + ars(r.gan) + '</b>.';
 }
 async function saveAjustes(){
-  const keys = ['nombreTienda','instagram','fechaCierre','diasEncargo','mensajeBanner','senaPorcentaje','metodosPago','aliasTransferencia','zonaEnvio','costoEnvio','puntoRetiro','gananciaDefault','comisionCobro','cicloNatura','cierreNatura','diasNatura','folletoNatura','mensajeNatura'];
+  const keys = ['diasNuevo','nombreTienda','instagram','fechaCierre','diasEncargo','mensajeBanner','senaPorcentaje','metodosPago','aliasTransferencia','zonaEnvio','costoEnvio','puntoRetiro','gananciaDefault','comisionCobro','cicloNatura','cierreNatura','diasNatura','folletoNatura','mensajeNatura'];
   const cfg = {}; pageErr = '';
   keys.forEach(k => { const el = $('#s-' + k); if (el) cfg[k] = el.value.trim(); });
   cfg.redondeo = $('#s-redondeo').value;
@@ -1217,6 +1461,7 @@ async function saveAjustes(){
   cfg.whatsapp = cts.length ? cts[0].numero : '';
   cfg.metodosPago = JSON.stringify(parseList(cfg.metodosPago));
   cfg.senaPorcentaje = String(Math.max(0, Math.min(100, parseInt(cfg.senaPorcentaje, 10) || 0)));
+  cfg.diasNuevo = String(Math.max(0, Math.min(60, parseInt(cfg.diasNuevo, 10) || 0)));
   if (pageErr){ const y = scrollY; renderAjustes(); scrollTo(0, y); toast(pageErr); return; }
   busy = 'Guardando…'; renderAjustes();
   try{
@@ -1354,9 +1599,12 @@ async function saveOrderForm(){
     nota: o.nota, estado: o.estado, contacto: o.contacto || '',
     items: items.map(i => ({ id: i.pid && i.pid !== '__otra' ? i.pid : '', nombre: i.nombre, talle: i.talle, color: i.color, cant: Number(i.cant) || 1, precio: Number(i.precio) || 0, costo: Number(i.costo) || 0, tipo: i.tipo || 'stock', linea: i.linea === 'natura' ? 'natura' : 'ropa' }))
   };
+  const before = o.id ? ORDERS.find(x => x.id === o.id) : null;
+  const stockCh = [...(before && SOLD_STATES.includes(before.estado) ? orderStock(before.items, 1) : []), ...(SOLD_STATES.includes(payload.estado) ? orderStock(payload.items, -1) : [])];
   ordBusy = 'Guardando…'; rerenderOrder();
   try{
     const d = await api('saveOrder', { order: payload });  // el formulario ya fue leído arriba
+    stockAdjust(stockCh);
     store.set(KNOWN_KEY, [...new Set([...(d.orders || []).map(x => x.id), ...(store.get(KNOWN_KEY, []) || [])])].slice(0, 800));
     mergeOrders(d.orders || [], true); ordersSince = Math.max(ordersSince, d.now || 0);
     ordBusy = ''; ordDirty = false; updateBadges();
@@ -1696,8 +1944,402 @@ async function setOrderState(id, estado){
   const prev = o.estado; o.estado = estado; o.actualizado = Date.now();
   updateBadges(); rerenderPedidos();
   try{ const d = await api('setOrderStatus', { id, estado }); mergeOrders(d.orders || [], true); ordersSince = Math.max(ordersSince, d.now || 0); updateBadges(); rerenderPedidos();
-    toast('Pedido de ' + (o.nombre || '') + ': ' + OST.find(x => x[0] === estado)[1].toLowerCase()); }
+    toast('Pedido de ' + (o.nombre || '') + ': ' + OST.find(x => x[0] === estado)[1].toLowerCase());
+    const was = SOLD_STATES.includes(prev), now = SOLD_STATES.includes(estado);
+    if (was !== now) stockAdjust(orderStock(o.items, now ? -1 : 1)); }
   catch(err){ o.estado = prev; updateBadges(); rerenderPedidos(); toast('No se pudo cambiar: ' + err.message); }
+}
+
+/* =========================== ESTADOS =========================== */
+// Imágenes 1080x1920 para el estado de WhatsApp / historias. Nunca muestran precios.
+const est = { tool: 'cuenta', linea: 'ropa', sel: { varias: null, fecha: null }, modo: 'sueltas', camp: 'madre', frase: 0, titulo: null, sub: null, q: '', imgs: [], text: '', textDirty: false, gen: 0, busy: false, err: '' };
+const TEMAS = {
+  luna:   { top: '#1d0e34', bot: '#110619', glow: 'rgba(98,54,160,.55)', acc: '#e2bf74', acc2: '#ecc982', soft: '#b9a6d0', ink: '#1d0f30', cell: '#2a1c3e' },
+  natura: { top: '#2b140c', bot: '#130806', glow: 'rgba(214,120,60,.42)', acc: '#f2b27a', acc2: '#f6c89c', soft: '#d9bca7', ink: '#2b140c', cell: '#3a2216' },
+  madre:  { top: '#2c0d2b', bot: '#120614', glow: 'rgba(222,96,150,.5)', acc: '#e2bf74', acc2: '#ecc982', soft: '#e0b8cc', ink: '#2c0d2b', cell: '#3b1838', petal: '#f3a9c4', petal2: '#e2bf74' }
+};
+function diaMadre(){
+  const now = new Date();
+  const f = y => { const d = new Date(y, 9, 1); return new Date(y, 9, 1 + (7 - d.getDay()) % 7 + 14, 23, 59); };
+  let d = f(now.getFullYear()); if (d < now) d = f(now.getFullYear() + 1); return d;
+}
+const fechaCorta = d => d.getDate() + '/' + (d.getMonth() + 1);
+const diaMadreTxt = () => 'domingo ' + fechaCorta(diaMadre());
+const CAMPS = {
+  madre: { label: 'Día de la Madre', titulo: 'Feliz día, ma', emoji: '🌷', tema: 'madre', max: 4,
+    eyebrow: () => 'DÍA DE LA MADRE · ' + diaMadreTxt().toUpperCase(),
+    frases: { ropa: ['Para la que siempre te pregunta si comiste', 'Que este año no sea otro repasador', 'Mamá hay una sola: regalale algo que le guste de verdad', 'Para la que te banca siempre, aunque le contestes mal', 'La vieja se lo merece todo'],
+              natura: ['Un perfume nunca falla', 'Para que se mime como ella te mima a vos', 'Que este año no sea otro repasador', 'La vieja se lo merece todo'] },
+    cta: ps => ps.length && ps.every(p => p.tipo === 'stock') ? 'Regalos listos para entregar' : 'Pedí el regalo en la tienda' },
+  nuevas: { label: 'Lo nuevo', titulo: 'Llegó lo nuevo', emoji: '✨', tema: 'luna', max: 4,
+    eyebrow: () => 'RECIÉN LLEGADO',
+    frases: { ropa: ['Recién llegado a la tienda', 'Mirá lo último antes que nadie', 'Entró mercadería nueva'], natura: ['Llegaron las novedades del ciclo', 'Mirá lo nuevo antes que nadie'] },
+    cta: () => 'Mirá todo en la tienda' },
+  ultimas: { label: 'Últimas', titulo: 'Últimas unidades', emoji: '🔥', tema: 'luna', max: 4,
+    eyebrow: () => 'QUEDAN POCAS',
+    frases: { ropa: ['Quedan pocas: no te quedes sin la tuya', 'Cuando se van, se van', 'Últimos talles disponibles'], natura: ['Quedan pocas unidades', 'Cuando se van, se van'] },
+    cta: () => 'Pedila antes de que se agote' }
+};
+const pick = (arr, k) => arr[((k % arr.length) + arr.length) % arr.length];
+const dayIdx = () => Math.floor((Date.now() - new Date().getTimezoneOffset() * 6e4) / 864e5);
+function cuentaInfo(linea){
+  const v = String(linea === 'natura' ? (CFG.cierreNatura || '') : (CFG.fechaCierre || '')).slice(0, 10);
+  const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return { estado: 'sin-fecha' };
+  const dfin = new Date(+m[1], +m[2] - 1, +m[3]), hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const dias = Math.round((dfin - hoy) / 864e5);
+  return { estado: dias >= 0 ? 'abierta' : 'cerrada', dias, fin: dfin };
+}
+function cuentaFrase(linea, info){
+  const nat = linea === 'natura';
+  let arr;
+  if (info.estado !== 'abierta') arr = ['Lo que está en stock se entrega ya', 'Mirá lo que tenemos para entregar hoy'];
+  else if (info.dias <= 1) arr = nat ? ['Último momento para pedir del ciclo', 'Después no digas que no te avisé'] : ['Es ahora o en la próxima tanda', 'Última oportunidad para encargar', 'Después no digas que no te avisamos'];
+  else arr = nat ? ['Pedí tus productos antes de que cierre el ciclo', 'Perfumes, cremas y regalos del folleto', 'Después no digas que no te avisé', 'Aprovechá las promos del ciclo']
+    : ['Después no digas que no te avisamos', 'Elegí tu talle antes de que se agote', 'Lo encargás ahora y te llega en ' + (CFG.diasEncargo || '15 a 20') + ' días', 'Asegurá lo tuyo antes del cierre', 'Armás el pedido en un minuto desde el celu'];
+  return pick(arr, dayIdx() + est.frase);
+}
+const estVis = linea => ALL.filter(p => p.visible && (p.fotos || []).length && (!linea || lineaOf(p) === linea));
+const byFeat = (a, b) => (b.destacado - a.destacado) || (createdAt(b) - createdAt(a));
+function cuentaProds(linea, info){
+  const ok = estVis(linea).filter(p => !soldOut(p));
+  const enc = ok.filter(p => p.tipo !== 'stock').sort(byFeat), stk = ok.filter(p => p.tipo === 'stock').sort(byFeat);
+  return (info.estado === 'abierta' ? [...enc, ...stk] : stk).slice(0, 3);
+}
+function campDefault(camp, linea){
+  const ok = estVis(linea).filter(p => !soldOut(p));
+  if (camp === 'nuevas') return ok.sort((a, b) => createdAt(b) - createdAt(a)).slice(0, 4).map(p => p.id);
+  if (camp === 'ultimas'){
+    const libres = p => { const ts = (p.talles || []).filter(t => t.ok); const q = ts.map(t => stockOf(p, t.t)).filter(n => n != null); return q.length ? q.reduce((s, n) => s + n, 0) : ts.length || 9; };
+    return ok.filter(p => p.tipo === 'stock').sort((a, b) => libres(a) - libres(b)).slice(0, 4).map(p => p.id);
+  }
+  const stk = ok.filter(p => p.tipo === 'stock');  // para una fecha cercana, lo que se entrega ya
+  return (stk.length ? stk : ok).sort(byFeat).slice(0, 4).map(p => p.id);
+}
+function estSel(){
+  const k = est.tool === 'fecha' ? 'fecha' : 'varias';
+  if (est.sel[k] == null) est.sel[k] = k === 'fecha' ? campDefault(est.camp, est.linea) : [];
+  est.sel[k] = est.sel[k].filter(id => ALL.some(p => p.id === id && p.visible));
+  return est.sel[k];
+}
+const estMax = () => est.tool === 'fecha' ? CAMPS[est.camp].max : (est.modo === 'collage' ? 6 : 10);
+const selProds = () => estSel().map(id => ALL.find(p => p.id === id)).filter(Boolean);
+const estTitulo = () => est.titulo != null ? est.titulo : (est.tool === 'fecha' ? CAMPS[est.camp].titulo : 'Mirá lo que hay en ' + (CFG.nombreTienda || 'Tienda Luna'));
+const estSub = () => est.sub != null ? est.sub : pick(CAMPS[est.camp].frases[est.linea === 'natura' ? 'natura' : 'ropa'], est.frase);
+const lineUrl = linea => storeBase() + (linea === 'natura' ? '?linea=natura' : '');
+
+/* ---- dibujo ---- */
+async function estFonts(){ try{ await Promise.all(['italic 600 74px "Bodoni Moda"', '700 80px Figtree', '800 30px Figtree', '600 32px Figtree', '500 28px Figtree'].map(f => document.fonts.load(f))); }catch(e){} }
+function paintBg(x, t, seed){
+  const W = 1080, H = 1920;
+  let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, t.top); g.addColorStop(1, t.bot); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  g = x.createRadialGradient(880, 200, 0, 880, 200, 860); g.addColorStop(0, t.glow); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  g = x.createRadialGradient(120, 1700, 0, 120, 1700, 700); g.addColorStop(0, t.glow.replace(/[\d.]+\)$/, '.25)')); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  let s = [...String(seed)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const rnd = () => (s = (s * 1103515245 + 12345) >>> 0) / 4294967296;
+  for (let i = 0; i < 90; i++){ x.globalAlpha = .2 + rnd() * .6; x.fillStyle = rnd() < .2 ? t.acc : '#ffffff'; x.beginPath(); x.arc(rnd() * W, rnd() * H, 1 + rnd() * 1.8, 0, Math.PI * 2); x.fill(); }
+  x.globalAlpha = 1;
+}
+function paintHeader(x){
+  drawMoon(x, 90, 112, 66);
+  x.fillStyle = '#f6effc'; x.font = 'italic 600 46px "Bodoni Moda", Georgia, serif'; x.textAlign = 'left'; x.fillText(CFG.nombreTienda || 'Tienda Luna', 176, 160);
+}
+function cText(x, text, y, font, color){ x.font = font; x.fillStyle = color; x.textAlign = 'center'; x.fillText(text, 540, y); x.textAlign = 'left'; }
+function spaced(x, text, y, size, color){
+  const has = 'letterSpacing' in x;
+  for (; size > 18; size--){ x.font = '800 ' + size + 'px Figtree, system-ui, sans-serif'; if (x.measureText(text).width + (has ? text.length * size * .22 : 0) < 760) break; }
+  x.fillStyle = color; x.textAlign = 'center';
+  if ('letterSpacing' in x){ x.letterSpacing = Math.round(size * .22) + 'px'; x.fillText(text, 540 + size * .11, y); x.letterSpacing = '0px'; }
+  else x.fillText(text.split('').join(' '), 540, y);
+  x.textAlign = 'left';
+}
+function ellip(x, text, maxW){ let t = String(text); if (x.measureText(t).width <= maxW) return t; while (t.length && x.measureText(t + '…').width > maxW) t = t.slice(0, -1); return t.trim() + '…'; }
+function ctaPill(x, t, text, y){
+  x.font = '700 40px Figtree, system-ui, sans-serif';
+  const cw = x.measureText(text).width + 96;
+  const g = x.createLinearGradient(0, y, 0, y + 96); g.addColorStop(0, t.acc2); g.addColorStop(1, t.acc);
+  x.fillStyle = g; rrect(x, (1080 - cw) / 2, y, cw, 96, 48); x.fill();
+  x.fillStyle = t.ink; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, 540, y + 50); x.textBaseline = 'alphabetic';
+  const host = storeBase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+  if (/github\.io/.test(host)){ x.font = '500 28px Figtree, system-ui, sans-serif'; x.fillStyle = t.soft; x.fillText(host, 540, y + 150); }
+  x.textAlign = 'left';
+}
+function drawFlower(x, cx, cy, r, petal, center, rot){
+  x.save(); x.translate(cx, cy); x.rotate(rot || 0);
+  x.fillStyle = petal;
+  for (let i = 0; i < 6; i++){ x.save(); x.rotate(i * Math.PI / 3); x.beginPath(); x.ellipse(0, -r * .55, r * .32, r * .55, 0, 0, Math.PI * 2); x.fill(); x.restore(); }
+  x.fillStyle = center; x.beginPath(); x.arc(0, 0, r * .24, 0, Math.PI * 2); x.fill();
+  x.restore();
+}
+function drawLeaf(x, cx, cy, len, rot, color){
+  x.save(); x.translate(cx, cy); x.rotate(rot); x.fillStyle = color;
+  x.beginPath(); x.moveTo(0, 0); x.quadraticCurveTo(len * .5, -len * .28, len, 0); x.quadraticCurveTo(len * .5, len * .28, 0, 0); x.fill(); x.restore();
+}
+function paintFlowers(x, t){
+  const leaf = 'rgba(143,196,150,.55)';
+  [[990, 215, 56, .2], [1045, 322, 30, .9], [900, 160, 26, 1.6], [70, 1775, 56, .4], [185, 1868, 32, 1.1], [1015, 1835, 40, .7]].forEach(([X, Y, r, a], i) => {
+    drawLeaf(x, X, Y, r * 1.5, a + 2.2, leaf); drawLeaf(x, X, Y, r * 1.3, a + 3.6, leaf);
+    x.globalAlpha = .92; drawFlower(x, X, Y, r, i % 2 ? t.petal2 : t.petal, i % 2 ? t.petal : '#fff4d6', a); x.globalAlpha = 1;
+  });
+}
+function coverDraw(x, img, X, Y, w, h, r, bg){
+  x.save(); rrect(x, X, Y, w, h, r); x.clip(); x.fillStyle = bg; x.fillRect(X, Y, w, h);
+  if (img){ const sc = Math.max(w / img.width, h / img.height), iw = img.width * sc, ih = img.height * sc; x.drawImage(img, X + (w - iw) / 2, Y + (h - ih) / 2, iw, ih); }
+  x.restore();
+}
+async function drawGrid(x, prods, A, t, labels, colsFix){
+  const n = prods.length; if (!n) return;
+  const cols = colsFix ? Math.min(colsFix, n) : (n <= 2 ? n : n <= 4 ? 2 : 3), rows = Math.ceil(n / cols), gap = 28, labelH = labels ? 60 : 0;
+  const cellW = (A.w - gap * (cols - 1)) / cols;
+  let pw = Math.min(cellW, ((A.h - gap * (rows - 1)) / rows - labelH) / 1.25), ph = pw * 1.25;
+  const total = rows * (ph + labelH) + gap * (rows - 1);
+  let y = A.y + (A.h - total) / 2;
+  const imgs = await Promise.all(prods.map(p => photoForCanvas(p).catch(() => null)));
+  for (let r = 0; r < rows; r++){
+    const row = prods.slice(r * cols, r * cols + cols), k = row.length, rowW = k * pw + (k - 1) * gap;
+    let X = A.x + (A.w - rowW) / 2;
+    row.forEach((p, j) => {
+      const img = imgs[r * cols + j], so = soldOut(p);
+      coverDraw(x, img, X, y, pw, ph, 28, t.cell);
+      if (so){ x.save(); rrect(x, X, y, pw, ph, 28); x.clip(); x.fillStyle = 'rgba(15,8,25,.5)'; x.fillRect(X, y, pw, ph); x.restore(); }
+      x.strokeStyle = 'rgba(226,191,116,.45)'; x.lineWidth = 2; rrect(x, X, y, pw, ph, 28); x.stroke();
+      const sz = Math.max(18, Math.min(24, pw / 14));
+      if (lineaOf(p) === 'natura') cpill(x, X + 16, y + 16, 'NATURA', '#4a2a18', '#f2b27a', sz);
+      else cpill(x, X + 16, y + 16, p.tipo === 'stock' ? 'ENTREGA YA' : 'POR ENCARGO', p.tipo === 'stock' ? '#173a2a' : '#3a2c12', p.tipo === 'stock' ? '#7fe0ae' : '#e2bf74', sz);
+      if (so){
+        x.save(); x.translate(X + pw / 2, y + ph / 2); x.rotate(-.16);
+        x.font = '800 ' + Math.round(pw / 8) + 'px Figtree, system-ui, sans-serif'; const tw = x.measureText('AGOTADO').width + 40, th = pw / 8 + 26;
+        x.fillStyle = 'rgba(29,14,52,.85)'; rrect(x, -tw / 2, -th / 2, tw, th, 12); x.fill(); x.strokeStyle = '#e2bf74'; x.lineWidth = 3; x.stroke();
+        x.fillStyle = '#f6effc'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('AGOTADO', 0, 2); x.textBaseline = 'alphabetic'; x.textAlign = 'left'; x.restore();
+      } else if (isNew(p)) cpill(x, X + 16, y + ph - 16 - sz * 1.75, 'NUEVO', '#e2bf74', '#24123b', sz);
+      if (labels){ x.font = '600 ' + (pw > 380 ? 34 : 29) + 'px Figtree, system-ui, sans-serif'; x.fillStyle = '#f6effc'; x.textAlign = 'center'; x.fillText(ellip(x, p.nombre, pw), X + pw / 2, y + ph + 44); x.textAlign = 'left'; }
+      X += pw + gap;
+    });
+    y += ph + labelH + gap;
+  }
+}
+function canvasOut(c){ return new Promise(r => c.toBlob(r, 'image/jpeg', .9)); }
+async function imgCuenta(linea){
+  const nat = linea === 'natura', t = nat ? TEMAS.natura : TEMAS.luna, info = cuentaInfo(linea);
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d');
+  paintBg(x, t, 'cuenta' + dayIdx()); paintHeader(x);
+  spaced(x, nat ? ('NATURA · ' + (CFG.cicloNatura || 'CICLO')).toUpperCase() : (info.estado === 'cerrada' ? 'TANDA CERRADA' : 'TANDA DE ENCARGOS'), 330, 30, t.acc);
+  const que = nat ? 'el ciclo' : 'la tanda';
+  if (info.estado === 'abierta'){
+    const wd = info.fin.toLocaleDateString('es-AR', { weekday: 'long' });
+    if (info.dias === 0){
+      cText(x, 'Último día', 470, 'italic 600 96px "Bodoni Moda", Georgia, serif', '#f6effc');
+      cText(x, 'HOY', 820, 'italic 600 330px "Bodoni Moda", Georgia, serif', t.acc);
+      cText(x, 'cierra ' + que + ' a las 23:59', 965, '600 52px Figtree, system-ui, sans-serif', '#f6effc');
+    } else {
+      cText(x, info.dias === 1 ? 'Falta' : 'Faltan', 470, 'italic 600 96px "Bodoni Moda", Georgia, serif', '#f6effc');
+      cText(x, String(info.dias), 880, 'italic 600 ' + (info.dias > 99 ? 300 : 460) + 'px "Bodoni Moda", Georgia, serif', t.acc);
+      cText(x, (info.dias === 1 ? 'día' : 'días') + ' para cerrar ' + que, 970, '600 52px Figtree, system-ui, sans-serif', '#f6effc');
+    }
+    cText(x, (info.dias === 0 ? 'Hoy ' : 'Cierra el ') + wd + ' ' + fechaCorta(info.fin), 1040, '500 36px Figtree, system-ui, sans-serif', t.soft);
+  } else {
+    const L = info.estado === 'cerrada' ? ['Lo que está en stock', 'se entrega ya'] : ['Pedidos abiertos'];
+    L.forEach((l, i) => cText(x, l, 560 + i * 120, 'italic 600 104px "Bodoni Moda", Georgia, serif', i ? t.acc : '#f6effc'));
+    if (info.estado === 'cerrada') cText(x, (nat ? 'El ciclo' : 'La tanda de encargos') + ' ya cerró', 860, '600 44px Figtree, system-ui, sans-serif', t.soft);
+  }
+  await drawGrid(x, cuentaProds(linea, info), { x: 90, y: 1100, w: 900, h: 450 }, t, true, 3);
+  x.font = '600 42px Figtree, system-ui, sans-serif'; x.fillStyle = '#f6effc'; x.textAlign = 'center';
+  wrapLines(x, cuentaFrase(linea, info), 900, 1).forEach(l => x.fillText(l, 540, 1630)); x.textAlign = 'left';
+  ctaPill(x, t, info.estado === 'abierta' ? (nat ? 'Pedí en la tienda' : 'Encargá tu talle en la tienda') : 'Mirá lo disponible en la tienda', 1690);
+  return canvasOut(c);
+}
+async function imgCollage(prods, o){
+  const t = TEMAS[o.tema] || TEMAS.luna;
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1920; const x = c.getContext('2d');
+  paintBg(x, t, o.titulo + prods.map(p => p.id).join()); if (o.tema === 'madre') paintFlowers(x, t);
+  paintHeader(x);
+  spaced(x, o.eyebrow, 330, 30, o.tema === 'madre' ? t.petal : t.acc);
+  x.font = 'italic 600 104px "Bodoni Moda", Georgia, serif';
+  let y = 455; const tl = wrapLines(x, o.titulo || '', 920, 2);
+  tl.forEach(l => { cText(x, l, y, 'italic 600 104px "Bodoni Moda", Georgia, serif', '#f6effc'); y += 112; });
+  if (o.sub){ x.font = '600 40px Figtree, system-ui, sans-serif'; const sl = wrapLines(x, o.sub, 900, 2); y += 4; sl.forEach(l => { cText(x, l, y, '600 40px Figtree, system-ui, sans-serif', t.soft); y += 52; }); }
+  await drawGrid(x, prods, { x: 90, y: y + 30, w: 900, h: 1650 - (y + 30) }, t, true);
+  ctaPill(x, t, o.cta, 1700);
+  return canvasOut(c);
+}
+function estText(){
+  const name = CFG.nombreTienda || 'Tienda Luna';
+  if (est.tool === 'cuenta'){
+    const nat = est.linea === 'natura', info = cuentaInfo(est.linea), que = nat ? 'el ' + (CFG.cicloNatura || 'ciclo') + ' de Natura' : 'la tanda de encargos';
+    if (info.estado !== 'abierta') return '🌙 *' + name + '*\n' + (info.estado === 'cerrada' ? 'Ya cerró ' + que + ', pero lo que está en stock se entrega ya.' : 'Pedidos abiertos: en stock y por encargo.') + '\n\nMirá lo disponible 👉 ' + lineUrl(est.linea);
+    const wd = info.fin.toLocaleDateString('es-AR', { weekday: 'long' });
+    return (info.dias === 0 ? '⏰ *¡Hoy cierra ' + que + '!* (hasta las 23:59)' : '⏳ *Falta' + (info.dias === 1 ? ' 1 día' : 'n ' + info.dias + ' días') + '* para cerrar ' + que + ' (cierra el ' + wd + ' ' + fechaCorta(info.fin) + ').') +
+      '\n' + cuentaFrase(est.linea, info) + '.\n\n' + (nat ? 'Pedí acá' : 'Elegí tu talle acá') + ' 👉 ' + lineUrl(est.linea);
+  }
+  const ps = selProds();
+  const list = ps.map(p => '• ' + p.nombre + (soldOut(p) ? ' (agotado)' : '') + ' 👉 ' + shareUrl(p)).join('\n');
+  if (est.tool === 'varias') return '🌙 *' + (est.modo === 'collage' ? estTitulo() : name) + '*\n\n' + list + '\n\nPrecios y talles en la tienda 👉 ' + storeBase();
+  const k = CAMPS[est.camp];
+  return k.emoji + ' *' + estTitulo() + '*' + (est.camp === 'madre' ? ' · Día de la Madre, ' + diaMadreTxt() : '') + '\n' + estSub() + '.\n\n' + list + '\n\nPrecios y talles en la tienda 👉 ' + lineUrl(est.linea);
+}
+let estTimer = null;
+function estSchedule(){ clearTimeout(estTimer); est.busy = true; renderEstPreview(); estTimer = setTimeout(estGenerate, 300); }
+async function estGenerate(){
+  const my = ++est.gen; est.err = '';
+  let blobs = [];
+  try{
+    await estFonts();
+    if (est.tool === 'cuenta') blobs = [await imgCuenta(est.linea)];
+    else {
+      const ps = selProds();
+      if (est.tool === 'varias' && (est.modo === 'sueltas' || ps.length === 1)){ for (const p of ps){ blobs.push(await makeShareImage(p)); if (my !== est.gen) return; } }
+      else if (ps.length){
+        const k = CAMPS[est.camp];
+        blobs = [await imgCollage(ps, est.tool === 'fecha'
+          ? { tema: est.linea === 'natura' && est.camp !== 'madre' ? 'natura' : k.tema, eyebrow: k.eyebrow(), titulo: estTitulo(), sub: estSub(), cta: k.cta(ps) }
+          : { tema: 'luna', eyebrow: ps.every(p => p.tipo === 'stock') ? 'ENTREGA INMEDIATA' : ps.every(p => p.tipo !== 'stock') ? 'POR ENCARGO' : 'EN LA TIENDA', titulo: estTitulo(), sub: '', cta: 'Mirá precios y talles en la tienda' })];
+      }
+    }
+  }catch(e){ est.err = 'No se pudo armar la imagen.'; }
+  if (my !== est.gen) return;
+  est.imgs.forEach(i => URL.revokeObjectURL(i.url));
+  const base = est.tool === 'cuenta' ? 'cuenta-regresiva' : est.tool === 'fecha' ? est.camp : 'prendas';
+  est.imgs = blobs.filter(Boolean).map((b, i, a) => ({ blob: b, url: URL.createObjectURL(b), name: 'tienda-luna-' + base + (a.length > 1 ? '-' + (i + 1) : '') + '.jpg' }));
+  est.busy = false;
+  if (!est.textDirty) est.text = estText();
+  renderEstPreview();
+}
+
+/* ---- vista ---- */
+function estPickerHTML(){
+  const sel = estSel(), max = estMax(), q = est.q.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const list = estVis(naturaOn() ? est.linea : '').filter(p => !q || (p.nombre + ' ' + (p.categoria || '')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q))
+    .sort((a, b) => soldOut(a) - soldOut(b) || byFeat(a, b));
+  return list.length ? list.map(p => { const i = sel.indexOf(p.id);
+    return '<button type="button" class="ep" data-ep="' + esc(p.id) + '" aria-pressed="' + (i >= 0) + '"><img loading="lazy" src="' + esc(photoUrl(p.fotos[0], 240)) + '" alt=""><span>' + esc(p.nombre) + '</span>' +
+      '<em class="' + (soldOut(p) ? 'so' : p.tipo === 'stock' ? 'st' : 'en') + '">' + (soldOut(p) ? 'Agotada' : p.tipo === 'stock' ? 'Stock' : 'Encargo') + '</em>' + (i >= 0 ? '<i>' + (i + 1) + '</i>' : '') + '</button>'; }).join('')
+    : '<p class="hint" style="grid-column:1/-1">No hay prendas visibles con fotos' + (q ? ' con esa búsqueda' : '') + '.</p>';
+}
+function renderEstados(){
+  const tools = [['cuenta', 'Cuenta regresiva'], ['varias', 'Varias prendas'], ['fecha', 'Fechas']];
+  const lineSegE = naturaOn() ? '<div class="field"><span class="lbl">Sección</span><div class="seg">' + [['ropa', 'Ropa'], ['natura', 'Natura']].map(([k, l]) => '<button type="button" data-elinea="' + k + '" aria-pressed="' + (est.linea === k) + '">' + l + '</button>').join('') + '</div></div>' : '';
+  let ctl = '';
+  if (est.tool === 'cuenta'){
+    const info = cuentaInfo(est.linea), nat = est.linea === 'natura';
+    const estado = info.estado === 'sin-fecha' ? '<div class="swarn">No hay fecha de cierre ' + (nat ? 'del ciclo' : 'de la tanda') + ' cargada. <button type="button" class="link" data-act="go-ajustes">Ponela en Ajustes</button> y la cuenta se arma sola.</div>'
+      : info.estado === 'cerrada' ? '<div class="swarn">' + (nat ? 'El ciclo' : 'La tanda') + ' cerró el ' + fechaCorta(info.fin) + '. La imagen muestra lo que está en stock. Para una tanda nueva, cambiá la fecha en <button type="button" class="link" data-act="go-ajustes">Ajustes</button>.</div>'
+      : '<p class="estbig">' + (info.dias === 0 ? '¡Hoy cierra!' : 'Falta' + (info.dias === 1 ? ' 1 día' : 'n ' + info.dias + ' días')) + '<small>Cierra el ' + info.fin.toLocaleDateString('es-AR', { weekday: 'long' }) + ' ' + fechaCorta(info.fin) + '</small></p>';
+    ctl = '<div class="card"><h3>Cuenta regresiva</h3><div class="stack">' + lineSegE + estado +
+      '<p class="hint" style="margin:0">La imagen se actualiza sola todos los días con los días que faltan, una frase distinta y las prendas destacadas. Entrás, tocás Compartir y listo.</p>' +
+      '<div><button type="button" class="btn ghost sm" data-eact="frase">Cambiar la frase</button></div></div></div>';
+  } else if (est.tool === 'varias'){
+    ctl = '<div class="card"><h3>Cómo las querés</h3><div class="stack"><div class="choice">' +
+      '<label><input type="radio" name="e-modo" value="sueltas"' + (est.modo === 'sueltas' ? ' checked' : '') + '><span>Una imagen por prenda<small>Hasta 10. Se suben todas juntas al estado.</small></span></label>' +
+      '<label><input type="radio" name="e-modo" value="collage"' + (est.modo === 'collage' ? ' checked' : '') + '><span>Todas en una imagen<small>Hasta 6, en un solo estado.</small></span></label></div>' +
+      (est.modo === 'collage' ? '<div class="field"><label for="est-titulo">Título</label><input id="est-titulo" value="' + esc(estTitulo()) + '"></div>' : '') + lineSegE + '</div></div>';
+  } else {
+    const k = CAMPS[est.camp];
+    ctl = '<div class="card"><h3>Fecha especial</h3><div class="stack">' +
+      '<div class="seg">' + Object.keys(CAMPS).map(c => '<button type="button" data-ecamp="' + c + '" aria-pressed="' + (est.camp === c) + '">' + CAMPS[c].label + '</button>').join('') + '</div>' +
+      (est.camp === 'madre' ? '<p class="hint" style="margin:0">Este año es el <b>' + diaMadreTxt() + '</b>. Arranca con prendas de entrega inmediata, así llegan a tiempo.</p>' : '') + lineSegE +
+      '<div class="field"><label for="est-titulo">Título</label><input id="est-titulo" value="' + esc(estTitulo()) + '"></div>' +
+      '<div class="field"><label for="est-sub">Frase</label><input id="est-sub" value="' + esc(estSub()) + '"><button type="button" class="link" data-eact="frase" style="justify-self:start;margin-top:6px">Otra frase</button></div></div></div>';
+  }
+  const picker = est.tool === 'cuenta' ? '' : '<div class="card"><h3>Prendas <span id="estCount" style="text-transform:none;letter-spacing:0;font-weight:600">' + estSel().length + ' de ' + estMax() + '</span></h3><div class="stack">' +
+    '<div class="etools"><label class="search field" style="flex:1"><span class="sr">Buscar</span>' + IC.search + '<input id="est-q" type="search" placeholder="Buscar prenda" value="' + esc(est.q) + '"></label>' +
+    '<button type="button" class="btn ghost sm" data-eact="pick-stock">En stock</button><button type="button" class="btn ghost sm" data-eact="pick-new">Nuevas</button><button type="button" class="btn ghost sm" data-eact="pick-none">Ninguna</button></div>' +
+    '<div class="epick" id="epick">' + estPickerHTML() + '</div></div></div>';
+  $('#view').innerHTML = '<div class="vh"><div><h1>Estados</h1><p>Imágenes listas para el estado de WhatsApp o las historias. Ninguna muestra precios: para verlos tienen que entrar a la tienda.</p></div></div>' +
+    '<div class="seg" style="margin-bottom:16px">' + tools.map(([k, l]) => '<button type="button" data-etool="' + k + '" aria-pressed="' + (est.tool === k) + '">' + l + '</button>').join('') + '</div>' +
+    '<div class="est"><div class="stack">' + ctl + picker + '</div><div class="card est-out" id="estPrev"></div></div>';
+  renderEstPreview();
+}
+function renderEstPreview(){
+  const el = $('#estPrev'); if (!el || view !== 'estados') return;
+  const files = est.imgs.map(i => new File([i.blob], i.name, { type: 'image/jpeg' }));
+  const canFiles = !!(files.length && navigator.canShare && (() => { try{ return navigator.canShare({ files }); }catch(e){ return false; } })());
+  const need = est.tool !== 'cuenta' && !estSel().length;
+  let h = '<h3>Vista previa' + (est.imgs.length > 1 ? ' <span style="text-transform:none;letter-spacing:0;font-weight:600">' + est.imgs.length + ' imágenes</span>' : '') + '</h3>';
+  if (need) h += '<div class="sprev"><div class="wait">Elegí prendas para armar la imagen.</div></div>';
+  else if (est.busy && !est.imgs.length) h += '<div class="sprev"><div class="wait"><span class="spin"></span>Armando…</div></div>';
+  else if (est.err) h += '<div class="sprev"><div class="wait">' + esc(est.err) + '</div></div>';
+  else h += '<div class="eimgs' + (est.imgs.length === 1 ? ' one' : '') + (est.busy ? ' busy' : '') + '">' + est.imgs.map((i, k) => '<a href="' + i.url + '" download="' + esc(i.name) + '" title="Descargar"><img src="' + i.url + '" alt="Imagen ' + (k + 1) + '"></a>').join('') + '</div>';
+  if (!need){
+    h += '<div class="field" style="margin-top:12px"><label for="est-text">Texto (sin precios)</label><textarea class="stext" id="est-text">' + esc(est.text || estText()) + '</textarea></div>' +
+      '<div class="sgrid" style="margin-top:10px">' + (canFiles ? '<button class="btn pri full" data-eact="share"' + (est.busy ? ' disabled' : '') + '>' + IC.share + (est.imgs.length > 1 ? 'Compartir las ' + est.imgs.length + ' imágenes' : 'Compartir imagen') + '</button>' : '') +
+      '<a class="btn wa" href="https://wa.me/?text=' + encodeURIComponent(est.text || estText()) + '" target="_blank" rel="noopener" id="estWa">' + IC.wa + 'Mandar texto</a>' +
+      '<button class="btn ghost" data-eact="dl"' + (est.busy || !est.imgs.length ? ' disabled' : '') + '>' + IC.dl + (est.imgs.length > 1 ? 'Descargar todas' : 'Descargar') + '</button>' +
+      '<button class="btn ghost full" data-eact="copytext">' + IC.copy + 'Copiar texto</button></div>' +
+      '<p class="shint hint" style="margin:10px 0 0">' + (canFiles ? 'En el celu, Compartir abre WhatsApp con las imágenes listas: elegí “Mi estado”. El texto con el link mandalo después en el chat o en un estado de texto.' : 'Desde la compu: descargá las imágenes y pasalas al celu, o abrí este panel en el celu para compartirlas directo.') + '</p>';
+  }
+  el.innerHTML = h;
+}
+function estToggle(id){
+  const sel = estSel(), i = sel.indexOf(id);
+  if (i >= 0) sel.splice(i, 1);
+  else { if (sel.length >= estMax()){ toast('Máximo ' + estMax() + ' prendas para esta imagen'); return; } sel.push(id); }
+  est.textDirty = false;
+  const pk = $('#epick'); if (pk){ const st = pk.scrollTop; pk.innerHTML = estPickerHTML(); pk.scrollTop = st; }
+  const ct = $('#estCount'); if (ct) ct.textContent = sel.length + ' de ' + estMax();
+  estSchedule();
+}
+function estRerender(){ const y = scrollY; est.textDirty = false; renderEstados(); scrollTo(0, y); estSchedule(); }
+async function estClick(b){
+  const d = b.dataset;
+  if (d.etool){ est.tool = d.etool; est.titulo = null; est.sub = null; est.frase = 0; est.imgs.forEach(i => URL.revokeObjectURL(i.url)); est.imgs = []; return estRerender(); }
+  if (d.elinea){ est.linea = d.elinea; est.sel.fecha = null; est.sub = null; return estRerender(); }
+  if (d.ecamp){ est.camp = d.ecamp; est.sel.fecha = null; est.titulo = null; est.sub = null; est.frase = 0; return estRerender(); }
+  if (d.ep) return estToggle(d.ep);
+  const a = d.eact;
+  if (a === 'frase'){ est.frase++; est.sub = null; return estRerender(); }
+  if (a === 'pick-none' || a === 'pick-stock' || a === 'pick-new'){
+    const k = est.tool === 'fecha' ? 'fecha' : 'varias', pool = estVis(naturaOn() ? est.linea : '').filter(p => !soldOut(p));
+    est.sel[k] = a === 'pick-none' ? [] : (a === 'pick-stock' ? pool.filter(p => p.tipo === 'stock').sort(byFeat) : pool.sort((x, y) => createdAt(y) - createdAt(x))).slice(0, estMax()).map(p => p.id);
+    return estRerender();
+  }
+  if (a === 'copytext') return copyTxt(est.text || estText(), 'Texto copiado');
+  if (a === 'dl'){
+    for (const i of est.imgs){ const l = document.createElement('a'); l.href = i.url; l.download = i.name; document.body.appendChild(l); l.click(); l.remove(); await new Promise(r => setTimeout(r, 350)); }
+    return toast(est.imgs.length > 1 ? 'Imágenes descargadas' : 'Imagen descargada');
+  }
+  if (a === 'share'){
+    const files = est.imgs.map(i => new File([i.blob], i.name, { type: 'image/jpeg' }));
+    try{ navigator.clipboard.writeText(est.text || estText()).catch(() => {}); }catch(e){}
+    try{ await navigator.share({ files }); toast('El texto quedó copiado para pegarlo'); }
+    catch(err){ if (err && err.name !== 'AbortError') toast('No se pudo abrir el menú de compartir'); }
+  }
+}
+document.addEventListener('input', e => {
+  if (view !== 'estados') return;
+  const t = e.target;
+  if (t.id === 'est-q'){ est.q = t.value; const pk = $('#epick'); if (pk) pk.innerHTML = estPickerHTML(); return; }
+  if (t.id === 'est-titulo' || t.id === 'est-sub'){ est[t.id === 'est-titulo' ? 'titulo' : 'sub'] = t.value; est.textDirty = false; return estSchedule(); }
+  if (t.id === 'est-text'){ est.text = t.value; est.textDirty = true; const a = $('#estWa'); if (a) a.href = 'https://wa.me/?text=' + encodeURIComponent(est.text); }
+});
+document.addEventListener('change', e => {
+  if (view === 'estados' && e.target.name === 'e-modo'){ est.modo = e.target.value; const s = estSel(); if (s.length > estMax()) s.length = estMax(); est.titulo = null; estRerender(); }
+});
+
+/* ---- stock por talle: se descuenta al confirmar/entregar y vuelve si se cancela ---- */
+function orderStock(items, sign){ return (items || []).filter(i => i && i.id && i.talle).map(i => ({ id: i.id, talle: i.talle, delta: sign * (Number(i.cant) || 1) })); }
+async function stockAdjust(changes){
+  const agg = new Map();
+  (changes || []).forEach(c => { const k = c.id + '\u0001' + c.talle; agg.set(k, (agg.get(k) || 0) + c.delta); });
+  const touched = new Map(), notes = [];
+  agg.forEach((delta, k) => {
+    if (!delta) return;
+    const [id, talle] = k.split('\u0001');
+    const base = touched.get(id) || ALL.find(x => x.id === id); if (!base) return;
+    const n = stockOf(base, talle); if (n == null) return;
+    const p = touched.get(id) || JSON.parse(JSON.stringify(base));
+    const nn = Math.max(0, n + delta);
+    p.stockTalles = Object.assign({}, stockMap(p), { [talle]: nn });
+    p.talles = (p.talles || []).map(t => t.t === talle ? Object.assign({}, t, { ok: nn > 0 }) : t);
+    touched.set(id, p); notes.push(p.nombre + ' ' + talle + ': quedan ' + nn);
+  });
+  if (!touched.size) return;
+  try{ setData(await api('saveProducts', { products: [...touched.values()] })); if (view === 'prendas') renderPrendas(); toast('Stock: ' + notes.join(' · ')); }
+  catch(err){ toast('No se pudo actualizar el stock: ' + err.message); }
+}
+function stockHelp(){
+  openModal('<h3>Falta un paso para guardar las cantidades</h3><p>La planilla todavía no tiene la columna para las cantidades por talle, así que esta vez no se guardaron (lo demás sí).</p>' +
+    '<ol><li>Abrí la planilla → <b>Extensiones → Apps Script</b>.</li><li>Seguí los 3 cambios del archivo <b>CAMBIOS-PLANILLA.txt</b> que te pasó Claude.</li><li><b>Implementar → Gestionar implementaciones → lápiz → Versión nueva → Implementar</b>.</li><li>Volvé a cargar las cantidades y guardá.</li></ol>' +
+    '<button class="btn pri" data-act="modal-close">Entendido</button>');
 }
 
 /* ---- instalar como app ---- */
@@ -1777,8 +2419,9 @@ function shareText(p){
 }
 function rrect(x, X, Y, w, h, r){ x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r); x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath(); }
 function loadImg(src){ return new Promise((res, rej) => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
-async function photoForCanvas(p){
-  const f = (p.fotos || [])[0]; if (!f) return null;
+async function photoForCanvas(p){ return loadFoto((p.fotos || [])[0]); }
+async function loadFoto(f){
+  if (!f) return null;
   if (/^data:/.test(f.url || '')) return loadImg(f.url).catch(() => null);
   if (!DEMO && f.id){
     try{ const r = await fetch(API_URL + '?action=photo&id=' + encodeURIComponent(f.id)); const j = await r.json(); if (j.ok) return await loadImg('data:' + j.data.mime + ';base64,' + j.data.b64); }catch(e){}
@@ -1930,8 +2573,9 @@ $('#modal').addEventListener('click', async e => {
 /* ----------------------------- eventos ----------------------------- */
 document.addEventListener('click', async e => {
   const b = e.target.closest('button, [data-open]'); if (!b) return;
-  if (b.closest('#login') || b.closest('#modal')) return;
+  if (b.closest('#login') || b.closest('#modal') || b.closest('#cropper')) return;
   const d = b.dataset;
+  if (view === 'estados' && (d.eact || d.ep || d.etool || d.elinea || d.ecamp)) return estClick(b);
   if (d.share){ e.stopPropagation(); return openShare(d.share); }
   if (d.act === 'share-store') return openShareStore();
   // ---- pedidos / campana / instalar
@@ -2004,9 +2648,11 @@ document.addEventListener('click', async e => {
   if (act === 'guard-stay') return hideGuard();
   if (act === 'guard-leave'){ hideGuard(); const p = pendingNav; pendingNav = null; drafts = {}; edDirty = false; ordDirty = false; if (p && p.v === '__logout') return logout(); return p && go(p.v, Object.assign({}, p.opts, { force: true })); }
   if (act === 'new') return openEditor(null);
+  if (act === 'f-ocultas'){ filt.estado = filt.estado === 'ocultas' ? 'todas' : 'ocultas'; return renderPrendas(); }
   if (act === 'f-sincosto'){ filt.estado = filt.estado === 'sincosto' ? 'todas' : 'sincosto'; return renderPrendas(); }
   if (act === 'clear-f'){ filt.q = ''; filt.cat = ''; filt.estado = 'todas'; return renderPrendas(); }
   if (act === 'go-ajustes') return go('ajustes');
+  if (act === 'share-many'){ est.tool = 'varias'; return go('estados'); }
   if (d.estado){ filt.estado = d.estado; return renderPrendas(); }
   if (d.flinea){ filt.linea = d.flinea; filt.cat = ''; return renderPrendas(); }
   if (d.glinea){ gLinea = d.glinea; return renderCostos(); }
@@ -2035,9 +2681,11 @@ document.addEventListener('click', async e => {
     if (act === 'addt'){ readEditor(); const v = $('#e-newt').value.trim(); if (v && !editing.talles.some(t => t.t.toLowerCase() === v.toLowerCase())) editing.talles.push({ t: v, ok: true }); edDirty = true; rerenderEditor(); const n = $('#e-newt'); if (n) n.focus(); return; }
     if (d.modo){ readEditor(); if (d.modo === 'manual' && !money(editing.precio)) editing.precio = String(pricing(editing).precio || ''); editing.modoPrecio = d.modo; edDirty = true; return rerenderEditor(); }
     if (d.g){ $('#e-gan').value = d.g; edDirty = true; return updatePout(); }
-    if (d.tog != null){ readEditor(); const t = editing.talles[d.tog]; t.ok = !t.ok; edDirty = true; return rerenderEditor(); }
-    if (d.rmt != null){ readEditor(); editing.talles.splice(Number(d.rmt), 1); edDirty = true; return rerenderEditor(); }
-    if (d.pre){ readEditor(); editing.talles = d.pre.split(',').map(t => ({ t, ok: true })); edDirty = true; return rerenderEditor(); }
+    if (d.tog != null){ readEditor(); const t = editing.talles[d.tog]; t.ok = !t.ok; if (stockOf(editing, t.t) != null && t.ok !== (stockOf(editing, t.t) > 0)){ if (t.ok) delete editing.stockTalles[t.t]; else editing.stockTalles[t.t] = 0; } edDirty = true; return rerenderEditor(); }
+    if (d.rmt != null){ readEditor(); const [gone] = editing.talles.splice(Number(d.rmt), 1); if (gone) delete editing.stockTalles[gone.t]; edDirty = true; return rerenderEditor(); }
+    if (d.pre){ readEditor(); editing.talles = d.pre.split(',').map(t => ({ t, ok: true })); editing.stockTalles = {}; edDirty = true; return rerenderEditor(); }
+    if (act === 'all-no' || act === 'all-ok'){ readEditor(); editing.talles.forEach(t => { t.ok = act === 'all-ok'; if (act === 'all-no' && stockOf(editing, t.t) != null) editing.stockTalles[t.t] = 0; if (act === 'all-ok') delete editing.stockTalles[t.t]; }); edDirty = true; return rerenderEditor(); }
+    if (d.reck != null){ e.preventDefault(); return reCrop(Number(d.reck)); }
     if (d.rmph != null){ readEditor(); editing.fotos.splice(Number(d.rmph), 1); edDirty = true; return rerenderEditor(); }
     if (d.first != null){ readEditor(); const [f] = editing.fotos.splice(Number(d.first), 1); editing.fotos.unshift(f); edDirty = true; return rerenderEditor(); }
   }
@@ -2132,7 +2780,9 @@ document.addEventListener('change', async e => {
     catch(err){ toast('No se pudo guardar: ' + err.message); t.checked = !t.checked; }
     return;
   }
-  if (view === 'editar' && t.id === 'phIn') return addPhotos(t.files);
+  if (view === 'editar' && t.name === 'e-tipo'){ readEditor(); edDirty = true; return rerenderEditor(); }
+  if (view === 'editar' && t.id === 'e-vis'){ const w = $('#visoff'); if (w) w.hidden = t.checked; edDirty = true; return; }
+  if (view === 'editar' && t.id === 'phIn'){ const fl = [...t.files]; t.value = ''; return addPhotos(fl); }
   if (view === 'editar' && t.name === 'e-linea'){
     readEditor(); edDirty = true;
     const cs = catsList(editing.linea);
