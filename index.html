@@ -144,6 +144,12 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .tag.enc{background:var(--gold-soft);color:var(--gold-ink)}
 .off{position:absolute;right:8px;top:8px;background:var(--bad);color:#fff;font-size:11.5px;font-weight:700;padding:4px 7px;border-radius:7px}
 .star{position:absolute;right:8px;bottom:8px;background:rgba(36,18,59,.82);color:#e2bf74;font-size:11px;font-weight:600;padding:4px 8px;border-radius:7px;letter-spacing:.05em}
+.nuevo{position:absolute;left:8px;bottom:8px;background:#e2bf74;color:#24123b;font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 8px;border-radius:7px;text-transform:uppercase}
+.card.sold .ph img{filter:grayscale(.9) brightness(.72)}
+.card.sold .price{opacity:.6}
+.soldout{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;pointer-events:none;transform:rotate(-9deg)}
+.soldout b{border:2px solid #e2bf74;color:#f6effc;background:rgba(29,14,52,.8);padding:6px 16px;border-radius:8px;font-size:17px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.soldout small{color:#e2bf74;font-weight:700;font-size:12.5px;margin-top:7px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
 .meta{padding:10px 12px 13px;display:flex;flex-direction:column;gap:3px;min-width:0}
 .meta h3{font-size:14.5px;font-weight:600;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .price{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;color:var(--fg)}
@@ -458,6 +464,14 @@ let CFG = {}, PRODUCTS = [], ALL = [];
 let cart = store.get('tl_cart', []);
 const filt = { linea: 'ropa', cat: 'Todas', tipo: 'todos', q: '' };
 const lineaOf = p => (p && p.linea === 'natura') ? 'natura' : 'ropa';
+const soldOut = p => (p.talles || []).length > 0 && !(p.talles || []).some(t => t.ok);
+// el id de cada prenda lleva la fecha en que se subió ('p' + fecha en base 36 + 3 letras)
+const createdAt = p => { const m = /^p([0-9a-z]{8})[0-9a-z]{3}$/.exec((p && p.id) || ''); return m ? parseInt(m[1], 36) : 0; };
+function isNew(p){
+  const d = CFG.diasNuevo === undefined || CFG.diasNuevo === '' ? 4 : Number(CFG.diasNuevo);
+  const t = createdAt(p);
+  return d > 0 && t > 0 && Date.now() - t < d * 864e5;
+}
 const naturaOn = () => CFG.lineaNatura === 'true';
 const PL = () => PRODUCTS.filter(p => lineaOf(p) === filt.linea);
 function naturaContact(){
@@ -471,7 +485,7 @@ let checkout = Object.assign({ nombre: '', localidad: '', entrega: 'retiro', dir
 function setCatalog(data){
   CFG = data.config || {};
   ALL = (data.products || []).slice();
-  PRODUCTS = ALL.filter(p => p.visible).sort((a, b) => (b.destacado - a.destacado) || ((a.orden || 0) - (b.orden || 0)));
+  PRODUCTS = ALL.filter(p => p.visible).sort((a, b) => (soldOut(a) - soldOut(b)) || (b.destacado - a.destacado) || ((a.orden || 0) - (b.orden || 0)));
   // limpiar del carrito lo que ya no existe
   cart = cart.filter(it => PRODUCTS.some(p => p.id === it.id));
   saveCart();
@@ -565,7 +579,9 @@ function cardHTML(p){
   const f = (p.fotos || [])[0];
   const off = p.precioAnterior > p.precio ? Math.round((1 - p.precio / p.precioAnterior) * 100) : 0;
   const sizes = (p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ');
-  return '<button class="card" data-id="' + esc(p.id) + '"><div class="ph">' + (f ? '<img loading="lazy" src="' + esc(photoUrl(f, 600)) + '" alt="' + esc(p.nombre) + '">' : '') +
+  const so = soldOut(p);
+  return '<button class="card' + (so ? ' sold' : '') + '" data-id="' + esc(p.id) + '"><div class="ph">' + (f ? '<img loading="lazy" src="' + esc(photoUrl(f, 600)) + '" alt="' + esc(p.nombre) + '">' : '') +
+    (so ? '<span class="soldout"><b>Agotado</b><small>¡Se vendió todo!</small></span>' : (isNew(p) ? '<span class="nuevo">Nuevo</span>' : '')) +
     '<span class="tag ' + (p.tipo === 'stock' ? 'stock">En stock' : 'enc">Por encargo') + '</span>' +
     (off ? '<span class="off">-' + off + '%</span>' : '') + (p.destacado ? '<span class="star">Destacado</span>' : '') +
     '</div><div class="meta"><h3>' + esc(p.nombre) + '</h3><div class="price">' + ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '</div>' +
@@ -638,6 +654,7 @@ function renderProduct(){
   } else if (p.tipo === 'stock') note = '<div class="note stock">' + ICON.check + '<div><b>Entrega inmediata.</b> Está en stock, coordinamos la entrega apenas confirmes.</div></div>';
   else if (cerrado) note = '<div class="note closed">' + ICON.clock + '<div><b>La tanda de encargos está cerrada.</b> Escribinos y te anotamos para la próxima.</div></div>';
   else note = '<div class="note enc">' + ICON.clock + '<div><b>Por encargo.</b> Llega en ' + esc(CFG.diasEncargo || '15 a 20') + ' días desde el cierre de la tanda' + (Number(CFG.senaPorcentaje) ? ', se confirma con una seña del ' + esc(CFG.senaPorcentaje) + '%' : '') + '.</div></div>';
+  if (agotado) note = '<div class="note closed">' + ICON.clock + '<div><b>Se agotó: se vendió todo.</b> Escribinos y te avisamos si vuelve a entrar.</div></div>';
   const waQ = esNat ? waLinkTo(naturaContact(), 'Hola! Quería consultar por *' + p.nombre + '* de Natura (' + ars(p.precio) + ').') : waLink('Hola! Quería consultar por *' + p.nombre + '* (' + ars(p.precio) + ').');
   $('#pPanel').innerHTML = '<div class="body"><div class="gal"><div class="track" id="track">' +
     (fotos.length ? fotos.map(f => '<img src="' + esc(photoUrl(f, 1100)) + '" alt="' + esc(p.nombre) + '">').join('') : '<img alt="" src="' + garment('tee', '#c9b6de', '#efe7f4') + '">') +
