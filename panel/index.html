@@ -276,10 +276,15 @@ button.stat{cursor:pointer}
 .pill.sold{background:var(--surface-2);color:var(--muted);border:1px solid var(--line-2)}
 .pill.new{background:var(--gold-soft);color:var(--gold-ink)}
 .est{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,400px);gap:18px;align-items:start}
-@media (max-width:1000px){.est{grid-template-columns:1fr}.est-out{order:-1;position:static}}
 .est-out{position:sticky;top:16px}
+@media (max-width:1000px){.est{grid-template-columns:1fr}.est-out{order:-1;position:static}.eimgs.one a{width:min(100%,230px)}}
 .estbig{margin:0;font-family:var(--f-display);font-size:34px;font-style:italic;color:var(--violet);display:grid;gap:2px}
 .estbig small{font-family:var(--f-body);font-style:normal;font-size:13.5px;color:var(--muted)}
+.esel{display:flex;gap:6px;flex-wrap:wrap}
+.esel button{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:32px;padding:0 6px 0 4px;border-radius:16px;border:1px solid var(--violet);background:var(--violet-soft);color:var(--violet);font-size:12.5px;font-weight:700}
+.esel button img{width:24px;height:24px;border-radius:50%;object-fit:cover;flex:none}
+.esel button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
+.esel button b{font-size:15px;line-height:1;opacity:.75;padding:0 2px}
 .etools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .epick{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:8px;max-height:520px;overflow:auto;padding:2px}
 .ep{position:relative;border:2px solid transparent;border-radius:12px;background:var(--surface-2);padding:0;overflow:hidden;text-align:left;display:grid;align-content:start}
@@ -774,7 +779,7 @@ function setData(d){
   if (d.github) GH = d.github;
   ALL = (d.products || []).slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
   stockSupported = ALL.some(p => Object.prototype.hasOwnProperty.call(p, 'stockTalles'));
-  ALL.forEach(p => { if (p.modoPrecio !== 'auto') p.modoPrecio = 'manual'; if (p.ganancia === undefined || p.ganancia === null) p.ganancia = ''; p.costo = Number(p.costo) || 0; p.gastos = Number(p.gastos) || 0; });
+  ALL.forEach(p => { if (p.modoPrecio !== 'auto') p.modoPrecio = 'manual'; p.consultar = p.modoPrecio === 'manual' && !(Number(p.precio) > 0); if (p.ganancia === undefined || p.ganancia === null) p.ganancia = ''; p.costo = Number(p.costo) || 0; p.gastos = Number(p.gastos) || 0; });
   $$('.sname').forEach(e => e.textContent = CFG.nombreTienda || 'Tienda Luna');
 }
 
@@ -784,6 +789,7 @@ const comision = () => Math.min(90, Math.max(0, pnum(CFG.comisionCobro) || 0));
 const redondeo = () => Math.max(0, money(CFG.redondeo));
 const roundUp = (v, r) => r ? Math.ceil(v / r - 1e-9) * r : Math.round(v);
 function pricing(p){
+  if (p.consultar){ const costo = Number(p.costo) || 0, gastos = Number(p.gastos) || 0; return { costo, gastos, ct: costo + gastos, g: 0, gOwn: null, com: 0, comMonto: 0, sugerido: 0, auto: false, precio: 0, gan: null, pctCosto: null, margen: null, consult: true }; }
   const costo = Number(p.costo) || 0, gastos = Number(p.gastos) || 0, ct = costo + gastos;
   const gOwn = pnum(p.ganancia);
   const g = gOwn == null ? gDefault() : gOwn;
@@ -859,6 +865,7 @@ function filteredProducts(){
 }
 function gainHTML(p){
   const r = pricing(p);
+  if (r.consult) return '<span class="out mut">—</span>';
   if (!r.ct) return '<span class="nocost">Sin costo</span>';
   return '<div class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '<small>' + pctf(r.pctCosto) + ' sobre costo</small></div>';
 }
@@ -891,7 +898,7 @@ function renderPrendas(){
           '<div class="c-name" style="min-width:0"><h4>' + esc(p.nombre) + '</h4><div class="sub">' + (lineaOf(p) === 'natura' ? '<span class="pill nat">Natura</span>' : '') + (p.visible ? '' : '<span class="pill off">Oculta</span>') + (soldOut(p) ? '<span class="pill sold">Agotada</span>' : '') + (isNew(p) ? '<span class="pill new">Nueva</span>' : '') + '<span>' + esc(p.categoria || 'Sin categoría') + '</span>' + (p.destacado ? '<span>· Destacada</span>' : '') + '<span class="m-only pill ' + (p.tipo === 'stock' ? 'stock">Stock' : 'enc">Encargo') + '</span></div></div>' +
           '<div class="c-tipo"><span class="pill ' + (p.tipo === 'stock' ? 'stock">Entrega inmediata' : 'enc">Por encargo') + '</span></div>' +
           '<div class="c-talles">' + ((p.talles || []).map(t => { const n = stockOf(p, t.t); return (t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>') + (n != null && t.ok ? '<span class="q">' + n + '</span>' : ''); }).join(' · ') || '—') + '</div>' +
-          '<div class="c-precio">' + ars(r.precio) + (p.precioAnterior > r.precio ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '<span class="m-only">' + (r.ct ? '<span class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '" style="font-size:13px">ganás ' + ars(r.gan) + '</span>' : '<span class="nocost">sin costo</span>') + '</span></div>' +
+          '<div class="c-precio">' + (r.consult ? '<span class="pill enc">Consultar</span>' : ars(r.precio) + (p.precioAnterior > r.precio ? '<s>' + ars(p.precioAnterior) + '</s>' : '')) + '<span class="m-only">' + (r.ct ? '<span class="gain ' + (r.gan >= 0 ? 'pos' : 'neg') + '" style="font-size:13px">ganás ' + ars(r.gan) + '</span>' : '<span class="nocost">sin costo</span>') + '</span></div>' +
           '<div class="c-gain">' + gainHTML(p) + '</div>' +
           '<div class="c-vis"><label class="switch" title="Visible en la tienda"><input type="checkbox" data-vis="' + esc(p.id) + '"' + (p.visible ? ' checked' : '') + ' aria-label="Visible en la tienda"><span></span></label></div>' +
           '<div class="c-acts">' + (canMove ? '<button class="ib mv" data-mv="' + i + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>' + IC.up + '</button><button class="ib mv" data-mv="' + i + '" data-d="1" aria-label="Bajar"' + (i < list.length - 1 ? '' : ' disabled') + '>' + IC.down + '</button>' : '') +
@@ -906,7 +913,7 @@ function renderPrendas(){
 /* ----------------------------- editor ----------------------------- */
 function blankProduct(){
   const linea = filt.linea === 'natura' ? 'natura' : 'ropa', cs = catsList(linea), nat = linea === 'natura';
-  return { id: '', linea, nombre: '', categoria: (cs.includes(filt.cat) ? filt.cat : '') || cs[0] || '', precio: '', precioAnterior: '', tipo: 'encargo', costo: '', gastos: '', ganancia: '', modoPrecio: nat ? 'manual' : 'auto',
+  return { id: '', linea, nombre: '', categoria: (cs.includes(filt.cat) ? filt.cat : '') || cs[0] || '', precio: '', precioAnterior: '', tipo: 'encargo', costo: '', gastos: '', ganancia: '', modoPrecio: 'manual', consultar: false,
     talles: nat ? [] : ['S','M','L','XL'].map(t => ({ t, ok: true })), colores: [], descripcion: '', fotos: [], visible: true, destacado: false };
 }
 function openEditor(id){
@@ -923,7 +930,12 @@ function openEditor(id){
 }
 function priceCardHTML(){
   const p = editing, auto = p.modoPrecio === 'auto';
-  return '<div class="card" id="priceCard"><h3>Costo y precio <span class="pill auto" style="letter-spacing:.04em">Solo lo ven ustedes</span></h3><div class="stack">' +
+  const askRow = '<div class="togrow" style="border:0;padding:0"><div><b>Consultar precio por WhatsApp</b><small>La tienda no muestra precio: dice “Consultá el precio” y el botón abre WhatsApp con la prenda y el talle.</small></div><label class="switch"><input type="checkbox" id="e-ask"' + (p.consultar ? ' checked' : '') + '><span></span></label></div>';
+  if (p.consultar) return '<div class="card" id="priceCard"><h3>Costo y precio <span class="pill auto" style="letter-spacing:.04em">Solo lo ven ustedes</span></h3><div class="stack">' + askRow +
+    '<div class="grid2"><div class="field"><label for="e-costo">Costo de la prenda</label><div class="money"><input id="e-costo" inputmode="numeric" value="' + esc(p.costo) + '" placeholder="0"></div></div>' +
+    '<div class="field"><label for="e-gastos">Gastos por unidad</label><div class="money"><input id="e-gastos" inputmode="numeric" value="' + esc(p.gastos) + '" placeholder="0"></div><small>Opcional, para tenerlo anotado</small></div></div>' +
+    '<div id="pout"></div></div></div>';
+  return '<div class="card" id="priceCard"><h3>Costo y precio <span class="pill auto" style="letter-spacing:.04em">Solo lo ven ustedes</span></h3><div class="stack">' + askRow +
     '<div class="grid2"><div class="field"><label for="e-costo">Costo de la prenda</label><div class="money"><input id="e-costo" inputmode="numeric" value="' + esc(p.costo) + '" placeholder="0"></div></div>' +
     '<div class="field"><label for="e-gastos">Gastos por unidad</label><div class="money"><input id="e-gastos" inputmode="numeric" value="' + esc(p.gastos) + '" placeholder="0"></div><small>Flete, bolsa, etiqueta…</small></div></div>' +
     '<div class="seg" role="group" aria-label="Cómo se calcula el precio"><button type="button" data-modo="auto" aria-pressed="' + auto + '">Calcular con % de ganancia</button><button type="button" data-modo="manual" aria-pressed="' + !auto + '">Precio manual</button></div>' +
@@ -938,6 +950,7 @@ function priceCardHTML(){
 function updatePout(){
   readEditor();
   const p = editing, r = pricing(p), el = $('#pout'); if (!el) return;
+  if (p.consultar){ el.innerHTML = '<div class="pout"><div class="big"><span>En la tienda</span><b style="font-size:22px">Consultar precio</b></div></div>'; return; }
   const auto = p.modoPrecio === 'auto';
   let h = '<div class="pout"><div class="big"><span>Precio de venta</span><b>' + (r.precio ? ars(r.precio) : '—') + '</b></div>';
   if (!r.ct){
@@ -1029,8 +1042,8 @@ async function saveEditor(){
   edErr = '';
   if (!p.nombre) edErr = 'Poné un nombre a la prenda.';
   else if (!p.fotos.length) edErr = 'Agregá al menos una foto.';
-  else if (p.modoPrecio === 'auto' && !r.ct) edErr = 'Cargá el costo para calcular el precio, o pasá a precio manual.';
-  else if (!r.precio) edErr = 'Falta el precio de venta.';
+  else if (!p.consultar && p.modoPrecio === 'auto' && !r.ct) edErr = 'Cargá el costo para calcular el precio, o pasá a precio manual.';
+  else if (!p.consultar && !r.precio) edErr = 'Falta el precio de venta, o activá “Consultar precio por WhatsApp”.';
   if (edErr){ rerenderEditor(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   try{
     const pend = p.fotos.filter(f => f.pending);
@@ -1043,8 +1056,8 @@ async function saveEditor(){
     const st = {};
     if (p.tipo === 'stock') p.talles.forEach(t => { const n = stockOf(p, t.t); if (n != null) st[t.t] = n; });
     const prod = Object.assign({}, p, { stockTalles: st,
-      precio: r.precio, precioAnterior: money(p.precioAnterior), costo: money(p.costo), gastos: money(p.gastos),
-      ganancia: pnum(p.ganancia) == null ? '' : pnum(p.ganancia), modoPrecio: p.modoPrecio === 'auto' ? 'auto' : 'manual'
+      precio: p.consultar ? 0 : r.precio, precioAnterior: p.consultar ? 0 : money(p.precioAnterior), costo: money(p.costo), gastos: money(p.gastos),
+      ganancia: pnum(p.ganancia) == null ? '' : pnum(p.ganancia), modoPrecio: p.consultar ? 'manual' : (p.modoPrecio === 'auto' ? 'auto' : 'manual')
     });
     const nuevo = !p.id;
     setData(await api('saveProduct', { product: prod }));
@@ -1249,11 +1262,11 @@ function costRowHTML(p0){
     '<div class="who"><img loading="lazy" src="' + esc(photoUrl((p.fotos || [])[0], 120)) + '" alt=""><div style="min-width:0"><b>' + esc(p.nombre) + '</b><small>' + esc(p.categoria || '') + (p.visible ? '' : ' · oculta') + '</small></div></div>' +
     '<div data-l="Costo"><div class="money"><input class="inp" data-f="costo" inputmode="numeric" value="' + esc(Number(p.costo) || '') + '" placeholder="0" aria-label="Costo de ' + esc(p.nombre) + '"></div></div>' +
     '<div data-l="Gastos"><div class="money"><input class="inp" data-f="gastos" inputmode="numeric" value="' + esc(Number(p.gastos) || '') + '" placeholder="0" aria-label="Gastos de ' + esc(p.nombre) + '"></div></div>' +
-    '<div data-l="Cálculo"><button class="modebtn' + (auto ? ' on' : '') + '" data-tmode="' + esc(p.id) + '" title="Cambiar entre automático y manual">' + (auto ? 'Automático' : 'Manual') + '</button></div>' +
+    (r.consult ? '<div data-l="Cálculo"><span class="out mut">—</span></div><div data-l="Ganancia"><span class="out mut">—</span></div><div data-l="Precio"><span class="pill enc">Consultar</span></div><div data-l="Ganan" data-o="gan"><span class="out mut">—</span></div><div data-l="Margen"><span class="out mut" data-o="mg">—</span></div></div>' : '') + (r.consult ? '' : '<div data-l="Cálculo"><button class="modebtn' + (auto ? ' on' : '') + '" data-tmode="' + esc(p.id) + '" title="Cambiar entre automático y manual">' + (auto ? 'Automático' : 'Manual') + '</button></div>' +
     '<div data-l="Ganancia">' + (auto ? '<div class="pct"><input class="inp" data-f="ganancia" inputmode="decimal" value="' + esc(p.ganancia) + '" placeholder="' + esc(gDefault()) + '" aria-label="Ganancia de ' + esc(p.nombre) + '"></div>' : '<span class="out mut" data-o="pc">' + pctf(r.pctCosto) + '</span>') + '</div>' +
     '<div data-l="Precio">' + (auto ? '<span class="out" data-o="precio">' + (r.ct ? ars(r.precio) : '<span class="nocost">Falta costo</span>') + '</span>' : '<div class="money"><input class="inp" data-f="precio" inputmode="numeric" value="' + esc(Number(p.precio) || '') + '" aria-label="Precio de ' + esc(p.nombre) + '"></div>') + '</div>' +
     '<div data-l="Ganan" data-o="gan">' + outGan + '</div>' +
-    '<div data-l="Margen"><span class="out mut" data-o="mg">' + pctf(r.margen) + '</span></div></div>';
+    '<div data-l="Margen"><span class="out mut" data-o="mg">' + pctf(r.margen) + '</span></div></div>');
 }
 function updateCostRow(id){
   const row = $('.cr[data-row="' + CSS.escape(id) + '"]'); if (!row) return;
@@ -1262,7 +1275,7 @@ function updateCostRow(id){
   const o = k => $('[data-o="' + k + '"]', row);
   if (o('precio')) o('precio').innerHTML = r.ct ? ars(r.precio) : '<span class="nocost">Falta costo</span>';
   if (o('pc')) o('pc').textContent = pctf(r.pctCosto);
-  o('gan').innerHTML = r.ct ? '<span class="out ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span>' : '<span class="out mut">—</span>';
+  o('gan').innerHTML = r.ct && !r.consult ? '<span class="out ' + (r.gan >= 0 ? 'pos' : 'neg') + '">' + ars(r.gan) + '</span>' : '<span class="out mut">—</span>';
   o('mg').textContent = pctf(r.margen);
   updateDirtyBar(); updateCostStats();
 }
@@ -2215,6 +2228,12 @@ function estPickerHTML(){
       '<em class="' + (soldOut(p) ? 'so' : p.tipo === 'stock' ? 'st' : 'en') + '">' + (soldOut(p) ? 'Agotada' : p.tipo === 'stock' ? 'Stock' : 'Encargo') + '</em>' + (i >= 0 ? '<i>' + (i + 1) + '</i>' : '') + '</button>'; }).join('')
     : '<p class="hint" style="grid-column:1/-1">No hay prendas visibles con fotos' + (q ? ' con esa búsqueda' : '') + '.</p>';
 }
+function estSelHTML(){
+  const ps = selProds();
+  if (!ps.length) return '<p class="hint" style="margin:0">Tocá las prendas de abajo para elegirlas.</p>';
+  return '<div class="esel">' + ps.map(p => '<button type="button" data-ep="' + esc(p.id) + '" aria-label="Sacar ' + esc(p.nombre) + '"><img src="' + esc(photoUrl(p.fotos[0], 80)) + '" alt=""><span>' + esc(p.nombre) + '</span><b>×</b></button>').join('') +
+    '<button type="button" data-eact="pick-none" style="border-style:dashed;padding:0 12px">Borrar selección</button></div>';
+}
 function renderEstados(){
   const tools = [['cuenta', 'Cuenta regresiva'], ['varias', 'Varias prendas'], ['fecha', 'Fechas']];
   const lineSegE = naturaOn() ? '<div class="field"><span class="lbl">Sección</span><div class="seg">' + [['ropa', 'Ropa'], ['natura', 'Natura']].map(([k, l]) => '<button type="button" data-elinea="' + k + '" aria-pressed="' + (est.linea === k) + '">' + l + '</button>').join('') + '</div></div>' : '';
@@ -2242,9 +2261,10 @@ function renderEstados(){
   }
   const picker = est.tool === 'cuenta' ? '' : '<div class="card"><h3>Prendas <span id="estCount" style="text-transform:none;letter-spacing:0;font-weight:600">' + estSel().length + ' de ' + estMax() + '</span></h3><div class="stack">' +
     '<div class="etools"><label class="search field" style="flex:1"><span class="sr">Buscar</span>' + IC.search + '<input id="est-q" type="search" placeholder="Buscar prenda" value="' + esc(est.q) + '"></label>' +
-    '<button type="button" class="btn ghost sm" data-eact="pick-stock">En stock</button><button type="button" class="btn ghost sm" data-eact="pick-new">Nuevas</button><button type="button" class="btn ghost sm" data-eact="pick-none">Ninguna</button></div>' +
+    '<button type="button" class="btn ghost sm" data-eact="pick-stock">En stock</button><button type="button" class="btn ghost sm" data-eact="pick-new">Nuevas</button></div>' +
+    '<div id="esel">' + estSelHTML() + '</div>' +
     '<div class="epick" id="epick">' + estPickerHTML() + '</div></div></div>';
-  $('#view').innerHTML = '<div class="vh"><div><h1>Estados</h1><p>Imágenes listas para el estado de WhatsApp o las historias. Ninguna muestra precios: para verlos tienen que entrar a la tienda.</p></div></div>' +
+  $('#view').innerHTML = '<div class="vh"><div><h1>Estados</h1><p>Imágenes listas para el estado de WhatsApp o las historias. Ninguna muestra precios: para verlos tienen que entrar a la tienda.</p></div><div class="acts"><button type="button" class="btn ghost sm" data-eact="reset">Empezar de nuevo</button></div></div>' +
     '<div class="seg" style="margin-bottom:16px">' + tools.map(([k, l]) => '<button type="button" data-etool="' + k + '" aria-pressed="' + (est.tool === k) + '">' + l + '</button>').join('') + '</div>' +
     '<div class="est"><div class="stack">' + ctl + picker + '</div><div class="card est-out" id="estPrev"></div></div>';
   renderEstPreview();
@@ -2272,10 +2292,11 @@ function renderEstPreview(){
 function estToggle(id){
   const sel = estSel(), i = sel.indexOf(id);
   if (i >= 0) sel.splice(i, 1);
-  else { if (sel.length >= estMax()){ toast('Máximo ' + estMax() + ' prendas para esta imagen'); return; } sel.push(id); }
+  else { if (sel.length >= estMax()){ toast('Ya hay ' + estMax() + ' elegidas: sacá una (tocá la ×) para sumar otra'); return; } sel.push(id); }
   est.textDirty = false;
   const pk = $('#epick'); if (pk){ const st = pk.scrollTop; pk.innerHTML = estPickerHTML(); pk.scrollTop = st; }
   const ct = $('#estCount'); if (ct) ct.textContent = sel.length + ' de ' + estMax();
+  const es = $('#esel'); if (es) es.innerHTML = estSelHTML();
   estSchedule();
 }
 function estRerender(){ const y = scrollY; est.textDirty = false; renderEstados(); scrollTo(0, y); estSchedule(); }
@@ -2286,6 +2307,7 @@ async function estClick(b){
   if (d.ecamp){ est.camp = d.ecamp; est.sel.fecha = null; est.titulo = null; est.sub = null; est.frase = 0; return estRerender(); }
   if (d.ep) return estToggle(d.ep);
   const a = d.eact;
+  if (a === 'reset'){ est.sel = { varias: null, fecha: null }; est.titulo = null; est.sub = null; est.frase = 0; est.q = ''; est.text = ''; est.textDirty = false; toast('Listo, todo de nuevo'); return estRerender(); }
   if (a === 'frase'){ est.frase++; est.sub = null; return estRerender(); }
   if (a === 'pick-none' || a === 'pick-stock' || a === 'pick-new'){
     const k = est.tool === 'fecha' ? 'fecha' : 'varias', pool = estVis(naturaOn() ? est.linea : '').filter(p => !soldOut(p));
@@ -2780,6 +2802,7 @@ document.addEventListener('change', async e => {
     catch(err){ toast('No se pudo guardar: ' + err.message); t.checked = !t.checked; }
     return;
   }
+  if (view === 'editar' && t.id === 'e-ask'){ readEditor(); editing.consultar = t.checked; if (!t.checked) editing.modoPrecio = 'manual'; edDirty = true; return rerenderEditor(); }
   if (view === 'editar' && t.name === 'e-tipo'){ readEditor(); edDirty = true; return rerenderEditor(); }
   if (view === 'editar' && t.id === 'e-vis'){ const w = $('#visoff'); if (w) w.hidden = t.checked; edDirty = true; return; }
   if (view === 'editar' && t.id === 'phIn'){ const fl = [...t.files]; t.value = ''; return addPhotos(fl); }

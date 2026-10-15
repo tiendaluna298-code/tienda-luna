@@ -29,6 +29,11 @@
   ],
   "shortcuts": [
     {
+      "name": "Estados del día",
+      "short_name": "Estados",
+      "url": "./#estados"
+    },
+    {
       "name": "Pedidos",
       "url": "./#pedidos"
     },
