@@ -150,6 +150,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .soldout{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;pointer-events:none;transform:rotate(-9deg)}
 .soldout b{border:2px solid #e2bf74;color:#f6effc;background:rgba(29,14,52,.8);padding:6px 16px;border-radius:8px;font-size:17px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
 .soldout small{color:#e2bf74;font-weight:700;font-size:12.5px;margin-top:7px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.price .ask{font-size:14px;font-weight:700;color:var(--gold)}
 .meta{padding:10px 12px 13px;display:flex;flex-direction:column;gap:3px;min-width:0}
 .meta h3{font-size:14.5px;font-weight:600;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .price{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;color:var(--fg)}
@@ -464,6 +465,7 @@ let CFG = {}, PRODUCTS = [], ALL = [];
 let cart = store.get('tl_cart', []);
 const filt = { linea: 'ropa', cat: 'Todas', tipo: 'todos', q: '' };
 const lineaOf = p => (p && p.linea === 'natura') ? 'natura' : 'ropa';
+const consult = p => !(Number(p.precio) > 0);  // precio 0 = "consultar precio por WhatsApp"
 const soldOut = p => (p.talles || []).length > 0 && !(p.talles || []).some(t => t.ok);
 // el id de cada prenda lleva la fecha en que se subió ('p' + fecha en base 36 + 3 letras)
 const createdAt = p => { const m = /^p([0-9a-z]{8})[0-9a-z]{3}$/.exec((p && p.id) || ''); return m ? parseInt(m[1], 36) : 0; };
@@ -577,14 +579,14 @@ function filtered(){
 }
 function cardHTML(p){
   const f = (p.fotos || [])[0];
-  const off = p.precioAnterior > p.precio ? Math.round((1 - p.precio / p.precioAnterior) * 100) : 0;
+  const off = !consult(p) && p.precioAnterior > p.precio ? Math.round((1 - p.precio / p.precioAnterior) * 100) : 0;
   const sizes = (p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ');
   const so = soldOut(p);
   return '<button class="card' + (so ? ' sold' : '') + '" data-id="' + esc(p.id) + '"><div class="ph">' + (f ? '<img loading="lazy" src="' + esc(photoUrl(f, 600)) + '" alt="' + esc(p.nombre) + '">' : '') +
     (so ? '<span class="soldout"><b>Agotado</b><small>¡Se vendió todo!</small></span>' : (isNew(p) ? '<span class="nuevo">Nuevo</span>' : '')) +
     '<span class="tag ' + (p.tipo === 'stock' ? 'stock">En stock' : 'enc">Por encargo') + '</span>' +
     (off ? '<span class="off">-' + off + '%</span>' : '') + (p.destacado ? '<span class="star">Destacado</span>' : '') +
-    '</div><div class="meta"><h3>' + esc(p.nombre) + '</h3><div class="price">' + ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '</div>' +
+    '</div><div class="meta"><h3>' + esc(p.nombre) + '</h3><div class="price">' + (consult(p) ? '<span class="ask">Consultá el precio</span>' : ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '')) + '</div>' +
     (sizes ? '<div class="sizes">' + sizes + '</div>' : '') + '</div></button>';
 }
 function pedimeHTML(){
@@ -642,7 +644,8 @@ function setUrl(q){ try{ history.replaceState(null, '', location.pathname + q); 
 function renderProduct(){
   const { p } = cur;
   const fotos = p.fotos && p.fotos.length ? p.fotos : [];
-  const off = p.precioAnterior > p.precio;
+  const ask = consult(p);
+  const off = !ask && p.precioAnterior > p.precio;
   const cerrado = p.tipo === 'encargo' && encargoCerrado(p);
   const esNat = lineaOf(p) === 'natura';
   const agotado = (p.talles || []).length && !(p.talles || []).some(t => t.ok);
@@ -655,13 +658,15 @@ function renderProduct(){
   else if (cerrado) note = '<div class="note closed">' + ICON.clock + '<div><b>La tanda de encargos está cerrada.</b> Escribinos y te anotamos para la próxima.</div></div>';
   else note = '<div class="note enc">' + ICON.clock + '<div><b>Por encargo.</b> Llega en ' + esc(CFG.diasEncargo || '15 a 20') + ' días desde el cierre de la tanda' + (Number(CFG.senaPorcentaje) ? ', se confirma con una seña del ' + esc(CFG.senaPorcentaje) + '%' : '') + '.</div></div>';
   if (agotado) note = '<div class="note closed">' + ICON.clock + '<div><b>Se agotó: se vendió todo.</b> Escribinos y te avisamos si vuelve a entrar.</div></div>';
-  const waQ = esNat ? waLinkTo(naturaContact(), 'Hola! Quería consultar por *' + p.nombre + '* de Natura (' + ars(p.precio) + ').') : waLink('Hola! Quería consultar por *' + p.nombre + '* (' + ars(p.precio) + ').');
+  const waQ = esNat ? waLinkTo(naturaContact(), 'Hola! Quería consultar por *' + p.nombre + '* de Natura' + (ask ? '' : ' (' + ars(p.precio) + ')') + '.') : waLink('Hola! Quería consultar por *' + p.nombre + '*' + (ask ? '' : ' (' + ars(p.precio) + ')') + '.');
+  const askMsg = 'Hola! Quería saber el precio de *' + p.nombre + '*' + (esNat ? ' de Natura' : '') + [cur.talle ? ' talle ' + cur.talle : '', cur.color ? ' (' + cur.color + ')' : ''].join('') + '. ¿Me pasás?';
+  const askHref = esNat ? waLinkTo(naturaContact(), askMsg) : waLink(askMsg);
   $('#pPanel').innerHTML = '<div class="body"><div class="gal"><div class="track" id="track">' +
     (fotos.length ? fotos.map(f => '<img src="' + esc(photoUrl(f, 1100)) + '" alt="' + esc(p.nombre) + '">').join('') : '<img alt="" src="' + garment('tee', '#c9b6de', '#efe7f4') + '">') +
     '</div>' + (fotos.length > 1 ? '<div class="dots">' + fotos.map((_, i) => '<i' + (i ? '' : ' class="on"') + '></i>').join('') + '</div>' : '') +
     '<button class="x shr" data-share aria-label="Compartir esta prenda">' + ICON.share + '</button><button class="x" data-close aria-label="Cerrar">' + ICON.x + '</button></div>' +
     '<div class="pinfo"><div><div class="label" style="margin-bottom:4px">' + esc(p.categoria || '') + '</div><h2>' + esc(p.nombre) + '</h2></div>' +
-    '<div class="price">' + ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '') + '</div>' + note +
+    '<div class="price">' + (ask ? '<span class="ask" style="font-size:18px">Precio a consultar por WhatsApp</span>' : ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '')) + '</div>' + note +
     ((p.talles || []).length ? '<div><div class="label"><span>Talle</span>' + (cur.talle ? '<span>' + esc(cur.talle) + '</span>' : '') + '</div><div class="opts" id="tOpts">' +
       p.talles.map(t => '<button class="opt" data-t="' + esc(t.t) + '" aria-pressed="' + (cur.talle === t.t) + '"' + (t.ok ? '' : ' disabled title="Agotado"') + '>' + esc(t.t) + '</button>').join('') + '</div></div>' : '') +
     ((p.colores || []).length ? '<div><div class="label"><span>' + (esNat ? 'Tono / fragancia' : 'Color') + '</span></div><div class="opts" id="cOpts">' +
@@ -671,6 +676,7 @@ function renderProduct(){
     '<div class="ph-foot">' + (cur.err ? '<div class="err" style="margin:0 0 8px">' + esc(cur.err) + '</div>' : '') +
     (cerrado || agotado
       ? '<a class="btn wa" style="width:100%" href="' + esc(esNat ? waLinkTo(naturaContact(), 'Hola! Me interesa *' + p.nombre + '* de Natura. ¿Me anotás para el próximo ciclo?') : waLink('Hola! Me interesa *' + p.nombre + '*. ¿Me anotan para cuando vuelva a estar disponible?')) + '" target="_blank" rel="noopener">' + ICON.wa + (agotado ? 'Avisame cuando vuelva' : esNat ? 'Anotarme para el próximo ciclo' : 'Anotarme para la próxima tanda') + '</a>'
+      : ask ? '<a class="btn wa" style="width:100%" href="' + esc(askHref) + '" target="_blank" rel="noopener">' + ICON.wa + 'Consultar precio por WhatsApp</a>'
       : '<div class="row"><div class="qty"><button data-q="-1" aria-label="Menos">−</button><span>' + cur.cant + '</span><button data-q="1" aria-label="Más">+</button></div><button class="btn pri" id="addBtn">Agregar · ' + ars(p.precio * cur.cant) + '</button></div>') +
     '</div>';
   const tr = $('#track');
@@ -697,6 +703,7 @@ function renderProductKeep(){
 }
 function addToCart(){
   const { p } = cur;
+  if (consult(p)) return;
   if ((p.talles || []).length && !cur.talle){ cur.err = 'Elegí un talle para agregarla.'; return renderProductKeep(); }
   if ((p.colores || []).length && !cur.color){ cur.err = lineaOf(p) === 'natura' ? 'Elegí el tono o la fragancia.' : 'Elegí un color para agregarla.'; return renderProductKeep(); }
   const ex = cart.find(it => it.id === p.id && it.talle === cur.talle && it.color === cur.color);
