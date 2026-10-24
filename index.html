@@ -466,6 +466,7 @@ let cart = store.get('tl_cart', []);
 const filt = { linea: 'ropa', cat: 'Todas', tipo: 'todos', q: '' };
 const lineaOf = p => (p && p.linea === 'natura') ? 'natura' : 'ropa';
 const consult = p => !(Number(p.precio) > 0);  // precio 0 = "consultar precio por WhatsApp"
+const soloMarca = p => (p.talles || []).length === 1 && p.talles[0].t === 'Único' && !p.talles[0].ok && (p.linea === 'natura');
 const soldOut = p => (p.talles || []).length > 0 && !(p.talles || []).some(t => t.ok);
 // el id de cada prenda lleva la fecha en que se subió ('p' + fecha en base 36 + 3 letras)
 const createdAt = p => { const m = /^p([0-9a-z]{8})[0-9a-z]{3}$/.exec((p && p.id) || ''); return m ? parseInt(m[1], 36) : 0; };
@@ -580,7 +581,7 @@ function filtered(){
 function cardHTML(p){
   const f = (p.fotos || [])[0];
   const off = !consult(p) && p.precioAnterior > p.precio ? Math.round((1 - p.precio / p.precioAnterior) * 100) : 0;
-  const sizes = (p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ');
+  const sizes = soloMarca(p) ? '' : (p.talles || []).map(t => t.ok ? esc(t.t) : '<s>' + esc(t.t) + '</s>').join(' · ');
   const so = soldOut(p);
   return '<button class="card' + (so ? ' sold' : '') + '" data-id="' + esc(p.id) + '"><div class="ph">' + (f ? '<img loading="lazy" src="' + esc(photoUrl(f, 600)) + '" alt="' + esc(p.nombre) + '">' : '') +
     (so ? '<span class="soldout"><b>Agotado</b><small>¡Se vendió todo!</small></span>' : (isNew(p) ? '<span class="nuevo">Nuevo</span>' : '')) +
@@ -667,7 +668,7 @@ function renderProduct(){
     '<button class="x shr" data-share aria-label="Compartir esta prenda">' + ICON.share + '</button><button class="x" data-close aria-label="Cerrar">' + ICON.x + '</button></div>' +
     '<div class="pinfo"><div><div class="label" style="margin-bottom:4px">' + esc(p.categoria || '') + '</div><h2>' + esc(p.nombre) + '</h2></div>' +
     '<div class="price">' + (ask ? '<span class="ask" style="font-size:18px">Precio a consultar por WhatsApp</span>' : ars(p.precio) + (off ? '<s>' + ars(p.precioAnterior) + '</s>' : '')) + '</div>' + note +
-    ((p.talles || []).length ? '<div><div class="label"><span>Talle</span>' + (cur.talle ? '<span>' + esc(cur.talle) + '</span>' : '') + '</div><div class="opts" id="tOpts">' +
+    ((p.talles || []).length && !soloMarca(p) ? '<div><div class="label"><span>Talle</span>' + (cur.talle ? '<span>' + esc(cur.talle) + '</span>' : '') + '</div><div class="opts" id="tOpts">' +
       p.talles.map(t => '<button class="opt" data-t="' + esc(t.t) + '" aria-pressed="' + (cur.talle === t.t) + '"' + (t.ok ? '' : ' disabled title="Agotado"') + '>' + esc(t.t) + '</button>').join('') + '</div></div>' : '') +
     ((p.colores || []).length ? '<div><div class="label"><span>' + (esNat ? 'Tono / fragancia' : 'Color') + '</span></div><div class="opts" id="cOpts">' +
       p.colores.map(c => '<button class="opt" data-c="' + esc(c) + '" aria-pressed="' + (cur.color === c) + '">' + esc(c) + '</button>').join('') + '</div></div>' : '') +
