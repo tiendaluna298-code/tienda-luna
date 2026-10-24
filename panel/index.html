@@ -989,7 +989,7 @@ function renderEditor(){
         '<label><input type="radio" name="e-tipo" value="encargo"' + (p.tipo !== 'stock' ? ' checked' : '') + '><span>Por encargo<small>' + (nat ? 'Se pide en el ciclo' : 'Entra en la próxima tanda') + '</small></span></label></div></div>' +
         '<div class="field"><label for="e-desc">Descripción</label><textarea id="e-desc" placeholder="' + (nat ? 'Tamaño, para qué sirve, promo del ciclo…' : 'Tela, calce, recomendaciones de talle…') + '">' + esc(p.descripcion) + '</textarea></div>' +
       '</div></div>' +
-      (nat && !p.talles.length ? '' : '<div class="card"><h3>Talles <span style="text-transform:none;letter-spacing:0;font-weight:500">Tocá un talle para marcarlo agotado</span></h3><div class="stack">' +
+      (nat && sinTalle(p) ? '' : '<div class="card"><h3>Talles <span style="text-transform:none;letter-spacing:0;font-weight:500">Tocá un talle para marcarlo agotado</span></h3><div class="stack">' +
         (p.tipo === 'stock' && p.talles.length ? '<p class="hint" style="margin:0">El número es cuántas tienen de cada talle (solo lo ven ustedes). Cuando llega a 0 el talle se tacha solo, y baja solo al confirmar o entregar un pedido. Vacío = no llevan la cuenta.</p>' : '') +
         '<div class="tchips">' + (p.talles.length ? p.talles.map((t, i) => { const n = stockOf(p, t.t);
           return '<span class="tch' + (t.ok ? '' : ' no') + '"><button type="button" data-tog="' + i + '" title="' + (t.ok ? 'Marcar agotado' : 'Marcar disponible') + '">' + esc(t.t) + '</button>' +
@@ -1002,6 +1002,7 @@ function renderEditor(){
       '<div class="card"><h3>Publicación</h3>' +
         '<div class="togrow"><div><b>Visible en la tienda</b><small>Apagalo para ocultarla sin borrarla</small></div><label class="switch"><input type="checkbox" id="e-vis"' + (p.visible ? ' checked' : '') + '><span></span></label></div>' +
         '<p class="visoff" id="visoff"' + (p.visible ? ' hidden' : '') + '>Está oculta: no aparece en la tienda ni en los links compartidos.</p>' +
+        (sinTalle(p) ? '<div class="togrow"><div><b>Agotado</b><small>' + (soldOut(p) ? 'En la tienda sale con el sello AGOTADO' : 'Prendelo cuando se termine') + '</small></div><label class="switch"><input type="checkbox" id="e-agot"' + (soldOut(p) ? ' checked' : '') + '><span></span></label></div>' : '') +
         '<div class="togrow"><div><b>Destacada</b><small>Aparece primero, con etiqueta</small></div><label class="switch"><input type="checkbox" id="e-dest"' + (p.destacado ? ' checked' : '') + '><span></span></label></div>' +
         (p.id ? '<div style="border-top:1px solid var(--line);padding-top:14px;margin-top:4px">' + (confirmDel
           ? '<p class="err" style="margin:0 0 8px">Se borra la prenda y sus fotos. No se puede deshacer.</p><div style="display:flex;gap:8px"><button type="button" class="btn ghost sm" data-act="nodel">Cancelar</button><button type="button" class="btn danger sm" style="flex:1" data-act="del2">Sí, eliminar</button></div>'
@@ -1011,6 +1012,8 @@ function renderEditor(){
     '<div class="savebar"><button class="btn ghost" data-nav="prendas">Volver</button><button class="btn pri" data-act="save"' + (busy ? ' disabled' : '') + '>' + (busy || (p.id ? 'Guardar' : 'Publicar')) + '</button></div>';
   updatePout();
 }
+// Productos sin talle (perfumes, cremas…): "agotado" se guarda como un talle Único tachado.
+const sinTalle = p => !(p.talles || []).length || ((p.talles || []).length === 1 && p.talles[0].t === 'Único' && !p.talles[0].ok);
 function readEditor(){
   if (!editing || !$('#edF')) return;
   const v = id => { const el = $(id); return el ? el.value : null; };
@@ -1034,6 +1037,8 @@ function readEditor(){
   });
   const vis = $('#e-vis'); if (vis) editing.visible = vis.checked;
   const de = $('#e-dest'); if (de) editing.destacado = de.checked;
+  const ag = $('#e-agot');
+  if (ag && sinTalle(editing)){ editing.talles = ag.checked ? [{ t: 'Único', ok: false }] : []; if (editing.stockTalles) delete editing.stockTalles['Único']; }
 }
 function rerenderEditor(){ readEditor(); const y = window.scrollY; renderEditor(); window.scrollTo(0, y); }
 async function saveEditor(){
@@ -2804,6 +2809,7 @@ document.addEventListener('change', async e => {
   }
   if (view === 'editar' && t.id === 'e-ask'){ readEditor(); editing.consultar = t.checked; if (!t.checked) editing.modoPrecio = 'manual'; edDirty = true; return rerenderEditor(); }
   if (view === 'editar' && t.name === 'e-tipo'){ readEditor(); edDirty = true; return rerenderEditor(); }
+  if (view === 'editar' && t.id === 'e-agot'){ edDirty = true; rerenderEditor(); toast(t.checked ? 'Marcado agotado · tocá Guardar' : 'Disponible otra vez · tocá Guardar'); return; }
   if (view === 'editar' && t.id === 'e-vis'){ const w = $('#visoff'); if (w) w.hidden = t.checked; edDirty = true; return; }
   if (view === 'editar' && t.id === 'phIn'){ const fl = [...t.files]; t.value = ''; return addPhotos(fl); }
   if (view === 'editar' && t.name === 'e-linea'){
